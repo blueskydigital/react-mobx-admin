@@ -3,10 +3,6 @@ import React from 'react'
 
 export default class EditFormBase extends React.Component {
 
-  updateField(name, value, validators) {
-    this.props.state.updateData(name, value, validators)
-  }
-
   onUpdated() {
     alert('Changes successfully saved.')
   }
@@ -34,7 +30,7 @@ export default class EditFormBase extends React.Component {
     state: React.PropTypes.object.isRequired,
     saveData: React.PropTypes.func.isRequired,
     return2List: React.PropTypes.func.isRequired,
-    validators: React.PropTypes.array
+    updateField: React.PropTypes.func.isRequired
   }
 
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { browserHistory } from 'react-router'
 
 
-export default class ListViewBase extends React.Component {
+export default class ListPageBase extends React.Component {
 
   componentDidMount() {
     const { entityName, state, location, perPage } = this.props

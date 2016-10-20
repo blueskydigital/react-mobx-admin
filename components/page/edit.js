@@ -1,7 +1,7 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
 
-export default class EditView extends React.Component {
+export default class EditPageBase extends React.Component {
 
   _getId() {
     const id = this.props.routeParams.id
@@ -21,6 +21,10 @@ export default class EditView extends React.Component {
     if (nextProps.params.id !== this.props.params.id) {
       this.props.state.loadEditData(nextProps.params.entity, nextProps.params.id)
     }
+  }
+
+  updateField(name, value, validators) {
+    this.props.state.updateData(name, value, validators)
   }
 
   save() {

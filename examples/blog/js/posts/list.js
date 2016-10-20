@@ -8,19 +8,15 @@ import MenuItem from 'material-ui/MenuItem'
 import TextField from 'react-mobx-admin/components/field/text'
 import DateField from 'react-mobx-admin/components/field/date'
 import TextInput from 'react-mobx-admin/mui/input/text'
-import ListViewBase from 'react-mobx-admin/components/view/list'
+import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
-export default class PostListView extends ListViewBase {
 
-  static defaultProps = {
-    entityName: 'posts',
-    perPage: 5
-  }
+class PostListView extends MUIListView {
 
   render() {
     const { state } = this.props
-    const titles = [
+    const headertitles = [
       'ID', 'Title', 'Cat', 'Published'
     ]
     const attrs = [
@@ -66,17 +62,34 @@ export default class PostListView extends ListViewBase {
       'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
     }
 
+    // let rendering of actual components to parent (in this case it uses MatUI)
+    return this.renderComponents({
+      attrs, headertitles, fields, title: 'posts', rowId,
+      listActions: listActions,
+      actions: batchActions,
+      filters: filters
+    })
+  }
+
+}
+
+export default class PostListPage extends ListPageBase {
+
+  static defaultProps = {
+    entityName: 'posts',
+    perPage: 5
+  }
+
+  render() {
     return (
-      <MUIListView state={state} attrs={attrs} headertitles={titles} fields={fields} title='posts'
-        listActions={listActions} actions={batchActions} filters={filters}
-        rowId={rowId}
+      <PostListView
+        state={this.props.state}
         onSort={this.onListSort.bind(this)}
         onPageChange={this.onPageChange.bind(this)}
         onRowSelection={this.onSelect.bind(this)}
         onShowFilter={this.showFilter.bind(this)}
         onHideFilter={this.hideFilter.bind(this)}
-        onFilterApply={this.applyFilters.bind(this)}
-      />
+        onFilterApply={this.applyFilters.bind(this)} />
     )
   }
 

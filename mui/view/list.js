@@ -8,11 +8,10 @@ import DatagridActions from '../../components/datagrid/actions'
 
 export default class MUIListView extends React.Component {
 
-  render() {
+  renderComponents(props2) {
     const {
-      state, title, desc, attrs, headertitles, fields, actions,
-      rowId, onSort, onPageChange, onRowSelection,
-      filters, onShowFilter, onHideFilter, onFilterApply // optional props
+      state, onSort, onPageChange, onRowSelection,
+      onShowFilter, onHideFilter, onFilterApply // optional props
     } = this.props
 
     function isSelected(idx) {
@@ -23,17 +22,18 @@ export default class MUIListView extends React.Component {
       <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
           <Filters.Apply state={state} label={'apply filters'} apply={onFilterApply} />
-          {actions && (<DatagridActions state={state} actions={actions} />)}
-          {filters && (<Filters.Dropdown state={state} title="addfilter" filters={filters} showFilter={onShowFilter} />)}
+          {props2.actions && (<DatagridActions state={state} actions={props2.actions} />)}
+          {props2.filters && (<Filters.Dropdown state={state} title="addfilter" filters={props2.filters} showFilter={onShowFilter} />)}
         </CardActions>
 
-        <CardTitle title={title} />
+        <CardTitle title={props2.title} />
 
-        {filters && (
-          <Filters.Controls state={state} hideFilter={onHideFilter} filters={filters} />
+        {props2.filters && (
+          <Filters.Controls state={state} hideFilter={onHideFilter} filters={props2.filters} />
         )}
 
-        <Datagrid items={state.items} attrs={attrs} titles={headertitles} fields={fields} rowId={rowId}
+        <Datagrid items={state.items} attrs={props2.attrs} titles={props2.headertitles} fields={props2.fields}
+          rowId={props2.rowId}
           onSort={onSort} sortstate={state}
           onRowSelection={onRowSelection} isSelected={isSelected} />
         <Pagination state={state} onChange={onPageChange} />
@@ -42,12 +42,7 @@ export default class MUIListView extends React.Component {
   }
 
   static propTypes = {
-    attrs: React.PropTypes.array.isRequired,
-    fields: React.PropTypes.array.isRequired,
-    headertitles: React.PropTypes.array,
     state: React.PropTypes.object.isRequired,
-    rowId: React.PropTypes.func.isRequired,
-    listActions: React.PropTypes.func,
     onSort: React.PropTypes.func.isRequired,
     onPageChange: React.PropTypes.func.isRequired,
     onRowSelection: React.PropTypes.func,

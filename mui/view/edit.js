@@ -19,32 +19,30 @@ class SubmitButton extends React.Component {
 }
 
 @observer
-class MUIEditForm extends EditFormBase {
+class MUIEditView extends EditFormBase {
 
-  render() {
-    const { edittitle, createtitle, desc, state, saveText, onSaveData, saveAndReturnText } = this.props
+  renderComponents(props2) {
+    const { state, onSaveData } = this.props
 
-    const title = state.originEntityId ? edittitle : createtitle
+    const title = state.originEntityId ? props2.edittitle : props2.createtitle
 
     return (
       <Card style={{ margin: '1em'}}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={saveText} />
+          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={props2.saveText} />
         </CardActions>
 
-        <CardTitle title={title} subtitle={desc} />
+        <CardTitle title={title} subtitle={props2.desc} />
 
-        <form style={{ padding: '0 1em 1em 1em' }}>
-          {<this.props.formcomponent onChange={this.updateField.bind(this)} state={state} />}
-        </form>
+        <form style={{ padding: '0 1em 1em 1em' }}>{props2.form}</form>
 
         <CardActions>
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={saveText} />
-          <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.errors} text={saveAndReturnText || 'save and return'} />
+          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={props2.saveText} />
+          <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.errors} text={props2.saveAndReturnText} />
           <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={this.onCancel.bind(this)}/>
         </CardActions>
       </Card>
     )
   }
 }
-export default MUIEditForm
+export default MUIEditView
