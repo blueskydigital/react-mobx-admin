@@ -33,4 +33,8 @@ export default class StateStore extends DataTableState {
     })
   }
 
+  onApiErr(err) {
+    alert(`API error :( \n\n\n${err}`)
+  }
+
 }
