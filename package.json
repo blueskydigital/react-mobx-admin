@@ -1,0 +1,34 @@
+{
+  "name": "react-mobx-admin",
+  "version": "1.0.0",
+  "description": "unopinionated framework for React based admin applications",
+  "main": "index.js",
+  "keywords": [
+    "admin",
+    "mobx",
+    "rest"
+  ],
+  "author": "vencax <vencax77@gmail.com>",
+  "repository": "https://github.com/blueskydigital/react-admin",
+  "license": "ISC",
+  "peerDependencies": {
+    "axios": "^0.14.0",
+    "material-ui": "^0.16.0",
+    "mobx": "^2.3.7",
+    "mobx-react": "^3.5.1",
+    "react": "^15.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-class-properties": "^6.10.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "json-server": "^0.8.22",
+    "mobx-react-devtools": "^4.2.6",
+    "react-addons-test-utils": "^15.3.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
