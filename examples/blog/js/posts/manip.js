@@ -2,6 +2,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
+import SelectInput from 'react-mobx-admin/mui/input/select'
 import EditPageBase from 'react-mobx-admin/components/page/edit'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
@@ -9,9 +10,18 @@ import MUIEditView from 'react-mobx-admin/mui/view/edit'
 @observer
 class PostEditView extends MUIEditView {
 
+  componentDidMount() {
+    // load all necessary options here
+    this.props.state.loadOptions('category', '/tags')
+  }
+
   render() {
     const { state, updateField } = this.props
     const __ = state.transl.bind(state)
+    const catOptions = [
+      {label: __('Technology'), val: 'tech'},
+      {label: __('Art'), val: 'art'}
+    ]
     const form = (
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -19,7 +29,8 @@ class PostEditView extends MUIEditView {
             {fn: (val) => (val.length === 0), message: __('title must be provided')},
             {fn: (val) => (val.length > 10), message: __('title too long')},
           ]} errors={state.errors} /><br/>
-          <TextInput label={__('Category')} attr={'category'} record={state.entity} onChange={updateField} />
+          <SelectInput label={__('Category')} attr={'category'} labelattr={'name'} valattr={'id'} record={state.entity}
+            optionsrecord={state.options} onChange={updateField} />
         </div>
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
           <DateInput label={__('published')} attr={'published_at'} record={state.entity} onChange={updateField} /><br/>

@@ -47,6 +47,12 @@ class DataRequester {
       return response.data
     })
   }
+
+  call(url) {
+    // add apiUrl if necessary
+    url = (url.indexOf('/') === 0) ? `${this.apiUrl}${url}` : url
+    return axios.get(url)
+  }
 }
 
 export default DataRequester
