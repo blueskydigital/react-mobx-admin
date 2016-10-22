@@ -1,10 +1,11 @@
+import React from 'react'
 import FieldBase from './base'
 
 export default class TextField extends FieldBase {
 
-  getVal(record, attr) {
+  renderVal(record, attr) {
     const d = record[attr] instanceof Date ? d : new Date(record[attr])
-    return d.toLocaleDateString()
+    return <span>{d.toLocaleDateString()}</span>
   }
 
 }

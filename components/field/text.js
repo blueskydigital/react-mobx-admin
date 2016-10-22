@@ -10,12 +10,12 @@ export default class TextField extends FieldBase {
     onTouchTap: React.PropTypes.func
   }
 
-  getVal(record, attr) {
+  renderVal(record, attr) {
     const { maxlen } = this.props
     let val = record[attr]
     val = (maxlen && typeof val === 'string' && val.length > maxlen) ?
         (val.substring(0, maxlen) + ' ...') : val
-    return val
+    return <span>{val}</span>
   }
 
 }

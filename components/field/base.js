@@ -10,10 +10,9 @@ export default class FieldBase extends React.Component {
 
   render() {
     const { attr, record, onTouchTap } = this.props
-    let val = this.getVal(record, attr)
+    let val = this.renderVal(record, attr)
     return onTouchTap ?
-      (<a href="#" onTouchTap={this.handleTouchTap.bind(this)}>{val}</a>) :
-      (<span>{val}</span>)
+      (<a href="#" onTouchTap={this.handleTouchTap.bind(this)}>{val}</a>) : val
   }
 
 }
