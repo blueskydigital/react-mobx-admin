@@ -9,6 +9,7 @@ import MenuItem from 'material-ui/MenuItem'
 import TextField from 'react-mobx-admin/components/field/text'
 import DateField from 'react-mobx-admin/components/field/date'
 import OptionsField from 'react-mobx-admin/components/field/opts'
+import MultivalueField from 'react-mobx-admin/components/field/multivalue'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
@@ -24,10 +25,10 @@ class PostListView extends MUIListView {
   render() {
     const { state } = this.props
     const headertitles = [
-      'ID', 'Title', 'Cat', 'Published'
+      'ID', 'Title', 'Cat', 'Published', 'Tags'
     ]
     const attrs = [
-      "id", "title", "category", "published_at"
+      "id", "title", "category", "published_at", 'tags'
     ]
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
@@ -39,7 +40,13 @@ class PostListView extends MUIListView {
         <OptionsField attr={attr} record={row} optionsrecord={state.options}
           labelattr={'name'} valueattr={'id'}  />
       ),
-      (attr, row) => (<DateField attr={attr} record={row} />)
+      (attr, row) => (<DateField attr={attr} record={row} />),
+      (attr, row) => (<MultivalueField attr={attr} record={row} itemRenderer={
+        (item, idx, arr) => (
+          <OptionsField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'category'}
+            labelattr={'name'} valueattr={'id'}  />
+        )
+      } />)
     ]
     function rowId(row) {
       return row.id
