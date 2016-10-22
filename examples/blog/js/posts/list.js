@@ -8,12 +8,18 @@ import MenuItem from 'material-ui/MenuItem'
 
 import TextField from 'react-mobx-admin/components/field/text'
 import DateField from 'react-mobx-admin/components/field/date'
+import OptionsField from 'react-mobx-admin/components/field/opts'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
 
 class PostListView extends MUIListView {
+
+  componentDidMount() {
+    // load all necessary options here
+    this.props.state.loadOptions('category', '/tags')
+  }
 
   render() {
     const { state } = this.props
@@ -29,7 +35,10 @@ class PostListView extends MUIListView {
         const onTouchTap = () => (browserHistory.push(`/posts/${row.id.toString()}`))
         return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
       },
-      (attr, row) => (<TextField attr={attr} record={row} />),
+      (attr, row) => (
+        <OptionsField attr={attr} record={row} optionsrecord={state.options}
+          labelattr={'name'} valueattr={'id'}  />
+      ),
       (attr, row) => (<DateField attr={attr} record={row} />)
     ]
     function rowId(row) {
