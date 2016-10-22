@@ -1,4 +1,5 @@
 import React from 'react'
+import { browserHistory } from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -25,8 +26,8 @@ class PostListView extends MUIListView {
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
       (attr, row) => {
-        const to = `/posts/${row.id.toString()}`
-        return (<TextField attr={attr} record={row} maxlen={32} to={to}/>)
+        const onTouchTap = () => (browserHistory.push(`/posts/${row.id.toString()}`))
+        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
       },
       (attr, row) => (<TextField attr={attr} record={row} />),
       (attr, row) => (<DateField attr={attr} record={row} />)
