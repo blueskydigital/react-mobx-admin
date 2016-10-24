@@ -15,7 +15,7 @@ export default class TextField extends FieldBase {
     let val = record[attr]
     val = (maxlen && typeof val === 'string' && val.length > maxlen) ?
         (val.substring(0, maxlen) + ' ...') : val
-    return <span>{val}</span>
+    return this.renderComponent(val)
   }
 
 }

@@ -13,10 +13,6 @@ export default class OptionsField extends FieldBase {
     onTouchTap: React.PropTypes.func
   }
 
-  renderComponent(label, val) {
-    return (<span>{label}</span>)
-  }
-
   renderVal(record, attr) {
     const { optionsrecord, optionsattr, labelattr, valueattr } = this.props
     const val = record[attr]

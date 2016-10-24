@@ -8,6 +8,10 @@ export default class FieldBase extends React.Component {
     this.props.onTouchTap()
   }
 
+  renderComponent(label, val) {
+    return (<span>{label}</span>)
+  }
+
   render() {
     const { attr, record, onTouchTap } = this.props
     let val = this.renderVal(record, attr)
