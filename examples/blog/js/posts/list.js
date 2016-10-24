@@ -14,12 +14,20 @@ import TextInput from 'react-mobx-admin/mui/input/text'
 import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
+class TagField extends OptionsField {
+
+  style = {border: '1px solid', padding: '3px', margin: '0 5px'}
+
+  renderComponent(label, val) {
+    return (<span style={this.style}>{label}</span>)
+  }
+}
 
 class PostListView extends MUIListView {
 
   componentDidMount() {
     // load all necessary options here
-    this.props.state.loadOptions('category', '/tags')
+    this.props.state.loadOptions('tags', '/tags')
   }
 
   render() {
@@ -37,14 +45,14 @@ class PostListView extends MUIListView {
         return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
       },
       (attr, row) => (
-        <OptionsField attr={attr} record={row} optionsrecord={state.options}
-          labelattr={'name'} valueattr={'id'}  />
+        <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
       ),
       (attr, row) => (<DateField attr={attr} record={row} />),
       (attr, row) => (<MultivalueField attr={attr} record={row} itemRenderer={
         (item, idx, arr) => (
-          <OptionsField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'category'}
-            labelattr={'name'} valueattr={'id'}  />
+          <TagField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'tags'}
+            labelattr={'name'} valueattr={'id'}
+            onTouchTap={() => (browserHistory.push(`/tags/${item.toString()}`))} />
         )
       } />)
     ]

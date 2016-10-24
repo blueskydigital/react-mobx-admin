@@ -34,7 +34,12 @@ export default class StateStore extends DataTableState {
   }
 
   // one of possible options loading ...
-  @observable options = asMap({})
+  @observable options = asMap({
+    'categories': [
+      {value: 'tech', label: 'Technology'},
+      {value: 'art', label: 'Art'},
+    ]
+  })
 
   @action
   loadOptions(name, query) {
