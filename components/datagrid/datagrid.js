@@ -16,22 +16,22 @@ export default class DatagridBase extends React.Component {
     listActions: React.PropTypes.func
   }
 
-  buildHeaders(sortDir, sortField) {
-    const { attrs, titles, listActions, onSort } = this.props
+  buildHeaders() {
+    const { attrs, titles, listActions, onSort, sortstate } = this.props
 
     let headers = []
     let i
     for(i = 0; i < attrs.length; i++) {
       const attr = attrs[i]
       const title = titles[i]
-      const sort = (sortField === attr) ? sortDir : null
+      const sort = sortstate && (sortstate.sortField === attr) ? sortstate.sortDir : null
       const header = this.renderHeader(attr, title, sort, onSort)
       headers.push(header)
     }
 
     // add another th for List actions if any
     if (listActions) {
-      headers.push(<th key={'_actions'}></th>)
+      headers.push(<th key={'_actions'}>{listActions()}</th>)
     }
 
     return headers
@@ -56,14 +56,14 @@ export default class DatagridBase extends React.Component {
   }
 
   render() {
-    const { rowId, items, isSelected, onRowSelection, onSort, titles, sortstate } = this.props
+    const { rowId, items, isSelected, onRowSelection, onSort, titles } = this.props
     const selectable = onRowSelection !== undefined && isSelected !== undefined
 
     if(items.length === 0) {
       return null
     }
 
-    const headers = titles && this.renderHeaders(sortstate)
+    const headers = titles && this.renderHeaders()
 
     return this.renderTable(headers)
   }

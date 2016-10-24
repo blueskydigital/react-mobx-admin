@@ -40,10 +40,12 @@ class MUIDatagrid extends DatagridBase {
     )
   }
 
-  renderHeaders(sortstate) {
+  renderHeaders() {
+    const { isSelected, onRowSelection } = this.props
+    const selectable = onRowSelection !== undefined && isSelected !== undefined
     return (
-      <TableHeader>
-        <TableRow>{this.buildHeaders(sortstate.sortDir, sortstate.sortField)}</TableRow>
+      <TableHeader displaySelectAll={selectable}>
+        <TableRow>{this.buildHeaders()}</TableRow>
       </TableHeader>
     )
   }
