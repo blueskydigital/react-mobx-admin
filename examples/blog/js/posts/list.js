@@ -5,7 +5,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
-
+import Chip from 'material-ui/Chip'
 import TextField from 'react-mobx-admin/components/field/text'
 import DateField from 'react-mobx-admin/components/field/date'
 import OptionsField from 'react-mobx-admin/components/field/opts'
@@ -15,11 +15,13 @@ import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
 class TagField extends OptionsField {
-
-  style = {border: '1px solid', padding: '3px', margin: '0 5px'}
-
   renderComponent(label, val) {
-    return (<span style={this.style}>{label}</span>)
+    return (
+      <Chip style={{float: 'left'}}
+        onTouchTap={() => (browserHistory.push(`/tags/${val.toString()}`))}>
+        {label}
+      </Chip>
+    )
   }
 }
 
@@ -51,8 +53,7 @@ class PostListView extends MUIListView {
       (attr, row) => (<MultivalueField attr={attr} record={row} itemRenderer={
         (item, idx, arr) => (
           <TagField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'tags'}
-            labelattr={'name'} valueattr={'id'}
-            onTouchTap={() => (browserHistory.push(`/tags/${item.toString()}`))} />
+            labelattr={'name'} valueattr={'id'} />
         )
       } />)
     ]
