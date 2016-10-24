@@ -10,6 +10,7 @@ import TextField from 'react-mobx-admin/components/field/text'
 import DateField from 'react-mobx-admin/components/field/date'
 import OptionsField from 'react-mobx-admin/components/field/opts'
 import MultivalueField from 'react-mobx-admin/components/field/multivalue'
+import MUIBoolField from 'react-mobx-admin/mui/field/bool'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
@@ -30,7 +31,7 @@ class TagListView extends MUIListView {
         const onTouchTap = () => (browserHistory.push(`/tags/${row.id.toString()}`))
         return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
       },
-      (attr, row) => (<TextField attr={attr} record={row} />)
+      (attr, row) => (<MUIBoolField attr={attr} record={row} />)
     ]
     function rowId(row) {
       return row.id

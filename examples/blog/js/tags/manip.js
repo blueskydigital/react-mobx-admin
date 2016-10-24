@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
 import SelectInput from 'react-mobx-admin/mui/input/select'
+import MUIBoolInput from 'react-mobx-admin/mui/input/bool'
 import EditPageBase from 'react-mobx-admin/components/page/edit'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
@@ -20,7 +21,7 @@ class TagsEditView extends MUIEditView {
             {fn: (val) => (val.length === 0), message: __('value must be provided')},
             {fn: (val) => (val.length > 10), message: __('value too long')},
           ]} errors={state.errors} /><br/>
-          <TextInput label={__('Published')} attr={'published'} record={state.entity} onChange={updateField} />
+          <MUIBoolInput label={__('Published')} attr={'published'} record={state.entity} onChange={updateField} />
         </div>
       </div>
     )
