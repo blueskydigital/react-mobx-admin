@@ -15,6 +15,7 @@ class SelectInput extends React.Component {
     label: React.PropTypes.string,
     onChange: React.PropTypes.func.isRequired,
     optionsrecord: React.PropTypes.object.isRequired,
+    optionsattr: React.PropTypes.string,
     errors: React.PropTypes.object,
     validators: React.PropTypes.array
   }
@@ -36,10 +37,13 @@ class SelectInput extends React.Component {
   }
 
   render() {
-    const { attr, labelattr, valattr, label, record, optionsrecord, errors } = this.props
+    const {
+      attr, labelattr, valattr, label, record,
+      optionsrecord, optionsattr, errors
+    } = this.props
     const errorText = errors ? errors.get(attr) : undefined
     const value = record.get(attr)
-    const options = optionsrecord.get(attr)
+    const options = optionsrecord.get(optionsattr || attr)
     const renderedOpts = options && options.length &&
       this.renderOptions(options, labelattr || 'label', valattr || 'value')
     return (
