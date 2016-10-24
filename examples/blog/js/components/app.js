@@ -26,6 +26,7 @@ export default class AppComponent extends React.Component {
               <ToolbarGroup firstChild={true}>
                 <FlatButton onTouchTap={() => browserHistory.push('/')}>SampleAPp</FlatButton>
                 <FlatButton onTouchTap={() => browserHistory.push('/posts')}>Posts</FlatButton>
+                <FlatButton onTouchTap={() => browserHistory.push('/tags')}>Tags</FlatButton>
                 <FlatButton onTouchTap={() => state.changeLang()}>ChangeLang</FlatButton>
               </ToolbarGroup>
               <ToolbarGroup>
