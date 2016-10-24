@@ -40,23 +40,21 @@ class MUIDatagrid extends DatagridBase {
     )
   }
 
-  render() {
-    const { rowId, items, isSelected, onRowSelection, onSort, titles, sortstate } = this.props
-    const selectable = onRowSelection !== undefined && isSelected !== undefined
-
-    if(items.length === 0) {
-      return null
-    }
-
-    const headers = titles && sortstate && (
+  renderHeaders(sortstate) {
+    return (
       <TableHeader>
         <TableRow>{this.buildHeaders(sortstate.sortDir, sortstate.sortField)}</TableRow>
       </TableHeader>
     )
+  }
+
+  renderTable(header) {
+    const { rowId, items, isSelected, onRowSelection } = this.props
+    const selectable = onRowSelection !== undefined && isSelected !== undefined
 
     return (
       <Table selectable={selectable} onRowSelection={this.props.onRowSelection} multiSelectable={true}>
-        {headers}
+        {header}
         <TableBody displayRowCheckbox={selectable} deselectOnClickaway={false}>
           {items.map((r, i) => {
             const id = rowId(r)

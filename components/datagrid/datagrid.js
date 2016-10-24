@@ -55,4 +55,17 @@ export default class DatagridBase extends React.Component {
     return cells
   }
 
+  render() {
+    const { rowId, items, isSelected, onRowSelection, onSort, titles, sortstate } = this.props
+    const selectable = onRowSelection !== undefined && isSelected !== undefined
+
+    if(items.length === 0) {
+      return null
+    }
+
+    const headers = titles && this.renderHeaders(sortstate)
+
+    return this.renderTable(headers)
+  }
+
 }
