@@ -34,6 +34,10 @@ class DataRequester {
 
   }
 
+  deleteEntry(entityName, id) {
+    return axios.delete(`${this.apiUrl}/${entityName}/${id}`)
+  }
+
   saveEntry(entityName, data, id=null) {
     let query
 

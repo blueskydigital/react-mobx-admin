@@ -5,6 +5,7 @@ export default class DataTableState extends DataManipState {
 
   perPage = 2
   entityName = null
+  pkName = 'id'
 
   @observable items = []
   @observable totalItems:number = 0
@@ -47,7 +48,28 @@ export default class DataTableState extends DataManipState {
 
   @action
   deleteSelected() {
-    // TODO: dodelat this.callRequester(() =>{
+    this.callRequester(() => {
+      const promises = this.selection.map((selected) => {
+        const id = this.items[selected][this.pkName]
+        return this.requester.deleteEntry(this.entityName, id)
+      })
+      return Promise.all(promises).then(() => {   // wait for all delete reqs
+        return this.requester.getEntries(this.entityName, { // refetch items
+          page: this.page,
+          sortField: this.sortField,
+          sortDir: this.sortDir,
+          filters: toJS(this.filters),
+          perPage: this.perPage
+        })
+      })
+      .then((result) => {       // update state
+        transaction(() => {
+          this.selection = []
+          this.totalItems = result.totalItems
+          this.items.replace(result.data)
+        })
+      })
+    })
   }
 
   // ---------------------- selection  ----------------------------
