@@ -11,7 +11,7 @@ class SelectInput extends React.Component {
     attr: React.PropTypes.string.isRequired,
     record: React.PropTypes.object.isRequired,
     labelattr: React.PropTypes.string,
-    valattr: React.PropTypes.string,
+    valueattr: React.PropTypes.string,
     label: React.PropTypes.string,
     onChange: React.PropTypes.func.isRequired,
     optionsrecord: React.PropTypes.object.isRequired,
@@ -25,12 +25,12 @@ class SelectInput extends React.Component {
     this.props.onChange(attr, value, validators)
   }
 
-  renderOptions(options, labelattr, valattr) {
+  renderOptions(options, labelattr, valueattr) {
     let opts = []
     let idx, val, c
     for(idx = 0; idx < options.length; idx++) {
       val = options[idx]
-      c = <MenuItem key={idx} value={val[valattr]} primaryText={val[labelattr]} />
+      c = <MenuItem key={idx} value={val[valueattr]} primaryText={val[labelattr]} />
       opts.push(c)
     }
     return opts
@@ -38,14 +38,14 @@ class SelectInput extends React.Component {
 
   render() {
     const {
-      attr, labelattr, valattr, label, record,
+      attr, labelattr, valueattr, label, record,
       optionsrecord, optionsattr, errors
     } = this.props
     const errorText = errors ? errors.get(attr) : undefined
     const value = record.get(attr)
     const options = optionsrecord.get(optionsattr || attr)
     const renderedOpts = options && options.length &&
-      this.renderOptions(options, labelattr || 'label', valattr || 'value')
+      this.renderOptions(options, labelattr || 'label', valueattr || 'value')
     return (
       <SelectField value={value} onChange={this.handleChange.bind(this)}
           floatingLabelText={label} fullWidth={true} errorText={errorText}>
