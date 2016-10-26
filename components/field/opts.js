@@ -20,8 +20,8 @@ export default class OptionsField extends FieldBase {
     const found = options && options.filter((i) => {
       return i[valueattr || 'value'] === val
     })
-    return (found && found.length > 0) &&
-      this.renderComponent(found[0][labelattr || 'label'], val)
+    return (found && found.length > 0) ?
+      this.renderComponent(found[0][labelattr || 'label'], val) : null
   }
 
 }
