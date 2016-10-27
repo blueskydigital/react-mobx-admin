@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 export default class ListPageBase extends React.Component {
 
   componentDidMount() {
-    const { entityName, state, location, perPage } = this.props
+    const { entityName, state, location, perPage, pkName } = this.props
     const { page, sortField, sortDir } = location.query
     let filterVals = undefined
     if(location.query.filters) {
@@ -15,7 +15,7 @@ export default class ListPageBase extends React.Component {
         filterVals = {}
       }
     }
-    state.loadListData(entityName, perPage || 10, page, sortField, sortDir, filterVals)
+    state.loadListData(entityName, pkName || 'id', perPage || 10, page, sortField, sortDir, filterVals)
   }
 
   showFilter(filter) {

@@ -52,10 +52,10 @@ class DataRequester {
     })
   }
 
-  call(url) {
+  call(url, method = 'get', data) {
     // add apiUrl if necessary
     url = (url.indexOf('/') === 0) ? `${this.apiUrl}${url}` : url
-    return axios.get(url)
+    return axios[method](url, data)
   }
 }
 

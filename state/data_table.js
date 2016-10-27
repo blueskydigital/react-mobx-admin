@@ -14,9 +14,10 @@ export default class DataTableState extends DataManipState {
   @observable sortField = null
 
   @action
-  loadListData(entityName, perPage, page = 1, sortField = null, sortDir = null, filters = {}) {
+  loadListData(entityName, pkName, perPage, page = 1, sortField = null, sortDir = null, filters = {}) {
     this.entityName = entityName
     this.perPage = perPage
+    this.pkName = pkName
     transaction(() => {
       this.page = page
       this.sortField = sortField
@@ -38,6 +39,11 @@ export default class DataTableState extends DataManipState {
   }
 
   @action
+  refresh() {
+    this._getEntries(this.entityName)
+  }
+
+  @action
   deleteData(data) {
     const id = this.originEntityId
 
@@ -53,7 +59,7 @@ export default class DataTableState extends DataManipState {
         const id = this.items[selected][this.pkName]
         return this.requester.deleteEntry(this.entityName, id)
       })
-      return Promise.all(promises).then(() => {   // wait for all delete reqs
+      return Promise.all(promises).then(() => {   // wait for all delete reqests
         return this.requester.getEntries(this.entityName, { // refetch items
           page: this.page,
           sortField: this.sortField,
@@ -75,6 +81,12 @@ export default class DataTableState extends DataManipState {
   // ---------------------- selection  ----------------------------
 
   @observable selection = []
+
+  @computed get selected_ids() {
+    return this.selection.map((selected) => {
+      return this.items[selected][this.pkName]
+    })
+  }
 
   @action
   updateSelection(data) {
