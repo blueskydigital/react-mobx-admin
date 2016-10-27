@@ -15,9 +15,9 @@ export default class MultivalueField extends FieldBase {
       return (<span className="tag" key={idx}>{i}</span>)
     } : this.props.itemRenderer
     let val = record[attr]
-    return (
+    return val ? (
       <div>{val.map((i, idx) => renderItem(i, idx, val))}</div>
-    )
+    ) : null
   }
 
 }
