@@ -4,18 +4,28 @@ import { browserHistory } from 'react-router'
 
 export default class ListPageBase extends React.Component {
 
+  _getFilters(filters) {
+    try {
+      return JSON.parse(filters)
+    } catch(err) {
+      return {}
+    }
+  }
+
   componentDidMount() {
     const { entityName, state, location, perPage, pkName } = this.props
-    const { page, sortField, sortDir } = location.query
-    let filterVals = undefined
-    if(location.query.filters) {
-      try {
-        filterVals = JSON.parse(location.query.filters)
-      } catch(err) {
-        filterVals = {}
-      }
-    }
+    const { page, sortField, sortDir, filters } = location.query
+    const filterVals = this._getFilters(filters)
     state.loadListData(entityName, pkName || 'id', perPage || 10, page, sortField, sortDir, filterVals)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { state, location } = this.props
+
+    if(nextProps.location.query.filters !== location.query.filters) {
+      const filterVals = this._getFilters(nextProps.location.query.filters)
+      state.updateFilters(filterVals)
+    }
   }
 
   showFilter(filter) {

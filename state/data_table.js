@@ -98,6 +98,11 @@ export default class DataTableState extends DataManipState {
   @observable filters = asMap({})
 
   @action
+  updateFilters(newFilters) {
+    return this._getEntries(this.entityName, undefined, undefined, undefined, newFilters)
+  }
+
+  @action
   resetFilters(newFilters = {}) {
     transaction(() => {
       _resetFilters(newFilters)
