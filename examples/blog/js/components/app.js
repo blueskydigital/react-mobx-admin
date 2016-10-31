@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui'
 import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
+import UserInfo from './header'
 import DevTools from 'mobx-react-devtools'
 
 @observer
@@ -28,6 +29,7 @@ export const App = observer( ({ state }) => {
             </ToolbarGroup>
             <ToolbarGroup>
               <Loading state={state}/>
+              <UserInfo state={state}/>
             </ToolbarGroup>
           </Toolbar>
           { renderCurrentView(state) }

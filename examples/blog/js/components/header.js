@@ -1,32 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router';
-import { observer } from 'mobx-react';
+import React from 'react'
+import { observer } from 'mobx-react'
+import RaisedButton from 'material-ui/RaisedButton'
+import { ToolbarTitle } from 'material-ui'
 
 @observer
 export default class Header extends React.Component {
 
-  userInfo() {
-    const user = this.props.state.loggedUser;
-    if(user) {
-      return <span>{user.name} ({user.uname})</span>;
-    } else {
-      return <span>anonymous</span>
-    }
-  }
-
   render() {
-    return (
-      <header className="header">
-        <h1>
-          <Link to="/">
-            {this.props.title} | custom header
-          </Link>
-        </h1>
-        <div className="pull-right">
-          {this.userInfo()}
+    const user = this.props.state.loggedUser
+    if(user) {
+      return <ToolbarTitle text={`${user.name} (${user.uname})`} />
+    } else {
+      return (
+        <div>
+          <ToolbarTitle text="anonymous" />
+          <RaisedButton onTouchTap={()=>this.props.state.showLogin()} label={'login'} />
         </div>
-      </header>
-    );
+      )
+    }
   }
 
 }
