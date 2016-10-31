@@ -12,9 +12,9 @@ const buttonStyle = { margin: '10px 0' }
 class DatagridPagination extends PaginationBase {
 
   render() {
-    const totalItems = this.props.state.totalItems
+    const totalItems = this.props.state.currentView.totalItems
     const page = parseInt(this.props.state.page) || 1
-    const perPage = parseInt(this.props.state.perPage) || 1
+    const perPage = parseInt(this.props.state.currentView.perPage) || 1
     const nbPages = Math.ceil(totalItems / perPage) || 1
     const offsetEnd = Math.min(page * perPage, totalItems)
     const offsetBegin = Math.min((page - 1) * perPage + 1, offsetEnd)

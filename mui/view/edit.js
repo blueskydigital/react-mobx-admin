@@ -9,12 +9,11 @@ import { Card, CardTitle, CardActions } from 'material-ui/Card'
 class SubmitButton extends React.Component {
   render() {
     const { errors, text } = this.props
-    const submitDisabled = errors.size > 0
 
-    return (
+    return errors ? (
       <RaisedButton label={text} primary={true} icon={<SaveIcon />}
-        disabled={submitDisabled} onTouchTap={this.props.onSubmit}/>
-    )
+        disabled={errors.size > 0} onTouchTap={this.props.onSubmit}/>
+    ) : null
   }
 }
 
@@ -23,12 +22,12 @@ export default class MUIEditView extends EditFormBase {
   renderComponents(props2) {
     const { state } = this.props
 
-    const title = state.originEntityId ? props2.edittitle : props2.createtitle
+    const title = state.currentView.originEntityId ? props2.edittitle : props2.createtitle
 
     return (
       <Card style={{ margin: '1em'}}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={props2.saveText} />
+          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={props2.saveText} />
         </CardActions>
 
         <CardTitle title={title} subtitle={props2.desc} />
@@ -36,8 +35,8 @@ export default class MUIEditView extends EditFormBase {
         <form style={{ padding: '0 1em 1em 1em' }}>{props2.form}</form>
 
         <CardActions>
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.errors} text={props2.saveText} />
-          <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.errors} text={props2.saveAndReturnText} />
+          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={props2.saveText} />
+          <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.currentView.errors} text={props2.saveAndReturnText} />
           <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={this.onCancel.bind(this)}/>
         </CardActions>
       </Card>

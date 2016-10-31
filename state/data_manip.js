@@ -3,43 +3,40 @@ import BaseState from './base'
 
 export default class DataManipState extends BaseState {
 
-  @observable originEntityId = null
-  @observable entityName = null
-  @observable entity = asMap({})
-  @observable errors = asMap({})
+  previousView = null
 
   @action
   showEntityDetail(entityName, id) {
+
+    this.previousView = this.currentView  // backup
+
     this.currentView = {
-      name: entityName + '_detail'
+      name: entityName + '_detail',
+      originEntityId: id,
+      entityName: entityName,
+      entity: asMap({}),
+      errors: asMap({})
     }
     if(id === undefined) {
-      this.loadCreateData(this.props.fields)
+      this._loadCreateData(this.props.fields)
     } else {
-      this.loadEditData(entityName, id)
+      this._loadEditData(entityName, id)
     }
   }
 
-  loadEditData(entityName, id, sortField, sortDir) {
-    this.originEntityId = id
-    this.entityName = entityName
-
+  _loadEditData(entityName, id) {
     return this.callRequester(() => {
       return this.requester.getEntry(entityName, id).then((result) => {
-        transaction(() => {
-          this.entity.clear()
-          this.entity.merge(result.data)
-        })
+        this.currentView.entity.merge(result.data)
       })
     })
   }
 
-  loadCreateData(fields) {
+  _loadCreateData(fields) {
     transaction(() => {
-      this.originEntityId = null
-      this.entity.clear()
+      this.currentView.entity.clear()
       for (let name in fields) {
-        this.entity[name] = fields[name].defaultVal
+        this.currentView.entity[name] = fields[name].defaultVal
       }
     })
   }
@@ -51,10 +48,10 @@ export default class DataManipState extends BaseState {
         errors.push(v.message)
       }
     })
-    if(errors.length === 0 && this.errors.has(fieldName)) {
-      this.errors.delete(fieldName)
+    if(errors.length === 0 && this.currentView.errors.has(fieldName)) {
+      this.currentView.errors.delete(fieldName)
     } else if (errors.length > 0) {
-      this.errors.set(fieldName, errors)
+      this.currentView.errors.set(fieldName, errors)
     }
   }
 
@@ -62,7 +59,7 @@ export default class DataManipState extends BaseState {
   @action
   updateData(fieldName, value, validators) {
     transaction(() => {
-      this.entity.set(fieldName, value)
+      this.currentView.entity.set(fieldName, value)
       if(validators) {
         this._validateField(fieldName, value, validators)
       }
@@ -71,15 +68,19 @@ export default class DataManipState extends BaseState {
 
   @action
   saveData() {
-    const id = this.originEntityId
+    const id = this.currentView.originEntityId
 
     return this.callRequester(() => {
-      return this.requester.saveEntry(this.entityName, this.entity, id)
+      return this.requester.saveEntry(this.currentView.entityName, this.currentView.entity, id)
     })
   }
 
-  @action return2List() {
-    this.showEntityList(this.entityName, this.page)
+  return2List() {
+    if(this.previousView.entityName) {
+      this.showEntityList(this.previousView.entityName, this.previousView.page)
+    } else {
+      this.showEntityList(this.currentView.entityName)
+    }
   }
 
 }

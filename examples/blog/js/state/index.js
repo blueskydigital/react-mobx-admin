@@ -10,7 +10,7 @@ export default class StateStore extends AuthStore {
     if(this.sortField) {
       q = q + '&sortField=' + this.sortField + '&sortDir=' + this.sortDir
     }
-    if(this.filters.size > 0) {
+    if(this.currentView.filters.size > 0) {
       q = q + '&filters=' + JSON.stringify(this.filters)
     }
     return q
@@ -20,9 +20,9 @@ export default class StateStore extends AuthStore {
     switch(this.currentView.name) {
       case 'login': return '/login'
       case 'posts': return `/posts?page=${this.page}${this._query()}`
-      case 'post_detail': return '/posts/' + this.originEntityId
+      case 'posts_detail': return '/posts/' + this.currentView.originEntityId
       case 'tags': return `/tags?page=${this.page}${this._query()}`
-      case 'tag_detail': return '/tags/' + this.originEntityId
+      case 'tags_detail': return '/tags/' + this.currentView.originEntityId
     }
   }
 

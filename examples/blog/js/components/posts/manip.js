@@ -1,5 +1,4 @@
 import React from 'react'
-import { observer } from 'mobx-react'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
 import MarkdownInput from 'react-mobx-admin/mui/input/markdown'
@@ -7,7 +6,6 @@ import SelectInput from 'react-mobx-admin/mui/input/select'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
 
-@observer
 class PostEditView extends MUIEditView {
 
   render() {
@@ -19,24 +17,24 @@ class PostEditView extends MUIEditView {
       <div>
         <div className="row">
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <TextInput label={__('title')} attr={'title'} record={state.entity} onChange={updateField} validators={[
+            <TextInput label={__('title')} attr={'title'} record={state.currentView.entity} onChange={updateField} validators={[
               {fn: (val) => (val.length === 0), message: __('title must be provided')},
               {fn: (val) => (val.length > 10), message: __('title too long')},
-            ]} errors={state.errors} /><br/>
-            <SelectInput label={__('Category')} attr={'category'} record={state.entity}
+            ]} errors={state.currentView.errors} /><br/>
+            <SelectInput label={__('Category')} attr={'category'} record={state.currentView.entity}
               optionsrecord={state.options}
               optionsattr={'categories'}
               onChange={updateField} />
           </div>
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <DateInput label={__('published')} attr={'published_at'} record={state.entity} onChange={updateField} /><br/>
+            <DateInput label={__('published')} attr={'published_at'} record={state.currentView.entity} onChange={updateField} /><br/>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <MarkdownInput label={__('content')} attr={'content'} record={state.entity} onChange={updateField} validators={[
+            <MarkdownInput label={__('content')} attr={'content'} record={state.currentView.entity} onChange={updateField} validators={[
               {fn: (val) => (val.length === 0), message: __('this is mandatory')}
-            ]} errors={state.errors} mdrender={marked} />
+            ]} errors={state.currentView.errors} mdrender={marked} />
           </div>
         </div>
       </div>

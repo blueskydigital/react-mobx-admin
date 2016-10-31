@@ -1,5 +1,4 @@
 import React from 'react'
-import { observer } from 'mobx-react'
 import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
 import SelectInput from 'react-mobx-admin/mui/input/select'
@@ -7,7 +6,6 @@ import MUIBoolInput from 'react-mobx-admin/mui/input/bool'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
 
-@observer
 class TagsEditView extends MUIEditView {
 
   render() {
@@ -17,11 +15,11 @@ class TagsEditView extends MUIEditView {
     const form = (
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <TextInput label={__('name')} attr={'name'} record={state.entity} onChange={updateField} validators={[
+          <TextInput label={__('name')} attr={'name'} record={state.currentView.entity} onChange={updateField} validators={[
             {fn: (val) => (val.length === 0), message: __('value must be provided')},
             {fn: (val) => (val.length > 10), message: __('value too long')},
-          ]} errors={state.errors} /><br/>
-          <MUIBoolInput label={__('Published')} attr={'published'} record={state.entity} onChange={updateField} />
+          ]} errors={state.currentView.errors} /><br/>
+          <MUIBoolInput label={__('Published')} attr={'published'} record={state.currentView.entity} onChange={updateField} />
         </div>
       </div>
     )

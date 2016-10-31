@@ -12,7 +12,7 @@ class DatagridActions extends React.Component {
   render() {
     const { state, actions } = this.props
 
-    if(state.selection.length > 0) {
+    if(state.currentView.selection.length > 0) {
       return actions()
     } else {
       return null

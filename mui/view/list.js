@@ -16,7 +16,7 @@ export default class MUIListView extends React.Component {
     const { state } = this.props
 
     function isSelected(idx) {
-      return state.selection.indexOf(idx) >= 0
+      return state.currentView.selection.indexOf(idx) >= 0
     }
 
     return (
@@ -36,7 +36,7 @@ export default class MUIListView extends React.Component {
           <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={props2.filters} />
         )}
 
-        <Datagrid items={state.items} attrs={props2.attrs} titles={props2.headertitles} fields={props2.fields}
+        <Datagrid items={state.currentView.items} attrs={props2.attrs} titles={props2.headertitles} fields={props2.fields}
           rowId={props2.rowId}
           onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state}
           onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />

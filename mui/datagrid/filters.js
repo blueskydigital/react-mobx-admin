@@ -47,7 +47,7 @@ class Controls extends FilterBases.ControlsBase {
           {deleteLink}
         </div>
         <div style={{ float: 'right' }}>
-          <filter.component record={state.filters} attr={name} label={filter.label} onChange={onUpdateValue} />
+          <filter.component record={state.currentView.filters} attr={name} label={filter.label} onChange={onUpdateValue} />
         </div>
       </div>
     )
@@ -68,7 +68,7 @@ class Controls extends FilterBases.ControlsBase {
 class Apply extends React.Component {
   render() {
     const { apply, label, state } = this.props
-    const show = state.filters.size > 0
+    const show = state.currentView.filters.size > 0
     return show && (<RaisedButton label={label} icon={<ContentFilter />} onTouchTap={apply}/>)
   }
 }

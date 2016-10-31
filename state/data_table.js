@@ -3,54 +3,47 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  perPage = 2
-  entityName = null
   pkName = 'id'
 
-  @observable items = []
-  @observable totalItems:number = 0
   @observable page:number = 1
   @observable sortDir = null
   @observable sortField = null
 
-  @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals) {
-    this.currentView = {
-      name: entityName,
-      entityName: entityName,
-      perPage: 5
-    }
-    this.loadListData(entityName, 'id', this.currentView.perPage || 10, page, sortField, sortDir, filterVals)
-    this.loadOptions('tags', '/tags')
-  }
-
-
-  loadListData(entityName, pkName, perPage, page = 1, sortField = null, sortDir = null, filters = {}) {
-    this.entityName = entityName
-    this.perPage = perPage
-    this.pkName = pkName
+  @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals = {}) {
     transaction(() => {
-      this.page = page
-      this.sortField = sortField
-      this.sortDir = sortDir
-      this._resetFilters()
-      this.items.replace([])
+      this.page = parseInt(page)
+      this.currentView = {
+        name: entityName,
+        entityName: entityName,
+        perPage: 5,
+        totalItems: 0,
+        items: [],
+        selection: [],
+        filters: asMap(filterVals)
+      }
     })
-    this._getEntries(entityName, parseInt(page), sortField, sortDir, filters)
+    this._refreshList()
+    this.loadOptions('tags', '/tags')
   }
 
   @action
   updatePage(page) {
-    this._getEntries(this.entityName, parseInt(page))
+    this.page = parseInt(page)
+    this._refreshList()
   }
 
   @action
   updateSort(sortField, sortDir) {
-    this._getEntries(this.entityName, undefined, sortField, sortDir)
+    transaction(() => {
+      this.sortField = sortField
+      this.sortDir = sortDir
+    })
+    this._refreshList()
   }
 
   @action
   refresh() {
-    this._getEntries(this.entityName)
+    this._refreshList()
   }
 
   @action
@@ -65,106 +58,74 @@ export default class DataTableState extends DataManipState {
   @action
   deleteSelected() {
     this.callRequester(() => {
-      const promises = this.selection.map((selected) => {
-        const id = this.items[selected][this.pkName]
-        return this.requester.deleteEntry(this.entityName, id)
+      const promises = this.currentView.selection.map((selected) => {
+        const id = this.currentView.items[selected][this.pkName]
+        return this.requester.deleteEntry(this.currentView.entityName, id)
       })
       return Promise.all(promises).then(() => {   // wait for all delete reqests
-        return this.requester.getEntries(this.entityName, { // refetch items
-          page: this.page,
-          sortField: this.sortField,
-          sortDir: this.sortDir,
-          filters: toJS(this.filters),
-          perPage: this.perPage
-        })
-      })
-      .then((result) => {       // update state
-        transaction(() => {
-          this.selection = []
-          this.totalItems = result.totalItems
-          this.items.replace(result.data)
-        })
+        this.currentView.selection = []
+        return this._refreshList()
       })
     })
   }
 
   // ---------------------- selection  ----------------------------
 
-  @observable selection = []
-
   @computed get selected_ids() {
-    return this.selection.map((selected) => {
-      return this.items[selected][this.pkName]
+    return this.currentView.selection.map((selected) => {
+      return this.currentView.items[selected][this.pkName]
     })
   }
 
   @action
   updateSelection(data) {
-    this.selection = data
+    this.currentView.selection = data
   }
 
   // ---------------------- filtration  ----------------------------
 
-  @observable filters = asMap({})
-
-  @action
-  updateFilters(newFilters) {
-    return this._getEntries(this.entityName, undefined, undefined, undefined, newFilters)
-  }
-
-  @action
-  resetFilters(newFilters = {}) {
-    transaction(() => {
-      _resetFilters(newFilters)
-    })
-  }
-
   @action
   updateFilterValue(name, value) {
-    this.filters.set(name, value)
+    this.currentView.filters.set(name, value)
   }
 
   @action
   applyFilters() {
-    this._getEntries(this.entityName, undefined, undefined, undefined, toJS(this.filters))
+    this._refreshList()
   }
 
   @action
   showFilter(filter) {
-    this.filters.set(filter, undefined)
+    this.currentView.filters.set(filter, undefined)
   }
 
   @action
   hideFilter(filter) {
-    this.filters.delete(filter)
+    this.currentView.filters.delete(filter)
+    this._refreshList()
   }
 
   _resetFilters(newFilters) {
-    this.filters.clear()
+    this.currentView.filters.clear()
     for(let i in newFilters) {
-      this.filters.set(i, newFilters[i])
+      this.currentView.filters.set(i, newFilters[i])
     }
   }
 
   // ---------------------- privates, support ----------------------------
 
-  _getEntries(entityName, page, sortField, sortDir, filters) {
+  _refreshList() {
     return this.callRequester(() => {
-      return this.requester.getEntries(entityName, {
-        page: page || this.page,
-        sortField: sortField || this.sortField,
-        sortDir: sortDir || this.sortDir,
-        filters: filters || toJS(this.filters),
-        perPage: this.perPage
+      return this.requester.getEntries(this.currentView.entityName, {
+        page: this.page,
+        sortField: this.sortField,
+        sortDir: this.sortDir,
+        filters: toJS(this.currentView.filters),
+        perPage: this.currentView.perPage
       }).then((result) => {
         transaction(() => {
-          page && (this.page = page)
-          sortField && (this.sortField = sortField)
-          sortDir && (this.sortDir = sortDir)
-          filters && this._resetFilters(filters)
-          this.totalItems = result.totalItems
-          this.items.replace(result.data)
-          this.originEntityId && (this.originEntityId = null)
+          this.currentView.totalItems = result.totalItems
+          this.currentView.items.replace(result.data)
         })
       })
     })
