@@ -13,7 +13,17 @@ export default class DataTableState extends DataManipState {
   @observable sortDir = null
   @observable sortField = null
 
-  @action
+  @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals) {
+    this.currentView = {
+      name: entityName,
+      entityName: entityName,
+      perPage: 5
+    }
+    this.loadListData(entityName, 'id', this.currentView.perPage || 10, page, sortField, sortDir, filterVals)
+    this.loadOptions('tags', '/tags')
+  }
+
+
   loadListData(entityName, pkName, perPage, page = 1, sortField = null, sortDir = null, filters = {}) {
     this.entityName = entityName
     this.perPage = perPage

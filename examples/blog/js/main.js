@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router, browserHistory } from 'react-router'
+import { startRouter } from './state/router'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -13,19 +13,11 @@ import DataRequester from 'react-mobx-admin/services/requester'
 const _requester = new DataRequester(convertQuery, getTotalItems, Conf.apiUrl)
 
 // use it to create the app state
-import StateStore from './stateStore'
+import StateStore from './state'
 const state = new StateStore(_requester)
+startRouter(state)
 
-// a way how to set state to react-router managed app
-var createElement = function (Component, props) {
-  return <Component {...props} state={state} />
-}
-import routes from './routes'
-const app = (
-  <Router history={browserHistory} createElement={createElement}>
-    {routes}
-  </Router>
-)
-
+// init react components part using the only prop: the store
+import { App } from './components/app'
 const mount = document.getElementById("app")  // mountpoint
-render(app, mount)  // and final render
+render(<App state={state} />, mount)  // and final render

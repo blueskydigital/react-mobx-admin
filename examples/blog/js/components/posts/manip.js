@@ -4,20 +4,15 @@ import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
 import MarkdownInput from 'react-mobx-admin/mui/input/markdown'
 import SelectInput from 'react-mobx-admin/mui/input/select'
-import EditPageBase from 'react-mobx-admin/components/page/edit'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
 
 @observer
 class PostEditView extends MUIEditView {
 
-  componentDidMount() {
-    // load all necessary options here
-    this.props.state.loadOptions('tags', '/tags')
-  }
-
   render() {
-    const { state, updateField } = this.props
+    const { state } = this.props
+    const updateField = this.updateField.bind(this)
     const __ = state.transl.bind(state)
 
     const form = (
@@ -57,19 +52,4 @@ class PostEditView extends MUIEditView {
 
 }
 
-export default class PostEditPage extends EditPageBase {
-
-  static defaultProps = {
-    entityName: 'posts'
-  }
-
-  render() {
-    return (
-      <PostEditView state={this.props.state}
-        saveData={this.save.bind(this)}
-        return2List={this.return2List.bind(this)}
-        updateField={this.updateField.bind(this)} />
-    )
-  }
-
-}
+export default PostEditView

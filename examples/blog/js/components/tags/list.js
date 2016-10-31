@@ -1,5 +1,5 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { observer } from 'mobx-react'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -12,9 +12,9 @@ import OptionsField from 'react-mobx-admin/components/field/opts'
 import MultivalueField from 'react-mobx-admin/components/field/multivalue'
 import MUIBoolField from 'react-mobx-admin/mui/field/bool'
 import TextInput from 'react-mobx-admin/mui/input/text'
-import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
+@observer
 class TagListView extends MUIListView {
 
   render() {
@@ -27,10 +27,9 @@ class TagListView extends MUIListView {
     ]
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
-      (attr, row) => {
-        const onTouchTap = () => (browserHistory.push(`/tags/${row.id.toString()}`))
-        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
-      },
+      (attr, row) => (
+        <TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('tags', row.id)}/>
+      ),
       (attr, row) => (<MUIBoolField attr={attr} record={row} />)
     ]
     function rowId(row) {
@@ -58,24 +57,4 @@ class TagListView extends MUIListView {
 
 }
 
-export default class TagListPage extends ListPageBase {
-
-  static defaultProps = {
-    entityName: 'tags',
-    perPage: 5
-  }
-
-  render() {
-    return (
-      <TagListView
-        state={this.props.state}
-        onSort={this.onListSort.bind(this)}
-        onPageChange={this.onPageChange.bind(this)}
-        onRowSelection={this.onSelect.bind(this)}
-        onShowFilter={this.showFilter.bind(this)}
-        onHideFilter={this.hideFilter.bind(this)}
-        onFilterApply={this.applyFilters.bind(this)} />
-    )
-  }
-
-}
+export default TagListView

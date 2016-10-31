@@ -1,5 +1,5 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
+import { observer } from 'mobx-react'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -11,26 +11,20 @@ import DateField from 'react-mobx-admin/components/field/date'
 import OptionsField from 'react-mobx-admin/components/field/opts'
 import MultivalueField from 'react-mobx-admin/components/field/multivalue'
 import TextInput from 'react-mobx-admin/mui/input/text'
-import ListPageBase from 'react-mobx-admin/components/page/list'
 import MUIListView from 'react-mobx-admin/mui/view/list'
 
 class TagField extends OptionsField {
-  renderComponent(label, val) {
+  renderComponent(label, val, onTouchTap) {
     return (
-      <Chip style={{float: 'left'}}
-        onTouchTap={() => (browserHistory.push(`/tags/${val.toString()}`))}>
+      <Chip style={{float: 'left'}} onTouchTap={onTouchTap}>
         {label}
       </Chip>
     )
   }
 }
 
+@observer
 class PostListView extends MUIListView {
-
-  componentDidMount() {
-    // load all necessary options here
-    this.props.state.loadOptions('tags', '/tags')
-  }
 
   render() {
     const { state } = this.props
@@ -43,8 +37,7 @@ class PostListView extends MUIListView {
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
       (attr, row) => {
-        const onTouchTap = () => (browserHistory.push(`/posts/${row.id.toString()}`))
-        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTouchTap}/>)
+        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('posts', row.id)}/>)
       },
       (attr, row) => (
         <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
@@ -99,24 +92,26 @@ class PostListView extends MUIListView {
 
 }
 
-export default class PostListPage extends ListPageBase {
+export default PostListView
 
-  static defaultProps = {
-    entityName: 'posts',
-    perPage: 5
-  }
-
-  render() {
-    return (
-      <PostListView
-        state={this.props.state}
-        onSort={this.onListSort.bind(this)}
-        onPageChange={this.onPageChange.bind(this)}
-        onRowSelection={this.onSelect.bind(this)}
-        onShowFilter={this.showFilter.bind(this)}
-        onHideFilter={this.hideFilter.bind(this)}
-        onFilterApply={this.applyFilters.bind(this)} />
-    )
-  }
-
-}
+// class PostListPage extends ListPageBase {
+//
+//   static defaultProps = {
+//     entityName: 'posts',
+//     perPage: 5
+//   }
+//
+//   render() {
+//     return (
+//       <PostListView
+//         state={this.props.state}
+//         onSort={this.onListSort.bind(this)}
+//         onPageChange={this.onPageChange.bind(this)}
+//         onRowSelection={this.onSelect.bind(this)}
+//         onShowFilter={this.showFilter.bind(this)}
+//         onHideFilter={this.hideFilter.bind(this)}
+//         onFilterApply={this.applyFilters.bind(this)} />
+//     )
+//   }
+//
+// }

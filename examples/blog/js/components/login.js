@@ -1,5 +1,4 @@
 import React from 'react'
-import { browserHistory } from 'react-router'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -7,10 +6,11 @@ import { observer } from 'mobx-react'
 import { observable, toJS } from 'mobx'
 
 @observer
-class LoginForm extends React.Component {
+class LoginView extends React.Component {
 
   static propTypes = {
-    onLoginSubmitted: React.PropTypes.func.isRequired
+    state: React.PropTypes.object.isRequired,
+    afterLogin: React.PropTypes.func.isRequired
   }
 
   @observable credentials = {
@@ -19,10 +19,13 @@ class LoginForm extends React.Component {
   }
   @observable submitted = false
 
-  handleSubmit(e) {
-    e.preventDefault()
+  handleSubmit() {
     this.submitted = true
-    this.props.onLoginSubmitted(toJS(this.credentials)).catch((err)=>{
+    return this.props.state.performLogin(toJS(this.credentials))
+    .then((user) => {
+      this.props.afterLogin()
+    })
+    .catch((err)=>{
       this.submitted = false
     })
   }
@@ -41,7 +44,7 @@ class LoginForm extends React.Component {
         </form>
 
         <CardActions>
-          <RaisedButton onTouchTap={this.handleSubmit.bind(this)} label={'login'} disabled={this.submitted} />
+          <RaisedButton onTouchTap={()=>this.handleSubmit()} label={'login'} disabled={this.submitted} />
         </CardActions>
       </Card>
     )
@@ -49,20 +52,4 @@ class LoginForm extends React.Component {
 
 }
 
-export default class LoginView extends React.Component {
-
-  static propTypes = {
-    state: React.PropTypes.object.isRequired
-  }
-
-  login(credentials) {
-    return this.props.state.login(credentials).then((user) => {
-      browserHistory.push('/')
-    })
-  }
-
-  render() {
-    return <LoginForm onLoginSubmitted={this.login.bind(this)} />
-  }
-
-}
+export default LoginView

@@ -8,11 +8,12 @@ import DatagridActions from '../../components/datagrid/actions'
 
 export default class MUIListView extends React.Component {
 
+  onSelectionChange(data) {
+    this.props.state.updateSelection(data)
+  }
+
   renderComponents(props2) {
-    const {
-      state, onSort, onPageChange, onRowSelection,
-      onShowFilter, onHideFilter, onFilterApply // optional props
-    } = this.props
+    const { state } = this.props
 
     function isSelected(idx) {
       return state.selection.indexOf(idx) >= 0
@@ -21,34 +22,31 @@ export default class MUIListView extends React.Component {
     return (
       <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-          <Filters.Apply state={state} label={'apply filters'} apply={onFilterApply} />
+          <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters()} />
           {props2.actions && (<DatagridActions state={state} actions={props2.actions} />)}
-          {props2.filters && (<Filters.Dropdown state={state} title="addfilter" filters={props2.filters} showFilter={onShowFilter} />)}
+          {props2.filters && (
+            <Filters.Dropdown state={state} title="addfilter" filters={props2.filters}
+              showFilter={(filter)=>state.showFilter(filter)} />
+          )}
         </CardActions>
 
         <CardTitle title={props2.title} />
 
         {props2.filters && (
-          <Filters.Controls state={state} hideFilter={onHideFilter} filters={props2.filters} />
+          <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={props2.filters} />
         )}
 
         <Datagrid items={state.items} attrs={props2.attrs} titles={props2.headertitles} fields={props2.fields}
           rowId={props2.rowId}
-          onSort={onSort} sortstate={state}
-          onRowSelection={onRowSelection} isSelected={isSelected} />
-        <Pagination state={state} onChange={onPageChange} />
+          onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state}
+          onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
+        <Pagination state={state} onChange={(page)=>state.updatePage(page)} />
       </Card>
     )
   }
 
   static propTypes = {
-    state: React.PropTypes.object.isRequired,
-    onSort: React.PropTypes.func.isRequired,
-    onPageChange: React.PropTypes.func.isRequired,
-    onRowSelection: React.PropTypes.func,
-    onShowFilter: React.PropTypes.func,
-    onHideFilter: React.PropTypes.func,
-    onFilterApply: React.PropTypes.func
+    state: React.PropTypes.object.isRequired
   }
 
 }

@@ -10,27 +10,28 @@ export default class EditFormBase extends React.Component {
   onSave(e) {
     e.preventDefault()
     const formLevelValidators = this.props.validators
-    this.props.saveData(formLevelValidators).then(this.onUpdated.bind(this))
+    this.props.state.saveData(formLevelValidators).then(this.onUpdated.bind(this))
+  }
+
+  updateField(name, value, validators) {
+    this.props.state.updateData(name, value, validators)
   }
 
   onSaveAndReturn2list(e) {
     e.preventDefault()
-    this.props.saveData().then(this.onUpdated.bind(this))
+    this.props.state.saveData().then(this.onUpdated.bind(this))
     .then(() => {
-      this.props.return2List()
+      this.props.state.return2List()
     })
   }
 
   onCancel(e) {
     e.preventDefault()
-    this.props.return2List()
+    this.props.state.return2List()
   }
 
   static propTypes = {
-    state: React.PropTypes.object.isRequired,
-    saveData: React.PropTypes.func.isRequired,
-    return2List: React.PropTypes.func.isRequired,
-    updateField: React.PropTypes.func.isRequired
+    state: React.PropTypes.object.isRequired
   }
 
 }

@@ -18,11 +18,10 @@ class SubmitButton extends React.Component {
   }
 }
 
-@observer
-class MUIEditView extends EditFormBase {
+export default class MUIEditView extends EditFormBase {
 
   renderComponents(props2) {
-    const { state, onSaveData } = this.props
+    const { state } = this.props
 
     const title = state.originEntityId ? props2.edittitle : props2.createtitle
 
@@ -45,4 +44,3 @@ class MUIEditView extends EditFormBase {
     )
   }
 }
-export default MUIEditView

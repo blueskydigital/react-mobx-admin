@@ -1,6 +1,5 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import { browserHistory } from 'react-router'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -14,31 +13,43 @@ class Loading extends React.Component {
   }
 }
 
-export default class AppComponent extends React.Component {
-  render() {
-    const { state } = this.props
+export const App = observer( ({ state }) => {
+  return (
+    <div>
+      <MuiThemeProvider className="view-wrapper">
+        <div>
+          <Toolbar>
+            <ToolbarGroup firstChild={true}>
+              <FlatButton onTouchTap={() => state.showLogin()}>SampleAPp</FlatButton>
+              <FlatButton onTouchTap={() => state.showEntityList('posts')}>Posts</FlatButton>
+              <FlatButton onTouchTap={() => state.showEntityList('posts', filter: {"category":"tech"})}>Tech Posts</FlatButton>
+              <FlatButton onTouchTap={() => state.showEntityList('tags')}>Tags</FlatButton>
+              <FlatButton onTouchTap={() => state.changeLang()}>ChangeLang</FlatButton>
+            </ToolbarGroup>
+            <ToolbarGroup>
+              <Loading state={state}/>
+            </ToolbarGroup>
+          </Toolbar>
+          { renderCurrentView(state) }
+        </div>
+      </MuiThemeProvider>
+      <DevTools />
+    </div>
+  )
+})
 
-    return (
-      <div>
-        <MuiThemeProvider className="view-wrapper">
-          <div>
-            <Toolbar>
-              <ToolbarGroup firstChild={true}>
-                <FlatButton onTouchTap={() => browserHistory.push('/')}>SampleAPp</FlatButton>
-                <FlatButton onTouchTap={() => browserHistory.push('/posts')}>Posts</FlatButton>
-                <FlatButton onTouchTap={() => browserHistory.push('/posts?filters={"category":"tech"}')}>Tech Posts</FlatButton>
-                <FlatButton onTouchTap={() => browserHistory.push('/tags')}>Tags</FlatButton>
-                <FlatButton onTouchTap={() => state.changeLang()}>ChangeLang</FlatButton>
-              </ToolbarGroup>
-              <ToolbarGroup>
-                <Loading state={this.props.state}/>
-              </ToolbarGroup>
-            </Toolbar>
-            {this.props.children}
-          </div>
-        </MuiThemeProvider>
-        <DevTools />
-      </div>
-    )
+import PostEditPage from './posts/manip'
+import PostListPage from './posts/list'
+import TagsEditPage from './tags/manip'
+import TagsListPage from './tags/list'
+import LoginPage from './login'
+
+function renderCurrentView(state) {
+  switch (state.currentView.name) {
+    case 'login': return <LoginPage state={state} afterLogin={()=>state.showPostOverview()} />
+    case 'posts': return <PostListPage state={state} />
+    case 'posts_detail': return <PostEditPage state={state} />
+    case 'tags': return <TagsListPage state={state} />
+    case 'tags_detail': return <TagsEditPage state={state} />
   }
 }

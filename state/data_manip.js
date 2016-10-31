@@ -9,8 +9,20 @@ export default class DataManipState extends BaseState {
   @observable errors = asMap({})
 
   @action
+  showEntityDetail(entityName, id) {
+    this.currentView = {
+      name: entityName + '_detail'
+    }
+    if(id === undefined) {
+      this.loadCreateData(this.props.fields)
+    } else {
+      this.loadEditData(entityName, id)
+    }
+  }
+
   loadEditData(entityName, id, sortField, sortDir) {
     this.originEntityId = id
+    this.entityName = entityName
 
     return this.callRequester(() => {
       return this.requester.getEntry(entityName, id).then((result) => {
@@ -22,7 +34,6 @@ export default class DataManipState extends BaseState {
     })
   }
 
-  @action
   loadCreateData(fields) {
     transaction(() => {
       this.originEntityId = null
@@ -59,12 +70,16 @@ export default class DataManipState extends BaseState {
   }
 
   @action
-  saveData(entityName) {
+  saveData() {
     const id = this.originEntityId
 
     return this.callRequester(() => {
-      return this.requester.saveEntry(entityName, this.entity, id)
+      return this.requester.saveEntry(this.entityName, this.entity, id)
     })
+  }
+
+  @action return2List() {
+    this.showEntityList(this.entityName, this.page)
   }
 
 }

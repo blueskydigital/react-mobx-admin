@@ -6,6 +6,8 @@ export default class BaseState {
     this.requester = requester
   }
 
+  @observable currentView = null
+
   @observable req = {count: 0}
 
   @computed get loading() {

@@ -4,7 +4,6 @@ import TextInput from 'react-mobx-admin/mui/input/text'
 import DateInput from 'react-mobx-admin/mui/input/date'
 import SelectInput from 'react-mobx-admin/mui/input/select'
 import MUIBoolInput from 'react-mobx-admin/mui/input/bool'
-import EditPageBase from 'react-mobx-admin/components/page/edit'
 import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
 
@@ -12,8 +11,9 @@ import MUIEditView from 'react-mobx-admin/mui/view/edit'
 class TagsEditView extends MUIEditView {
 
   render() {
-    const { state, updateField } = this.props
+    const { state } = this.props
     const __ = state.transl.bind(state)
+    const updateField = this.updateField.bind(this)
     const form = (
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -36,19 +36,4 @@ class TagsEditView extends MUIEditView {
 
 }
 
-export default class TagsEditPage extends EditPageBase {
-
-  static defaultProps = {
-    entityName: 'tags'
-  }
-
-  render() {
-    return (
-      <TagsEditView state={this.props.state}
-        saveData={this.save.bind(this)}
-        return2List={this.return2List.bind(this)}
-        updateField={this.updateField.bind(this)} />
-    )
-  }
-
-}
+export default TagsEditView
