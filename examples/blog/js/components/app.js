@@ -48,7 +48,7 @@ import LoginPage from './login'
 
 function renderCurrentView(state) {
   switch (state.currentView.name) {
-    case 'login': return <LoginPage state={state} afterLogin={()=>state.showPostOverview()} />
+    case 'login': return <LoginPage state={state} afterLogin={()=>state.showEntityList('posts')} />
     case 'posts': return <PostListPage state={state} />
     case 'posts_detail': return <PostEditPage state={state} />
     case 'tags': return <TagsListPage state={state} />
