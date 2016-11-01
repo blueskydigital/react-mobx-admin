@@ -8,42 +8,33 @@ import MUIEditView from 'react-mobx-admin/mui/view/edit'
 
 class PostEditView extends MUIEditView {
 
-  render() {
-    const { state } = this.props
+  renderForm(state) {
+    const entity = state.currentView.entity
     const updateField = this.updateField.bind(this)
-    const __ = state.transl.bind(state)
-
-    const form = (
+    return (
       <div>
         <div className="row">
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <TextInput label={__('title')} attr={'title'} record={state.currentView.entity}
+            <TextInput label={state.__('title')} attr={'title'} record={entity}
               onChange={updateField} errors={state.currentView.errors} /><br/>
-            <SelectInput label={__('Category')} attr={'category'} record={state.currentView.entity}
+            <SelectInput label={state.__('Category')} attr={'category'} record={entity}
               optionsrecord={state.options}
               optionsattr={'categories'}
               onChange={updateField} />
           </div>
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <DateInput label={__('published')} attr={'published_at'} record={state.currentView.entity}
+            <DateInput label={state.__('published')} attr={'published_at'} record={entity}
               onChange={updateField} /><br/>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <MarkdownInput label={__('content')} attr={'content'} record={state.currentView.entity}
+            <MarkdownInput label={state.__('content')} attr={'content'} record={entity}
               onChange={updateField} errors={state.currentView.errors} mdrender={marked} />
           </div>
         </div>
       </div>
     )
-
-    // let rendering of actual components to parent (in this case it uses MatUI)
-    return this.renderComponents({
-      edittitle: 'edit post', createtitle: 'create new post',
-      saveText: 'SAVE', saveAndReturnText: 'SAVE and return',
-      form
-    })
   }
 
 }

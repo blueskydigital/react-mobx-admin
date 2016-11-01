@@ -13,8 +13,8 @@ export default class EditFormBase extends React.Component {
     this.props.state.saveData(formLevelValidators).then(this.onUpdated.bind(this))
   }
 
-  updateField(name, value, validators) {
-    this.props.state.updateData(name, value, validators)
+  updateField(name, value) {
+    this.props.state.updateData(name, value)
   }
 
   onSaveAndReturn2list(e) {

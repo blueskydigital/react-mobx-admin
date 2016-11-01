@@ -18,6 +18,7 @@ export default class StateStore extends AuthStore {
       },
       'posts_detail': {
         onInit: (state) => { this.loadOptions('tags', '/tags') },
+        edittitle: 'edit a nice post',
         validators: {
           'title': [
             {fn: (val) => (val.length === 0), message: (state)=>state.__('title must be provided')},
