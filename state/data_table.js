@@ -51,7 +51,7 @@ export default class DataTableState extends DataManipState {
   deleteSelected() {
     this.callRequester(() => {
       const promises = this.currentView.selection.map((selected) => {
-        const id = this.currentView.items[selected][this.pkName]
+        const id = this.currentView.items[selected][this.currentView.pkName]
         return this.requester.deleteEntry(this.currentView.entityName, id)
       })
       return Promise.all(promises).then(() => {   // wait for all delete reqests
@@ -65,7 +65,7 @@ export default class DataTableState extends DataManipState {
 
   @computed get selected_ids() {
     return this.currentView.selection.map((selected) => {
-      return this.currentView.items[selected][this.pkName]
+      return this.currentView.items[selected][this.currentView.pkName]
     })
   }
 
