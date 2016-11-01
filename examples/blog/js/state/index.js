@@ -1,9 +1,7 @@
 import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
-import AuthStore from './auth'
-import enTtransl from '../i18n/en'
-import csTtransl from '../i18n/cs'
+import OptionsStore from './options'
 
-export default class StateStore extends AuthStore {
+export default class StateStore extends OptionsStore {
 
   constructor(requester) {
     super(requester)
@@ -65,35 +63,6 @@ export default class StateStore extends AuthStore {
       case 'tags': return `/tags?page=${this.page}${this._query()}`
       case 'tags_detail': return '/tags/' + this.currentView.originEntityId
     }
-  }
-
-  @observable i18n = enTtransl
-
-  transl(str) {
-    return this.i18n[str] || `UNTRANSL${str}`
-  }
-  __(str) {
-    return this.transl(str)
-  }
-
-  @action changeLang() {
-    this.i18n = csTtransl
-  }
-
-  // one of possible options loading ...
-  @observable options = asMap({
-    'categories': [
-      {value: 'tech', label: 'Technology'},
-      {value: 'art', label: 'Art'},
-    ]
-  })
-
-  @action loadOptions(name, query) {
-    return this.callRequester(() => {
-      return this.requester.call(query).then((result) => {
-        this.options.set(name, result.data)
-      })
-    })
   }
 
   onApiErr(err) {
