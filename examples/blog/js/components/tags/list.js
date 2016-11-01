@@ -17,35 +17,28 @@ import MUIListView from 'react-mobx-admin/mui/view/list'
 @observer
 class TagListView extends MUIListView {
 
-  render() {
-    const { state } = this.props
-    const { pkName } = state.currentView
-    const fields = [
-      (attr, row) => (<TextField attr={attr} record={row} />),
-      (attr, row) => (
-        <TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('tags', row[pkName])}/>
-      ),
-      (attr, row) => (<MUIBoolField attr={attr} record={row} />)
-    ]
+  batchActions(state) {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
         state.deleteSelected()
       }
     }
-    function batchActions() {
-      return (
-        <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
-          <MenuItem primaryText="delete" leftIcon={<DeleteIcon />} onClick={() => _batchDelete()}/>
-        </IconMenu>
-      )
-    }
-
-    // let rendering of actual components to parent (in this case it uses MatUI)
-    return this.renderComponents({
-      fields, title: 'tags',
-      actions: batchActions
-    })
+    return (
+      <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
+        <MenuItem primaryText="delete" leftIcon={<DeleteIcon />} onClick={() => _batchDelete()}/>
+      </IconMenu>
+    )
   }
+
+  fields = [
+    (attr, row) => (<TextField attr={attr} record={row} />),
+    (attr, row) => {
+      const { state } = this.props
+      const onTT = () => state.showEntityDetail('tags', row[state.currentView.pkName])
+      return <TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT} />
+    },
+    (attr, row) => (<MUIBoolField attr={attr} record={row} />)
+  ]
 
 }
 

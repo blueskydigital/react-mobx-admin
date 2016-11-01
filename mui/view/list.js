@@ -12,7 +12,7 @@ export default class MUIListView extends React.Component {
     this.props.state.updateSelection(data)
   }
 
-  renderComponents(props2) {
+  render() {
     const { state } = this.props
 
     function isSelected(idx) {
@@ -23,21 +23,21 @@ export default class MUIListView extends React.Component {
       <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
           <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters()} />
-          {props2.actions && (<DatagridActions state={state} actions={props2.actions} />)}
-          {props2.filters && (
-            <Filters.Dropdown state={state} title="addfilter" filters={props2.filters}
+          {this.batchActions && (<DatagridActions state={state} actions={this.batchActions} />)}
+          {this.filters && (
+            <Filters.Dropdown state={state} title="addfilter" filters={this.filters}
               showFilter={(filter)=>state.showFilter(filter)} />
           )}
         </CardActions>
 
-        <CardTitle title={props2.title} />
+        state.currentView.title && <CardTitle title={state.currentView.title} />
 
-        {props2.filters && (
-          <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={props2.filters} />
+        {this.filters && (
+          <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={this.filters} />
         )}
 
         <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
-          titles={state.currentView.headertitles} fields={props2.fields}
+          titles={state.currentView.headertitles} fields={this.fields}
           rowId={(row)=>row[state.currentView.pkName]}
           onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state.currentView}
           onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
