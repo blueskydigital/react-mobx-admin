@@ -28,16 +28,11 @@ class PostListView extends MUIListView {
 
   render() {
     const { state } = this.props
-    const headertitles = [
-      'ID', 'Title', 'Cat', 'Published', 'Tags'
-    ]
-    const attrs = [
-      "id", "title", "category", "published_at", 'tags'
-    ]
+    const { pkName } = state.currentView
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
       (attr, row) => {
-        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('posts', row.id)}/>)
+        return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('posts', row[pkName])}/>)
       },
       (attr, row) => (
         <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
@@ -50,9 +45,6 @@ class PostListView extends MUIListView {
         )
       } />)
     ]
-    function rowId(row) {
-      return row.id
-    }
     function _deleteRow(row) {
       if(confirm(`Are you sure you want to delete ${row.title}?`)) {
         state.deleteData([row])
@@ -83,7 +75,7 @@ class PostListView extends MUIListView {
 
     // let rendering of actual components to parent (in this case it uses MatUI)
     return this.renderComponents({
-      attrs, headertitles, fields, title: 'posts', rowId,
+      fields, title: 'posts',
       listActions: listActions,
       actions: batchActions,
       filters: filters
@@ -93,25 +85,3 @@ class PostListView extends MUIListView {
 }
 
 export default PostListView
-
-// class PostListPage extends ListPageBase {
-//
-//   static defaultProps = {
-//     entityName: 'posts',
-//     perPage: 5
-//   }
-//
-//   render() {
-//     return (
-//       <PostListView
-//         state={this.props.state}
-//         onSort={this.onListSort.bind(this)}
-//         onPageChange={this.onPageChange.bind(this)}
-//         onRowSelection={this.onSelect.bind(this)}
-//         onShowFilter={this.showFilter.bind(this)}
-//         onHideFilter={this.hideFilter.bind(this)}
-//         onFilterApply={this.applyFilters.bind(this)} />
-//     )
-//   }
-//
-// }

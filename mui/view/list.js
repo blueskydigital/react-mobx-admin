@@ -36,9 +36,10 @@ export default class MUIListView extends React.Component {
           <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={props2.filters} />
         )}
 
-        <Datagrid items={state.currentView.items} attrs={props2.attrs} titles={props2.headertitles} fields={props2.fields}
-          rowId={props2.rowId}
-          onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state}
+        <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
+          titles={state.currentView.headertitles} fields={props2.fields}
+          rowId={(row)=>row[state.currentView.pkName]}
+          onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state.currentView}
           onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
         <Pagination state={state} onChange={(page)=>state.updatePage(page)} />
       </Card>

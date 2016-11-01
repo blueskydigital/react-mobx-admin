@@ -5,6 +5,46 @@ import csTtransl from '../i18n/cs'
 
 export default class StateStore extends AuthStore {
 
+  constructor(requester) {
+    super(requester)
+    const __ = this.transl
+    this.viewInfo = {
+      'posts': {
+        onInit: (state) => { this.loadOptions('tags', '/tags') },
+        perPage: 6,
+        pkName: 'id',
+        attrs: ['id', 'title', 'category', 'published_at', 'tags'],
+        headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags']
+      },
+      'posts_detail': {
+        onInit: (state) => { this.loadOptions('tags', '/tags') },
+        validators: {
+          'title': [
+            {fn: (val) => (val.length === 0), message: (state)=>state.__('title must be provided')},
+            {fn: (val) => (val.length > 10), message: (state)=>state.__('title too long')},
+          ],
+          'content': [
+            {fn: (val) => (val.length === 0), message: (state)=>state.__('this is mandatory')}
+          ]
+        }
+      },
+      'tags': {
+        perPage: 3,
+        pkName: 'id',
+        attrs: ['id', 'name', 'published'],
+        headertitles: ['ID', 'Name', 'Published']
+      },
+      'tags_detail': {
+        validators: {
+          'name': [
+            {fn: (val) => (val.length === 0), message: (state)=>state.__('value must be provided')},
+            {fn: (val) => (val.length > 10), message: (state)=>state.__('value too long')},
+          ]
+        }
+      }
+    }
+  }
+
   _query() {
     let q = ''
     if(this.sortField) {
@@ -30,6 +70,9 @@ export default class StateStore extends AuthStore {
 
   transl(str) {
     return this.i18n[str] || `UNTRANSL${str}`
+  }
+  __(str) {
+    return this.transl(str)
   }
 
   @action changeLang() {

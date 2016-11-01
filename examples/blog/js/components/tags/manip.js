@@ -15,10 +15,8 @@ class TagsEditView extends MUIEditView {
     const form = (
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <TextInput label={__('name')} attr={'name'} record={state.currentView.entity} onChange={updateField} validators={[
-            {fn: (val) => (val.length === 0), message: __('value must be provided')},
-            {fn: (val) => (val.length > 10), message: __('value too long')},
-          ]} errors={state.currentView.errors} /><br/>
+          <TextInput label={__('name')} attr={'name'} record={state.currentView.entity} onChange={updateField}
+            errors={state.currentView.errors} /><br/>
           <MUIBoolInput label={__('Published')} attr={'published'} record={state.currentView.entity} onChange={updateField} />
         </div>
       </div>

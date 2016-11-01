@@ -16,13 +16,12 @@ class SelectInput extends React.Component {
     onChange: React.PropTypes.func.isRequired,
     optionsrecord: React.PropTypes.object.isRequired,
     optionsattr: React.PropTypes.string,
-    errors: React.PropTypes.object,
-    validators: React.PropTypes.array
+    errors: React.PropTypes.object
   }
 
   handleChange(event, index, value) {
-    const { attr, validators } = this.props
-    this.props.onChange(attr, value, validators)
+    const { attr } = this.props
+    this.props.onChange(attr, value)
   }
 
   renderOptions(options, labelattr, valueattr) {

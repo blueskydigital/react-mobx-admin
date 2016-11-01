@@ -5,14 +5,14 @@ import { observer } from 'mobx-react'
 export default class DatagridBase extends React.Component {
 
   static propTypes = {
-    attrs: React.PropTypes.array.isRequired,
+    attrs: React.PropTypes.object.isRequired,
     fields: React.PropTypes.array.isRequired,
     items: React.PropTypes.object.isRequired,
     rowId: React.PropTypes.func.isRequired, // func that returns unique ID from given row
     sortstate: React.PropTypes.object,
     selection: React.PropTypes.array,
     onSort: React.PropTypes.func,
-    titles: React.PropTypes.array,  // title of columns, if present header is rendered
+    titles: React.PropTypes.object,  // title of columns, if present header is rendered
     listActions: React.PropTypes.func
   }
 

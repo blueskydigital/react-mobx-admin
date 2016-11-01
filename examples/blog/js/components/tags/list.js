@@ -19,22 +19,14 @@ class TagListView extends MUIListView {
 
   render() {
     const { state } = this.props
-    const headertitles = [
-      'ID', 'Name', 'Published'
-    ]
-    const attrs = [
-      "id", "name", "published"
-    ]
+    const { pkName } = state.currentView
     const fields = [
       (attr, row) => (<TextField attr={attr} record={row} />),
       (attr, row) => (
-        <TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('tags', row.id)}/>
+        <TextField attr={attr} record={row} maxlen={32} onTouchTap={()=>state.showEntityDetail('tags', row[pkName])}/>
       ),
       (attr, row) => (<MUIBoolField attr={attr} record={row} />)
     ]
-    function rowId(row) {
-      return row.id
-    }
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
         state.deleteSelected()
@@ -50,7 +42,7 @@ class TagListView extends MUIListView {
 
     // let rendering of actual components to parent (in this case it uses MatUI)
     return this.renderComponents({
-      attrs, headertitles, fields, title: 'tags', rowId,
+      fields, title: 'tags',
       actions: batchActions
     })
   }

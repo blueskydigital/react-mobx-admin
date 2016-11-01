@@ -2,16 +2,28 @@ import { observable, action, computed } from 'mobx'
 
 export default class BaseState {
 
-  constructor(requester) {
+  constructor(requester, viewInfo) {
     this.requester = requester
+    this.viewInfo = viewInfo
   }
 
   @observable currentView = null
+
+  initView(name, data) {
+    const viewInfo = this.viewInfo[name] || {}
+    data.name = name
+    this.currentView = Object.assign(data, viewInfo)
+    viewInfo.onInit && viewInfo.onInit(this)  // call onInit if present
+  }
 
   @observable req = {count: 0}
 
   @computed get loading() {
     return this.req.count > 0
+  }
+
+  @computed get cv() {
+    return this.currentView
   }
 
   @action

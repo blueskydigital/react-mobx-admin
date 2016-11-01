@@ -17,24 +17,22 @@ class PostEditView extends MUIEditView {
       <div>
         <div className="row">
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <TextInput label={__('title')} attr={'title'} record={state.currentView.entity} onChange={updateField} validators={[
-              {fn: (val) => (val.length === 0), message: __('title must be provided')},
-              {fn: (val) => (val.length > 10), message: __('title too long')},
-            ]} errors={state.currentView.errors} /><br/>
+            <TextInput label={__('title')} attr={'title'} record={state.currentView.entity}
+              onChange={updateField} errors={state.currentView.errors} /><br/>
             <SelectInput label={__('Category')} attr={'category'} record={state.currentView.entity}
               optionsrecord={state.options}
               optionsattr={'categories'}
               onChange={updateField} />
           </div>
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-            <DateInput label={__('published')} attr={'published_at'} record={state.currentView.entity} onChange={updateField} /><br/>
+            <DateInput label={__('published')} attr={'published_at'} record={state.currentView.entity}
+              onChange={updateField} /><br/>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12">
-            <MarkdownInput label={__('content')} attr={'content'} record={state.currentView.entity} onChange={updateField} validators={[
-              {fn: (val) => (val.length === 0), message: __('this is mandatory')}
-            ]} errors={state.currentView.errors} mdrender={marked} />
+            <MarkdownInput label={__('content')} attr={'content'} record={state.currentView.entity}
+              onChange={updateField} errors={state.currentView.errors} mdrender={marked} />
           </div>
         </div>
       </div>

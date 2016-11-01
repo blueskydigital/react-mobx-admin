@@ -13,7 +13,7 @@ class DatagridPagination extends PaginationBase {
 
   render() {
     const totalItems = this.props.state.currentView.totalItems
-    const page = parseInt(this.props.state.page) || 1
+    const page = parseInt(this.props.state.currentView.page) || 1
     const perPage = parseInt(this.props.state.currentView.perPage) || 1
     const nbPages = Math.ceil(totalItems / perPage) || 1
     const offsetEnd = Math.min(page * perPage, totalItems)

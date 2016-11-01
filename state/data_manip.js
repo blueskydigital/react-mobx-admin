@@ -10,13 +10,12 @@ export default class DataManipState extends BaseState {
 
     this.previousView = this.currentView  // backup
 
-    this.currentView = {
-      name: entityName + '_detail',
+    this.initView(entityName + '_detail', {
       originEntityId: id,
       entityName: entityName,
       entity: asMap({}),
       errors: asMap({})
-    }
+    })
     if(id === undefined) {
       this._loadCreateData(this.props.fields)
     } else {
@@ -43,9 +42,9 @@ export default class DataManipState extends BaseState {
 
   _validateField(fieldName, value, validators) {
     let errors = []
-    validators.forEach((v) => {
+    validators.map((v) => {
       if(v.fn(value) === true) {
-        errors.push(v.message)
+        errors.push(v.message(this))
       }
     })
     if(errors.length === 0 && this.currentView.errors.has(fieldName)) {
@@ -60,8 +59,8 @@ export default class DataManipState extends BaseState {
   updateData(fieldName, value, validators) {
     transaction(() => {
       this.currentView.entity.set(fieldName, value)
-      if(validators) {
-        this._validateField(fieldName, value, validators)
+      if(this.currentView.validators && this.currentView.validators[fieldName]) {
+        this._validateField(fieldName, value, this.currentView.validators[fieldName])
       }
     })
   }

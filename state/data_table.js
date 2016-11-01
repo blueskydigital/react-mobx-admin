@@ -3,40 +3,32 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  pkName = 'id'
-
-  @observable page:number = 1
-  @observable sortDir = null
-  @observable sortField = null
-
   @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals = {}) {
     transaction(() => {
       this.page = parseInt(page)
-      this.currentView = {
-        name: entityName,
+      this.initView(entityName, {
         entityName: entityName,
         perPage: 5,
         totalItems: 0,
         items: [],
         selection: [],
         filters: asMap(filterVals)
-      }
+      })
     })
     this._refreshList()
-    this.loadOptions('tags', '/tags')
   }
 
   @action
   updatePage(page) {
-    this.page = parseInt(page)
+    this.currentView.page = parseInt(page)
     this._refreshList()
   }
 
   @action
   updateSort(sortField, sortDir) {
     transaction(() => {
-      this.sortField = sortField
-      this.sortDir = sortDir
+      this.currentView.sortField = sortField
+      this.currentView.sortDir = sortDir
     })
     this._refreshList()
   }
@@ -117,9 +109,9 @@ export default class DataTableState extends DataManipState {
   _refreshList() {
     return this.callRequester(() => {
       return this.requester.getEntries(this.currentView.entityName, {
-        page: this.page,
-        sortField: this.sortField,
-        sortDir: this.sortDir,
+        page: this.currentView.page,
+        sortField: this.currentView.sortField,
+        sortDir: this.currentView.sortDir,
         filters: toJS(this.currentView.filters),
         perPage: this.currentView.perPage
       }).then((result) => {
