@@ -4,10 +4,11 @@ import DataManipState from './data_manip'
 export default class DataTableState extends DataManipState {
 
   @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals = {}) {
-    this.initView(entityName, {
+    this.initView(`${entityName}_list`, {
       entityName: entityName,
       page: parseInt(page),
-      perPage: 5,
+      sortField: sortField,
+      sortDir: sortDir,
       totalItems: 0,
       items: [],
       selection: [],

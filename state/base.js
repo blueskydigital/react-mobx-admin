@@ -2,18 +2,22 @@ import { observable, action, computed } from 'mobx'
 
 export default class BaseState {
 
-  constructor(requester, viewInfo) {
+  constructor(requester, viewInitializers) {
     this.requester = requester
-    this.viewInfo = viewInfo
+    this.viewInitializers = viewInitializers
   }
 
   @observable currentView = null
 
-  initView(name, data) {
-    const viewInfo = this.viewInfo[name] || {}
-    data.name = name
-    this.currentView = Object.assign(data, viewInfo)
-    viewInfo.onInit && viewInfo.onInit(this)  // call onInit if present
+  initView(name, data = {}) {
+    const defaults = this.viewInitializers[name] ? this.viewInitializers[name](this) : {}
+    for(let i in data) {
+      if(data[i] !== undefined) {
+        defaults[i] = data[i]
+      }
+    }
+    defaults.name = name
+    this.currentView = defaults
   }
 
   @observable req = {count: 0}
