@@ -44,7 +44,7 @@ export default class DataManipState extends BaseState {
     let errors = []
     validators.map((v) => {
       if(v.fn(value) === true) {
-        errors.push(v.message(this))
+        errors.push(v.message)
       }
     })
     if(errors.length === 0 && this.currentView.errors.has(fieldName)) {
