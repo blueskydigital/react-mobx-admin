@@ -25,7 +25,7 @@ export default class MUIListView extends React.Component {
         hideFilter={(filter)=>state.hideFilter(filter)} filters={this.filters} />
     )
 
-    return (
+    const result = (
       <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
           <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters()} />
@@ -47,6 +47,8 @@ export default class MUIListView extends React.Component {
         <Pagination state={state} onChange={(page)=>state.updatePage(page)} />
       </Card>
     )
+
+    return this.renderOuter ? this.renderOuter(result) : result
   }
 
   static propTypes = {
