@@ -26,7 +26,7 @@ export default class DataManipState extends BaseState {
   _loadEditData(entityName, id) {
     return this.callRequester(() => {
       return this.requester.getEntry(entityName, id).then((result) => {
-        this.currentView.entity.merge(result.data)
+        this.currentView.entity && this.currentView.entity.merge(result.data)
       })
     })
   }

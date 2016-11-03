@@ -134,7 +134,7 @@ export default class DataTableState extends DataManipState {
       }).then((result) => {
         transaction(() => {
           this.currentView.totalItems = result.totalItems
-          this.currentView.items.replace(result.data)
+          this.currentView.items && this.currentView.items.replace(result.data)
         })
       })
     })

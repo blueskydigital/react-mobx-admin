@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import SaveIcon from 'material-ui/svg-icons/content/save'
 import RaisedButton from 'material-ui/RaisedButton'
 import EditFormBase from '../../components/edit/form'
+import CircularProgress from 'material-ui/CircularProgress'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 
 @observer
@@ -21,6 +22,12 @@ export default class MUIEditView extends EditFormBase {
 
   render() {
     const { state } = this.props
+
+    const loading = (! state.currentView.entity) || state.currentView.entity.size === 0
+
+    if(loading) {
+      return <CircularProgress />
+    }
 
     const title = state.currentView.originEntityId ?
       (state.currentView.edittitle || 'edit item') :
