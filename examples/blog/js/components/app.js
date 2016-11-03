@@ -23,7 +23,7 @@ export const App = observer( ({ state }) => {
             <ToolbarGroup firstChild={true}>
               <FlatButton onTouchTap={() => state.showLogin()}>SampleAPp</FlatButton>
               <FlatButton onTouchTap={() => state.showEntityList('posts')}>Posts</FlatButton>
-              <FlatButton onTouchTap={() => state.showEntityList('posts', {filter: {"category":"tech"}})}>Tech Posts</FlatButton>
+              <FlatButton onTouchTap={() => state.showEntityList('posts', {filters: {"category":"tech"}})}>Tech Posts</FlatButton>
               <FlatButton onTouchTap={() => state.showEntityList('tags')}>Tags</FlatButton>
               <FlatButton onTouchTap={() => state.changeLang()}>ChangeLang</FlatButton>
             </ToolbarGroup>

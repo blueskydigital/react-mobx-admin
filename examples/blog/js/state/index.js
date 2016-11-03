@@ -14,24 +14,14 @@ export default class StateStore extends OptionsStore {
     })
   }
 
-  _query() {
-    let q = ''
-    if(this.currentView.sortField) {
-      q = q + '&sortField=' + this.currentView.sortField + '&sortDir=' + this.currentView.sortDir
-    }
-    if(this.currentView.filters.size > 0) {
-      q = q + '&filters=' + JSON.stringify(this.filters)
-    }
-    return q
-  }
-
   @computed get currentPath() {
-    switch(this.currentView.name) {
+    const viewName = this.currentView ? this.currentView.name : 'login'
+    switch(viewName) {
       case 'login': return '/login'
-      case 'posts_list': return `/posts?page=${this.currentView.page}${this._query()}`
-      case 'posts_detail': return '/posts/' + this.currentView.originEntityId
-      case 'tags_list': return `/tags?page=${this.currentView.page}${this._query()}`
-      case 'tags_detail': return '/tags/' + this.currentView.originEntityId
+      case 'posts_list': return `/entity/posts?${this.table_query()}`
+      case 'posts_detail': return '/entity/posts/' + this.currentView.originEntityId
+      case 'tags_list': return `/entity/tags?${this.table_query()}`
+      case 'tags_detail': return '/entity/tags/' + this.currentView.originEntityId
     }
   }
 

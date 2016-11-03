@@ -9,7 +9,13 @@ export default class Header extends React.Component {
   render() {
     const user = this.props.state.loggedUser
     if(user) {
-      return <ToolbarTitle text={`${user.name} (${user.uname})`} />
+      return (
+        <div>
+          <ToolbarTitle text={`${user.name} (${user.uname})`} />
+          <RaisedButton label={this.props.state.__('logout')} secondary={true}
+            onTouchTap={()=>this.props.state.logout()} />
+        </div>
+      )
     } else {
       return (
         <div>

@@ -3,7 +3,6 @@
   "version": "0.0.2",
   "description": "blog example made with react-mobx-admin",
   "dependencies": {
-    "director": "^1.2.8",
     "react-dom": "^15.3.0",
     "react-tap-event-plugin": "^1.0.0",
     "axios": "^0.14.0",

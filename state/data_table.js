@@ -3,16 +3,16 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  @action showEntityList(entityName, page = 1, sortField, sortDir, filterVals = {}) {
+  @action showEntityList(entityName, query = {}) {
     this.initView(`${entityName}_list`, {
       entityName: entityName,
-      page: parseInt(page),
-      sortField: sortField,
-      sortDir: sortDir,
+      page: parseInt(query.page || 1),
+      sortField: query.sortField,
+      sortDir: query.sortDir,
       totalItems: 0,
       items: [],
       selection: [],
-      filters: asMap(filterVals)
+      filters: asMap(query.filters || {})
     })
     this._refreshList()
   }
@@ -101,6 +101,20 @@ export default class DataTableState extends DataManipState {
     for(let i in newFilters) {
       this.currentView.filters.set(i, newFilters[i])
     }
+  }
+
+  table_query() {
+    const rv = []
+    if(this.currentView.page) {
+      rv.push(`page=${this.currentView.page}`)
+    }
+    if(this.currentView.sortField) {
+      rv.push(`sortField=${this.currentView.sortField}&sortDir=${this.currentView.sortDir}`)
+    }
+    if(this.currentView.filters.size > 0) {
+      rv.push(`filters=${JSON.stringify(this.filters)}`)
+    }
+    return rv.join('&')
   }
 
   // ---------------------- privates, support ----------------------------
