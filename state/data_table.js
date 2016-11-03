@@ -73,6 +73,10 @@ export default class DataTableState extends DataManipState {
     this.currentView.selection = data
   }
 
+  @action selectAll() {
+    this.currentView.selection = this.currentView.items.map((i, idx) => idx)
+  }
+
   // ---------------------- filtration  ----------------------------
 
   @action

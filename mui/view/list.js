@@ -8,8 +8,12 @@ import DatagridActions from '../../components/datagrid/actions'
 
 export default class MUIListView extends React.Component {
 
-  onSelectionChange(data) {
-    this.props.state.updateSelection(data)
+  onSelectionChange(selection) {
+    if(selection === 'all') {
+      this.props.state.selectAll()
+    } else {
+      this.props.state.updateSelection(selection)
+    }
   }
 
   render() {
