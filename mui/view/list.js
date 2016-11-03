@@ -19,6 +19,12 @@ export default class MUIListView extends React.Component {
       return state.currentView.selection.indexOf(idx) >= 0
     }
 
+    const title = state.currentView.title && <CardTitle title={state.currentView.title} />
+    const filters = this.filters && (
+      <Filters.Controls state={state}
+        hideFilter={(filter)=>state.hideFilter(filter)} filters={this.filters} />
+    )
+
     return (
       <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
         <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
@@ -30,11 +36,8 @@ export default class MUIListView extends React.Component {
           )}
         </CardActions>
 
-        state.currentView.title && <CardTitle title={state.currentView.title} />
-
-        {this.filters && (
-          <Filters.Controls state={state} hideFilter={(filter)=>state.hideFilter(filter)} filters={this.filters} />
-        )}
+        { title }
+        { filters }
 
         <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
           titles={state.currentView.headertitles} fields={this.fields}
