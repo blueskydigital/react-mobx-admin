@@ -11,6 +11,8 @@ export default class MUIListView extends React.Component {
   onSelectionChange(selection) {
     if(selection === 'all') {
       this.props.state.selectAll()
+    } else if(selection === 'none') {
+      this.props.state.updateSelection([])
     } else {
       this.props.state.updateSelection(selection)
     }
