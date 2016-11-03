@@ -19,6 +19,7 @@
     "react": "^15.2.1"
   },
   "devDependencies": {
+    "axios": "^0.14.0",
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-class-properties": "^6.10.2",
@@ -29,7 +30,9 @@
     "jsdom": "^9.8.3",
     "json-server": "^0.8.22",
     "mobx": "^2.3.7",
+    "mobx-react": "^3.5.1",
     "mobx-react-devtools": "^4.2.6",
+    "react": "^15.2.1",
     "react-addons-test-utils": "^15.3.0",
     "tape": "^4.6.2",
     "webpack": "^1.13.2",
