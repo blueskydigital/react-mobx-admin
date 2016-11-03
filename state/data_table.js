@@ -112,7 +112,7 @@ export default class DataTableState extends DataManipState {
       rv.push(`sortField=${this.currentView.sortField}&sortDir=${this.currentView.sortDir}`)
     }
     if(this.currentView.filters.size > 0) {
-      rv.push(`filters=${JSON.stringify(this.filters)}`)
+      rv.push(`filters=${JSON.stringify(this.currentView.filters)}`)
     }
     return rv.join('&')
   }
