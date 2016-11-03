@@ -22,14 +22,14 @@ export default class BaseState {
 
   @observable messages = asMap({})
 
-  @action addMessage(text, type, autoremoveTimeout = 0) {
-    const message = {text, type}
+  @action addMessage(text, type, timeout = 0) {
+    const message = {text, type, timeout}
     this.messages.set(text, message)
-    if(autoremoveTimeout > 0) {
+    if(timeout > 0) {
       function _remove() {
         this.messages.delete(text)
       }
-      setTimeout(_remove.bind(this), 2000)
+      setTimeout(_remove.bind(this), timeout)
     }
     return message
   }
@@ -68,10 +68,9 @@ export default class BaseState {
       this.req.count--
       if(err.response && err.response.status === 401) {
         this.on401(err)
-      } else if (err.response) {
-        this.addMessage(err, 'error')
       } else {
-        throw err
+        this.onRequesterError ? this.onRequesterError(err) :
+          console.log && console.log(JSON.stringify(err))
       }
     })
   }
