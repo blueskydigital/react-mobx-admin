@@ -3,14 +3,10 @@ import React from 'react'
 
 export default class EditFormBase extends React.Component {
 
-  onUpdated() {
-    alert('Changes successfully saved.')
-  }
-
   onSave(e) {
     e.preventDefault()
-    const formLevelValidators = this.props.validators
-    this.props.state.saveData(formLevelValidators).then(this.onUpdated.bind(this))
+    const saveOp = this.props.state.saveData()
+    this.onUpdated && saveOp.then(this.onUpdated.bind(this))
   }
 
   updateField(name, value) {

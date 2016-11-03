@@ -25,8 +25,4 @@ export default class StateStore extends OptionsStore {
     }
   }
 
-  onApiErr(err) {
-    alert(`API error :( \n\n\n${err}`)
-  }
-
 }

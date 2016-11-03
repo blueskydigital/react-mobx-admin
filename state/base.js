@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx'
+import { observable, action, computed, asMap } from 'mobx'
 
 export default class BaseState {
 
@@ -18,6 +18,24 @@ export default class BaseState {
     }
     defaults.name = name
     this.currentView = defaults
+  }
+
+  @observable messages = asMap({})
+
+  @action addMessage(text, type, autoremoveTimeout = 0) {
+    const message = {text, type}
+    this.messages.set(text, message)
+    if(autoremoveTimeout > 0) {
+      function _remove() {
+        this.messages.delete(text)
+      }
+      setTimeout(_remove.bind(this), 2000)
+    }
+    return message
+  }
+
+  @action removeMessage(message) {
+    this.messages.delete(message.text)
   }
 
   @observable req = {count: 0}
@@ -51,7 +69,7 @@ export default class BaseState {
       if(err.response && err.response.status === 401) {
         this.on401(err)
       } else if (err.response) {
-        this.onApiErr(err)
+        this.addMessage(err, 'error')
       } else {
         throw err
       }
