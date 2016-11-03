@@ -6,20 +6,31 @@ class DataRequester {
     this.apiUrl = apiUrl
     this.convertQuery = convertQuery
     this.getTotalItems = getTotalItems
+    this.authHeaders = {}
   }
 
   setDefaultHeaders(defHeaders) {
-    let key
-    for(key in defHeaders) {
+    for(let key in defHeaders) {
       axios.defaults.headers.common[key] = defHeaders[key]
     }
+  }
+
+  setAuth(headers) {
+    this.authHeaders = headers
   }
 
   getEntries(entityName, params) {
 
     let qParams = this.convertQuery(params)
 
-    return axios.get(`${this.apiUrl}/${entityName}`, {params: qParams}).then((response) => {
+    const req = axios({
+      method: 'get',
+      url: `${this.apiUrl}/${entityName}`,
+      params: qParams,
+      headers: this.authHeaders
+    })
+
+    return req.then((response) => {
       return {
         data: response.data,
         totalItems: this.getTotalItems(response)
@@ -29,33 +40,50 @@ class DataRequester {
   }
 
   getEntry(entityName, id, options={}) {
-
-    return axios.get(`${this.apiUrl}/${entityName}/${id}`)
-
+    return axios({
+      method: 'get',
+      url: `${this.apiUrl}/${entityName}/${id}`,
+      headers: this.authHeaders
+    })
   }
 
   deleteEntry(entityName, id) {
-    return axios.delete(`${this.apiUrl}/${entityName}/${id}`)
+    return axios({
+      method: 'delete',
+      url: `${this.apiUrl}/${entityName}/${id}`,
+      headers: this.authHeaders
+    })
   }
 
   saveEntry(entityName, data, id=null) {
-    let query
-
-    if (id) {
-      query = axios.put(`${this.apiUrl}/${entityName}/${id}`, data)
-    } else {
-      query = axios.post(`${this.apiUrl}/${entityName}`, data)
+    const conf = {
+      headers: this.authHeaders,
+      data: data
     }
 
-    return query.then((response) => {
+    if (id) {
+      conf.url = `${this.apiUrl}/${entityName}/${id}`
+      conf.method = 'put'
+    } else {
+      conf.url = `${this.apiUrl}/${entityName}`
+      conf.method = 'post'
+    }
+    return axios(conf).then((response) => {
       return response.data
     })
   }
 
-  call(url, method = 'get', data) {
-    // add apiUrl if necessary
-    url = (url.indexOf('/') === 0) ? `${this.apiUrl}${url}` : url
-    return axios[method](url, data)
+  call(url, method = 'get', data) {   // call our API
+    return axios({
+      method: method,
+      url: `${this.apiUrl}${url}`,
+      headers: this.authHeaders,
+      data: data
+    })
+  }
+
+  callExternalRes(conf) {   // just to be able to call external API
+    return axios(conf)
   }
 }
 
