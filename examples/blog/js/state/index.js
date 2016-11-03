@@ -1,50 +1,16 @@
 import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
 import OptionsStore from './options'
+import { postListViewInit, postDetailViewInit } from './posts'
+import { tagListViewInit, tagDetailViewInit } from './tags'
 
 export default class StateStore extends OptionsStore {
 
   constructor(requester) {
     super(requester,  {
-      'posts_list': (state) => {
-        state.loadOptions('tags', '/tags')
-        return {
-          perPage: 6,
-          pkName: 'id',
-          sortField: 'title',
-          sortDir: 'ASC',
-          attrs: ['id', 'title', 'category', 'published_at', 'tags'],
-          headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags']
-        }
-      },
-      'posts_detail': (state) => {
-        state.loadOptions('tags', '/tags')
-        return {
-          edittitle: 'edit a nice post',
-          validators: {
-            'title': [
-              {fn: (val) => (val.length === 0), message: state.__('title must be provided')},
-              {fn: (val) => (val.length > 10), message: state.__('title too long')},
-            ],
-            'content': [
-              {fn: (val) => (val.length === 0), message: state.__('this is mandatory')}
-            ]
-          }
-        }
-      },
-      'tags_list': (state) => ({
-        perPage: 3,
-        pkName: 'id',
-        attrs: ['id', 'name', 'published'],
-        headertitles: ['ID', state.__('Name'), 'Published']
-      }),
-      'tags_detail': (state) => ({
-        validators: {
-          'name': [
-            {fn: (val) => (val.length === 0), message: state.__('value must be provided')},
-            {fn: (val) => (val.length > 10), message: state.__('value too long')},
-          ]
-        }
-      })
+      'posts_list': postListViewInit,
+      'posts_detail': postDetailViewInit,
+      'tags_list': tagListViewInit,
+      'tags_detail': tagDetailViewInit
     })
   }
 
