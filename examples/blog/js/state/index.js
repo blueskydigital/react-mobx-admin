@@ -15,13 +15,14 @@ export default class StateStore extends OptionsStore {
   }
 
   @computed get currentPath() {
+    const _id = () => this.currentView.originEntityId ? this.currentView.originEntityId : '_new'
     const viewName = this.currentView ? this.currentView.name : 'login'
     switch(viewName) {
       case 'login': return '/login'
       case 'posts_list': return `/entity/posts?${this.table_query()}`
-      case 'posts_detail': return '/entity/posts/' + this.currentView.originEntityId
+      case 'posts_detail': return '/entity/posts/' + _id()
       case 'tags_list': return `/entity/tags?${this.table_query()}`
-      case 'tags_detail': return '/entity/tags/' + this.currentView.originEntityId
+      case 'tags_detail': return '/entity/tags/' + _id()
     }
   }
 

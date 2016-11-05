@@ -28,7 +28,7 @@ export default class MUIEditView extends EditFormBase {
   render() {
     const { state } = this.props
 
-    const loading = (! state.currentView.entity) || state.currentView.entity.size === 0
+    const loading = (! state.currentView.entity) || state.currentView.entity_loading
 
     if(loading) {
       return <CircularProgress />

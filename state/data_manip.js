@@ -8,36 +8,35 @@ export default class DataManipState extends BaseState {
   @action
   showEntityDetail(entityName, id) {
 
-    this.previousView = this.currentView  // backup
+    this.previousView = this.currentView  // backup for go back
 
-    this.initView(entityName + '_detail', {
-      originEntityId: id,
-      entityName: entityName,
-      entity: asMap({}),
-      errors: asMap({})
+    transaction(() => {
+      this.initView(entityName + '_detail', {
+        originEntityId: id,
+        entityName: entityName,
+        entity: asMap({}),
+        errors: asMap({})
+      })
+      if(id === undefined) {
+        this._loadCreateData(entityName)
+      } else {
+        this._loadEditData(entityName, id)
+      }
     })
-    if(id === undefined) {
-      this._loadCreateData(this.props.fields)
-    } else {
-      this._loadEditData(entityName, id)
-    }
   }
 
   _loadEditData(entityName, id) {
+    this.currentView.entity_loading = true
     return this.callRequester(() => {
       return this.requester.getEntry(entityName, id).then((result) => {
         this.currentView.entity && this.currentView.entity.merge(result.data)
+        this.currentView.entity_loading = false
       })
     })
   }
 
   _loadCreateData(fields) {
-    transaction(() => {
-      this.currentView.entity.clear()
-      for (let name in fields) {
-        this.currentView.entity[name] = fields[name].defaultVal
-      }
-    })
+    this.currentView.entity.clear()
   }
 
   _validateField(fieldName, value, validators) {

@@ -1,6 +1,8 @@
 import React from 'react'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import CircularProgress from 'material-ui/CircularProgress'
+import FlatButton from 'material-ui/FlatButton'
+import AddIcon from 'material-ui/svg-icons/content/add'
 import Datagrid from '../datagrid/datagrid'
 import Filters from '../datagrid/filters'
 import Pagination from '../datagrid/pagination'
@@ -53,6 +55,8 @@ export default class MUIListView extends React.Component {
           <Filters.Dropdown state={state} title="addfilter" filters={this.filters}
             showFilter={(filter)=>state.showFilter(filter)} />
         )}
+        <FlatButton label={state.currentView.addText} icon={<AddIcon />}
+          onTouchTap={()=>state.showEntityDetail(state.currentView.entityName)} />
       </CardActions>
     )
 

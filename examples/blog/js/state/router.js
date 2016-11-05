@@ -21,7 +21,8 @@ export function startRouter(store) {
   }
 
   page('/entity/:entityName/:id', _is_logged, (ctx) => {
-    store.showEntityDetail(ctx.params.entityName, ctx.params.id)
+    const id = ctx.params.id !== '_new' ? ctx.params.id : undefined
+    store.showEntityDetail(ctx.params.entityName, id)
   })
   page('/entity/:entityName', _is_logged, _parse_query, (ctx) => {
     store.showEntityList(ctx.params.entityName, ctx.parsedQuery)
