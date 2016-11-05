@@ -15,7 +15,8 @@ export default class DataManipState extends BaseState {
         originEntityId: id,
         entityName: entityName,
         entity: asMap({}),
-        errors: asMap({})
+        errors: asMap({}),
+        entity_loading: false
       })
       if(id === undefined) {
         this._loadCreateData(entityName)
