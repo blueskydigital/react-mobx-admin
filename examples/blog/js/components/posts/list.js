@@ -46,11 +46,11 @@ class PostListView extends MUIListView {
         state.deleteData([row])
       }
     }
-    return (
+    return row ? (
       <div>
         <IconButton onClick={() => { _deleteRow(row)}}><DeleteIcon /></IconButton>
       </div>
-    )
+    ) : null
   }
 
   fields = [

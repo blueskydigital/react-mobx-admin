@@ -26,6 +26,10 @@ class MUIDatagrid extends DatagridBase {
     )
   }
 
+  renderListActionsHeader(listActions) {
+    return <TableHeaderColumn key={'_actions'}>{listActions()}</TableHeaderColumn>
+  }
+
   renderCell(row, name, creatorFn, rowId) {
     return (
       <TableRowColumn key={`td_${rowId}_${name}`}>

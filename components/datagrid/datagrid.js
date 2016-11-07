@@ -31,7 +31,7 @@ export default class DatagridBase extends React.Component {
 
     // add another th for List actions if any
     if (listActions) {
-      headers.push(<th key={'_actions'}>{listActions()}</th>)
+      headers.push(this.renderListActionsHeader(listActions))
     }
 
     return headers
