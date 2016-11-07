@@ -32,6 +32,8 @@ export default class DataManipState extends BaseState {
       return this.requester.getEntry(entityName, id).then((result) => {
         this.currentView.entity && this.currentView.entity.merge(result.data)
         this.currentView.entity_loading = false
+        // call handler if exists. TODO: Subject to change
+        this.onEntityLoaded && this.onEntityLoaded(this.currentView.entity)
       })
     })
   }
