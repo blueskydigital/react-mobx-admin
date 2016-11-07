@@ -43,7 +43,7 @@ export default class MUIListView extends React.Component {
       <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
         titles={state.currentView.headertitles} fields={this.fields}
         rowId={(row)=>row[state.currentView.pkName]}
-        listActions={this.listActions.bind(this)}
+        listActions={this.listActions ? this.listActions.bind(this) : undefined}
         onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state.currentView}
         onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
     )
