@@ -7,14 +7,9 @@ import { startRouter } from './router'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
-// create requester
-import { convertQuery, getTotalItems } from './api_flavor'
-import DataRequester from 'react-mobx-admin/services/requester'
-const _requester = new DataRequester(convertQuery, getTotalItems, Conf.apiUrl)
-
 // use it to create the app state
 import StateStore from './state'
-const state = new StateStore(_requester)
+const state = new StateStore()
 startRouter(state)
 
 // init react components part using the only prop: the store

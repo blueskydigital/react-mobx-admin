@@ -12,10 +12,8 @@ export default class OptionsStore extends TranslatStore {
   })
 
   @action loadOptions(name, query) {
-    return this.callRequester(() => {
-      return this.requester.call(query).then((result) => {
-        this.options.set(name, result.data)
-      })
+    return this.requester.call(query).then((result) => {
+      this.options.set(name, result.data)
     })
   }
 

@@ -5,13 +5,14 @@ import { tagListViewInit, tagDetailViewInit } from './tags'
 
 export default class StateStore extends OptionsStore {
 
-  constructor(requester) {
-    super(requester,  {
+  constructor() {
+    super()
+    this.viewInitializers = {
       'posts_list': postListViewInit,
       'posts_detail': postDetailViewInit,
       'tags_list': tagListViewInit,
       'tags_detail': tagDetailViewInit
-    })
+    }
   }
 
   @computed get currentPath() {
@@ -24,6 +25,37 @@ export default class StateStore extends OptionsStore {
       case 'tags_list': return `/entity/tags?${this.table_query()}`
       case 'tags_detail': return '/entity/tags/' + _id()
     }
+  }
+
+  @observable messages = asMap({})
+
+  @action addMessage(text, type, timeout = 0) {
+    const message = {text, type, timeout}
+    this.messages.set(text, message)
+    if(timeout > 0) {
+      function _remove() {
+        this.messages.delete(text)
+      }
+      setTimeout(_remove.bind(this), timeout)
+    }
+    return message
+  }
+
+  @action removeMessage(message) {
+    this.messages.delete(message.text)
+  }
+
+  @observable currentView = null
+
+  initView(name, data = {}) {
+    const defaults = this.viewInitializers[name] ? this.viewInitializers[name](this) : {}
+    for(let i in data) {
+      if(data[i] !== undefined) {
+        defaults[i] = data[i]
+      }
+    }
+    defaults.name = name
+    this.currentView = defaults
   }
 
 }

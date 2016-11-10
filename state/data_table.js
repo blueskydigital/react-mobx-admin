@@ -40,23 +40,18 @@ export default class DataTableState extends DataManipState {
   @action
   deleteData(data) {
     const id = this.originEntityId
-
-    return this.callRequester(() => {
-      return this.requester.deleteEntry(this.view, id)
-    })
+    return this.requester.deleteEntry(this.view, id)
   }
 
   @action
   deleteSelected() {
-    this.callRequester(() => {
-      const promises = this.currentView.selection.map((selected) => {
-        const id = this.currentView.items[selected][this.currentView.pkName]
-        return this.requester.deleteEntry(this.currentView.entityName, id)
-      })
-      return Promise.all(promises).then(() => {   // wait for all delete reqests
-        this.currentView.selection = []
-        return this._refreshList()
-      })
+    const promises = this.currentView.selection.map((selected) => {
+      const id = this.currentView.items[selected][this.currentView.pkName]
+      return this.requester.deleteEntry(this.currentView.entityName, id)
+    })
+    return Promise.all(promises).then(() => {   // wait for all delete reqests
+      this.currentView.selection = []
+      return this._refreshList()
     })
   }
 
@@ -124,18 +119,16 @@ export default class DataTableState extends DataManipState {
   // ---------------------- privates, support ----------------------------
 
   _refreshList() {
-    return this.callRequester(() => {
-      return this.requester.getEntries(this.currentView.entityName, {
-        page: this.currentView.page,
-        sortField: this.currentView.sortField,
-        sortDir: this.currentView.sortDir,
-        filters: toJS(this.currentView.filters),
-        perPage: this.currentView.perPage
-      }).then((result) => {
-        transaction(() => {
-          this.currentView.totalItems = result.totalItems
-          this.currentView.items && this.currentView.items.replace(result.data)
-        })
+    return this.requester.getEntries(this.currentView.entityName, {
+      page: this.currentView.page,
+      sortField: this.currentView.sortField,
+      sortDir: this.currentView.sortDir,
+      filters: toJS(this.currentView.filters),
+      perPage: this.currentView.perPage
+    }).then((result) => {
+      transaction(() => {
+        this.currentView.totalItems = result.totalItems
+        this.currentView.items && this.currentView.items.replace(result.data)
       })
     })
   }

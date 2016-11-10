@@ -2,11 +2,12 @@ import axios from 'axios'
 
 class DataRequester {
 
-  constructor(convertQuery, getTotalItems, apiUrl) {
+  constructor(convertQuery, getTotalItems, on401, apiUrl) {
     this.apiUrl = apiUrl
     this.convertQuery = convertQuery
     this.getTotalItems = getTotalItems
     this.authHeaders = {}
+    this.on401 = on401
   }
 
   setDefaultHeaders(defHeaders) {
@@ -17,6 +18,14 @@ class DataRequester {
 
   setAuth(headers) {
     this.authHeaders = headers
+  }
+
+  _defaultCatcher(err) {
+    if(err.response && err.response.status === 401) {
+      this.on401(err)
+    } else {
+      throw err // rethrow
+    }
   }
 
   getEntries(entityName, params) {
@@ -35,7 +44,7 @@ class DataRequester {
         data: response.data,
         totalItems: this.getTotalItems(response)
       }
-    })
+    }).catch(this._defaultCatcher.bind(this))
 
   }
 
@@ -44,7 +53,9 @@ class DataRequester {
       method: 'get',
       url: `${this.apiUrl}/${entityName}/${id}`,
       headers: this.authHeaders
-    })
+    }).then((response) => {
+      return response.data
+    }).catch(this._defaultCatcher.bind(this))
   }
 
   deleteEntry(entityName, id) {
@@ -52,7 +63,7 @@ class DataRequester {
       method: 'delete',
       url: `${this.apiUrl}/${entityName}/${id}`,
       headers: this.authHeaders
-    })
+    }).catch(this._defaultCatcher.bind(this))
   }
 
   saveEntry(entityName, data, id=null) {
@@ -70,7 +81,7 @@ class DataRequester {
     }
     return axios(conf).then((response) => {
       return response.data
-    })
+    }).catch(this._defaultCatcher.bind(this))
   }
 
   call(url, method = 'get', data) {   // call our API
@@ -79,7 +90,7 @@ class DataRequester {
       url: `${this.apiUrl}${url}`,
       headers: this.authHeaders,
       data: data
-    })
+    }).catch(this._defaultCatcher.bind(this))
   }
 
   callExternalRes(conf) {   // just to be able to call external API

@@ -1,4 +1,5 @@
 import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import BlogRequester from '../services'
 import DataTableState from 'react-mobx-admin/state/data_table'
 
 export default class AuthStore extends DataTableState {
@@ -11,6 +12,12 @@ export default class AuthStore extends DataTableState {
     } catch(e) {
       this.loggedUser = observable(null)
     }
+    // create requester here because we need to provide on401 callback for it ..
+    this.requester = new BlogRequester(this.on401.bind(this))
+  }
+
+  on401(err) {
+    alert('we have to login!!')
   }
 
   @observable loggedUser = null

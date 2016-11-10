@@ -1,7 +1,6 @@
 import {observable, computed, action, transaction, asMap} from 'mobx'
-import BaseState from './base'
 
-export default class DataManipState extends BaseState {
+export default class DataManipState {
 
   previousView = null
 
@@ -28,13 +27,12 @@ export default class DataManipState extends BaseState {
 
   _loadEditData(entityName, id) {
     this.currentView.entity_loading = true
-    return this.callRequester(() => {
-      return this.requester.getEntry(entityName, id).then((result) => {
-        this.currentView.entity && this.currentView.entity.merge(result.data)
-        this.currentView.entity_loading = false
-        // call handler if exists. TODO: Subject to change
-        this.onEntityLoaded && this.onEntityLoaded(this.currentView.entity)
-      })
+
+    return this.requester.getEntry(entityName, id).then((data) => {
+      this.currentView.entity && this.currentView.entity.merge(data)
+      this.currentView.entity_loading = false
+      // call handler if exists. TODO: Subject to change
+      this.onEntityLoaded && this.onEntityLoaded(this.currentView.entity)
     })
   }
 
@@ -70,14 +68,11 @@ export default class DataManipState extends BaseState {
   @action
   saveData() {
     const id = this.currentView.originEntityId
-
-    return this.callRequester(() => {
-      return this.requester.saveEntry(this.currentView.entityName, this.currentView.entity, id)
-    })
+    return this.requester.saveEntry(this.currentView.entityName, this.currentView.entity, id)
   }
 
   return2List() {
-    if(this.previousView.entityName) {
+    if(this.previousView && this.previousView.entityName) {
       this.showEntityList(this.previousView.entityName, this.previousView.page)
     } else {
       this.showEntityList(this.currentView.entityName)
