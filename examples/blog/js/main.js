@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { startRouter } from './state/router'
+import { startRouter } from './router'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
