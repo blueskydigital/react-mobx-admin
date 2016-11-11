@@ -20,12 +20,17 @@ export function startRouter(store) {
     next()
   }
 
-  page('/entity/:entityName/:id', _is_logged, (ctx) => {
-    const id = ctx.params.id !== '_new' ? ctx.params.id : undefined
-    store.showEntityDetail(ctx.params.entityName, id)
+  page('/entity/posts/:id', _is_logged, (ctx) => {
+    store.showPostDetail(ctx.params.id)
   })
-  page('/entity/:entityName', _is_logged, _parse_query, (ctx) => {
-    store.showEntityList(ctx.params.entityName, ctx.parsedQuery)
+  page('/entity/posts', _is_logged, _parse_query, (ctx) => {
+    store.showPostList(ctx.parsedQuery)
+  })
+  page('/entity/tags/:id', _is_logged, ctx => {
+    store.showTagDetail(ctx.params.id)
+  })
+  page('/entity/tags', _is_logged, _parse_query, (ctx) => {
+    store.showTagList(ctx.parsedQuery)
   })
   page('*', (ctx) => store.showLogin())
   page()

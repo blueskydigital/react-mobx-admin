@@ -1,57 +1,61 @@
-import {observable, computed, action, transaction, asMap, toJS} from 'mobx'
+import {
+  extendObservable, computed, action, transaction, asMap, toJS
+} from 'mobx'
 import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  @action showEntityList(entityName, query = {}) {
-    this.initView(`${entityName}_list`, {
+  initEntityList(view, entityName, query) {
+    extendObservable(view, {
       entityName: entityName,
       page: parseInt(query.page || 1),
-      sortField: query.sortField,
-      sortDir: query.sortDir,
+      sortField: query.sortField ? query.sortField : view.sortField,
+      sortDir: query.sortDir ? query.sortDir : view.sortDir,
       totalItems: 0,
       items: [],
       selection: [],
       filters: asMap(query.filters || {})
     })
-    this._refreshList()
+    return this._refreshList(view)
   }
 
   @action
-  updatePage(page) {
-    this.currentView.page = parseInt(page)
-    this._refreshList()
+  updatePage(view, page) {
+    view.page = parseInt(page)
+    this._refreshList(view)
   }
 
   @action
-  updateSort(sortField, sortDir) {
+  updateSort(view, sortField, sortDir) {
     transaction(() => {
-      this.currentView.sortField = sortField
-      this.currentView.sortDir = sortDir
+      view.sortField = sortField
+      view.sortDir = sortDir
     })
-    this._refreshList()
+    this._refreshList(view)
   }
 
   @action
-  refresh() {
-    this._refreshList()
+  refresh(view) {
+    this._refreshList(view)
   }
 
   @action
-  deleteData(data) {
-    const id = this.originEntityId
-    return this.requester.deleteEntry(this.view, id)
+  deleteData(view, data) {
+    const id = data[0][view.pkName]
+    return this.requester.deleteEntry(view.entityName, id).then(()=>{
+      return this._refreshList(view)
+    })
   }
 
   @action
-  deleteSelected() {
-    const promises = this.currentView.selection.map((selected) => {
-      const id = this.currentView.items[selected][this.currentView.pkName]
-      return this.requester.deleteEntry(this.currentView.entityName, id)
+  deleteSelected(view) {
+    const promises = view.selection.map((selected) => {
+      const id = view.items[selected][view.pkName]
+      return this.requester.deleteEntry(view.entityName, id)
     })
     return Promise.all(promises).then(() => {   // wait for all delete reqests
-      this.currentView.selection = []
-      return this._refreshList()
+      view.selection = []
+      return this._refreshList(view)
     })
   }
 
@@ -64,71 +68,71 @@ export default class DataTableState extends DataManipState {
   }
 
   @action
-  updateSelection(data) {
-    this.currentView.selection = data
+  updateSelection(view, data) {
+    view.selection = data
   }
 
-  @action selectAll() {
-    this.currentView.selection = this.currentView.items.map((i, idx) => idx)
+  @action selectAll(view) {
+    view.selection = view.items.map((i, idx) => idx)
   }
 
   // ---------------------- filtration  ----------------------------
 
   @action
-  updateFilterValue(name, value) {
-    this.currentView.filters.set(name, value)
+  updateFilterValue(view, name, value) {
+    view.filters.set(name, value)
   }
 
   @action
-  applyFilters() {
-    this._refreshList()
+  applyFilters(view) {
+    this._refreshList(view)
   }
 
   @action
-  showFilter(filter) {
-    this.currentView.filters.set(filter, undefined)
+  showFilter(view, filter) {
+    view.filters.set(filter, undefined)
   }
 
   @action
-  hideFilter(filter) {
-    this.currentView.filters.delete(filter)
-    this._refreshList()
+  hideFilter(view, filter) {
+    view.filters.delete(filter)
+    this._refreshList(view)
   }
 
-  _resetFilters(newFilters) {
-    this.currentView.filters.clear()
+  _resetFilters(view, newFilters) {
+    view.filters.clear()
     for(let i in newFilters) {
-      this.currentView.filters.set(i, newFilters[i])
+      view.filters.set(i, newFilters[i])
     }
   }
 
-  table_query() {
+  table_query(view) {
     const rv = []
-    if(this.currentView.page) {
-      rv.push(`page=${this.currentView.page}`)
+    if(view.page) {
+      rv.push(`page=${view.page}`)
     }
-    if(this.currentView.sortField) {
-      rv.push(`sortField=${this.currentView.sortField}&sortDir=${this.currentView.sortDir}`)
+    if(view.sortField) {
+        rv.push(`sortField=${view.sortField}&sortDir=${view.sortDir}`)
     }
-    if(this.currentView.filters.size > 0) {
-      rv.push(`filters=${JSON.stringify(this.currentView.filters)}`)
+    if(view.filters.size > 0) {
+      rv.push(`filters=${JSON.stringify(view.filters)}`)
     }
     return rv.join('&')
   }
 
   // ---------------------- privates, support ----------------------------
 
-  _refreshList() {
-    return this.requester.getEntries(this.currentView.entityName, {
-      page: this.currentView.page,
-      sortField: this.currentView.sortField,
-      sortDir: this.currentView.sortDir,
-      filters: toJS(this.currentView.filters),
-      perPage: this.currentView.perPage
+  _refreshList(view) {
+    return this.requester.getEntries(view.entityName, {
+      page: view.page,
+      sortField: view.sortField,
+      sortDir: view.sortDir,
+      filters: toJS(view.filters),
+      perPage: view.perPage
     }).then((result) => {
       transaction(() => {
-        this.currentView.totalItems = result.totalItems
-        this.currentView.items && this.currentView.items.replace(result.data)
+        view.totalItems = result.totalItems
+        view.items && view.items.replace(result.data)
       })
     })
   }

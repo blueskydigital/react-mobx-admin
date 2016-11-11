@@ -4,12 +4,7 @@ import MockRequester from '../tests/mockRequester'
 import DataManipState from './data_manip'
 
 class State extends DataManipState {
-  @observable currentView = null
-
-  initView(name, data = {}) {
-    data.name = name
-    this.currentView = data
-  }
+  @observable currentView = {}
 }
 
 function _createState() {
@@ -19,7 +14,6 @@ function _createState() {
 }
 
 test('it should be possible to showEntityDetail', t => {
-
     const state = _createState()
     state.requester.data = {
       "id": 1,
@@ -27,9 +21,8 @@ test('it should be possible to showEntityDetail', t => {
       "body": "<p>Rerum velit quos est <ur veniam fugit",
       "views": 143
     }
-    t.equal(state.currentView, null)
 
-    state.showEntityDetail('posts', 1)
+    state.initEntity(state.currentView, 'posts', 1)
 
     setTimeout(() => {
       t.equal(state.currentView.originEntityId, 1)

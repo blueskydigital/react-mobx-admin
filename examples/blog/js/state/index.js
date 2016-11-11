@@ -1,29 +1,23 @@
 import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
 import OptionsStore from './options'
-import { postListViewInit, postDetailViewInit } from './posts'
-import { tagListViewInit, tagDetailViewInit } from './tags'
+import PostsStoreInit from './posts'
+import TagsStoreInit from './tags'
 
-export default class StateStore extends OptionsStore {
+// lego pattern :)
+const TagsStore = TagsStoreInit(OptionsStore)
+const PostsStore = PostsStoreInit(TagsStore)
 
-  constructor() {
-    super()
-    this.viewInitializers = {
-      'posts_list': postListViewInit,
-      'posts_detail': postDetailViewInit,
-      'tags_list': tagListViewInit,
-      'tags_detail': tagDetailViewInit
-    }
-  }
+export default class StateStore extends PostsStore {
 
   @computed get currentPath() {
     const _id = () => this.currentView.originEntityId ? this.currentView.originEntityId : '_new'
     const viewName = this.currentView ? this.currentView.name : 'login'
     switch(viewName) {
       case 'login': return '/login'
-      case 'posts_list': return `/entity/posts?${this.table_query()}`
-      case 'posts_detail': return '/entity/posts/' + _id()
-      case 'tags_list': return `/entity/tags?${this.table_query()}`
-      case 'tags_detail': return '/entity/tags/' + _id()
+      case 'post_list': return `/entity/posts?${this.table_query(this.currentView)}`
+      case 'post_detail': return '/entity/posts/' + _id()
+      case 'tag_list': return `/entity/tags?${this.table_query(this.currentView)}`
+      case 'tag_detail': return '/entity/tags/' + _id()
     }
   }
 
@@ -46,16 +40,5 @@ export default class StateStore extends OptionsStore {
   }
 
   @observable currentView = null
-
-  initView(name, data = {}) {
-    const defaults = this.viewInitializers[name] ? this.viewInitializers[name](this) : {}
-    for(let i in data) {
-      if(data[i] !== undefined) {
-        defaults[i] = data[i]
-      }
-    }
-    defaults.name = name
-    this.currentView = defaults
-  }
 
 }

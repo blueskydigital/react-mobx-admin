@@ -17,13 +17,13 @@ export default class EditFormBase extends React.Component {
     e.preventDefault()
     this.props.state.saveData().then(this.onUpdated.bind(this))
     .then(() => {
-      this.props.state.return2List()
+      this.props.state.return2List(this.props.state.currentView)
     })
   }
 
   onCancel(e) {
     e.preventDefault()
-    this.props.state.return2List()
+    this.props.state.return2List(this.props.state.currentView)
   }
 
   static propTypes = {

@@ -1,28 +1,22 @@
-import {observable, computed, action, transaction, asMap} from 'mobx'
+import {extendObservable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
-  previousView = null
+  initEntity(view, entityName, id) {
+    this.previousView = view  // backup for go back
 
-  @action
-  showEntityDetail(entityName, id) {
-
-    this.previousView = this.currentView  // backup for go back
-
-    transaction(() => {
-      this.initView(entityName + '_detail', {
-        originEntityId: id,
-        entityName: entityName,
-        entity: asMap({}),
-        errors: asMap({}),
-        entity_loading: false
-      })
-      if(id === undefined) {
-        this._loadCreateData(entityName)
-      } else {
-        this._loadEditData(entityName, id)
-      }
+    extendObservable(view, {
+      entityName: entityName,
+      originEntityId: id,
+      entity: asMap({}),
+      errors: asMap({}),
+      entity_loading: false
     })
+    if(id === '_new') {
+      this._loadCreateData(entityName)
+    } else {
+      this._loadEditData(entityName, id)
+    }
   }
 
   _loadEditData(entityName, id) {
@@ -71,11 +65,9 @@ export default class DataManipState {
     return this.requester.saveEntry(this.currentView.entityName, this.currentView.entity, id)
   }
 
-  return2List() {
-    if(this.previousView && this.previousView.entityName) {
-      this.showEntityList(this.previousView.entityName, this.previousView.page)
-    } else {
-      this.showEntityList(this.currentView.entityName)
+  return2List(view) {
+    if(view.onReturn2list) {
+      view.onReturn2list()
     }
   }
 

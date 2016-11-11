@@ -29,7 +29,7 @@ class PostListView extends MUIListView {
   batchActions(state) {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected items?`)) {
-        state.deleteSelected()
+        state.deleteSelected(state.currentView)
       }
     }
     return (
@@ -43,7 +43,7 @@ class PostListView extends MUIListView {
     const { state } = this.props
     function _deleteRow(row) {
       if(confirm(`Are you sure you want to delete ${row.title}?`)) {
-        state.deleteData([row])
+        state.deleteData(state.currentView, [row])
       }
     }
     return row ? (
@@ -57,7 +57,7 @@ class PostListView extends MUIListView {
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
       const { state } = this.props
-      const onTT = () => state.showEntityDetail('posts', row[state.currentView.pkName])
+      const onTT = () => state.showPostDetail(row[state.currentView.pkName])
       return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT}/>)
     },
     (attr, row) => (

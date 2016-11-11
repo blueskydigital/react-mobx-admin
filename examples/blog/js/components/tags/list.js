@@ -20,7 +20,7 @@ class TagListView extends MUIListView {
   batchActions(state) {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
-        state.deleteSelected()
+        state.deleteSelected(state.currentView)
       }
     }
     return (
@@ -34,7 +34,7 @@ class TagListView extends MUIListView {
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
       const { state } = this.props
-      const onTT = () => state.showEntityDetail('tags', row[state.currentView.pkName])
+      const onTT = () => state.showTagDetail(row[state.currentView.pkName])
       return <TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT} />
     },
     (attr, row) => (<MUIBoolField attr={attr} record={row} />)

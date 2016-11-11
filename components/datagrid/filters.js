@@ -44,7 +44,7 @@ class ControlsBase extends React.Component {
         const value = state.currentView.filters[name]
         const filter = filters[name]
         const onHide = () => {this.props.hideFilter(name)}
-        const onUpdate = (name, val) => {state.updateFilterValue(name, val)}
+        const onUpdate = (name, val) => {state.updateFilterValue(state.currentView, name, val)}
         const ctrl = this.renderControl(filter, name, state, onHide, onUpdate)
         rows.push(ctrl)
       }

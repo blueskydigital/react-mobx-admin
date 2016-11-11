@@ -23,9 +23,9 @@ export const App = observer( ({ state }) => {
           <Toolbar>
             <ToolbarGroup firstChild={true}>
               <FlatButton onTouchTap={() => state.showLogin()}>SampleAPp</FlatButton>
-              <FlatButton onTouchTap={() => state.showEntityList('posts')}>Posts</FlatButton>
-              <FlatButton onTouchTap={() => state.showEntityList('posts', {filters: {"category":"tech"}})}>Tech Posts</FlatButton>
-              <FlatButton onTouchTap={() => state.showEntityList('tags')}>Tags</FlatButton>
+              <FlatButton onTouchTap={() => state.showPostList()}>Posts</FlatButton>
+              <FlatButton onTouchTap={() => state.showPostList({filters: {"category":"tech"}})}>Tech Posts</FlatButton>
+              <FlatButton onTouchTap={() => state.showTagList('tags')}>Tags</FlatButton>
               <FlatButton onTouchTap={() => state.changeLang()}>ChangeLang</FlatButton>
             </ToolbarGroup>
             <ToolbarGroup>
@@ -51,9 +51,9 @@ import LoginPage from './login'
 function renderCurrentView(state) {
   switch (state.currentView.name) {
     case 'login': return <LoginPage state={state} afterLogin={()=>state.showEntityList('posts')} />
-    case 'posts_list': return <PostListPage state={state} />
-    case 'posts_detail': return <PostEditPage state={state} />
-    case 'tags_list': return <TagsListPage state={state} />
-    case 'tags_detail': return <TagsEditPage state={state} />
+    case 'post_list': return <PostListPage state={state} />
+    case 'post_detail': return <PostEditPage state={state} />
+    case 'tag_list': return <TagsListPage state={state} />
+    case 'tag_detail': return <TagsEditPage state={state} />
   }
 }

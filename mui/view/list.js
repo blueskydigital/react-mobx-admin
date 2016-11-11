@@ -13,11 +13,11 @@ export default class MUIListView extends React.Component {
 
   onSelectionChange(selection) {
     if(selection === 'all') {
-      this.props.state.selectAll()
+      this.props.state.selectAll(this.props.state.currentView)
     } else if(selection === 'none') {
-      this.props.state.updateSelection([])
+      this.props.state.updateSelection(this.props.state.currentView, [])
     } else {
-      this.props.state.updateSelection(selection)
+      this.props.state.updateSelection(this.props.state.currentView, selection)
     }
   }
 
@@ -37,24 +37,24 @@ export default class MUIListView extends React.Component {
     const title = state.currentView.title ? <CardTitle title={state.currentView.title} /> : null
     const filters = (this.filters && ! loading) ? (
       <Filters.Controls state={state}
-        hideFilter={(filter)=>state.hideFilter(filter)} filters={this.filters} />
+        hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} filters={this.filters} />
     ) : null
     const grid = (loading) ? <CircularProgress color="#fff" /> : (
       <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
         titles={state.currentView.headertitles} fields={this.fields}
         rowId={(row)=>row[state.currentView.pkName]}
         listActions={this.listActions ? this.listActions.bind(this) : undefined}
-        onSort={(field, dir)=>state.updateSort(field, dir)} sortstate={state.currentView}
+        onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)} sortstate={state.currentView}
         onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
     )
-    const pagination = (loading) ? null : <Pagination state={state} onChange={(page)=>state.updatePage(page)} />
+    const pagination = (loading) ? null : <Pagination state={state} onChange={(page)=>state.updatePage(state.currentView, page)} />
     const actions = (loading) ? null : (
       <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-        <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters()} />
+        <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(state.currentView)} />
         {this.batchActions && (<DatagridActions state={state} actions={this.batchActions} />)}
         {this.filters && (
           <Filters.Dropdown state={state} title="addfilter" filters={this.filters}
-            showFilter={(filter)=>state.showFilter(filter)} />
+            showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
         )}
         <FlatButton label={state.currentView.addText} icon={<AddIcon />}
           onTouchTap={()=>state.showEntityDetail(state.currentView.entityName)} />
