@@ -17,6 +17,10 @@ import MUIListView from 'react-mobx-admin/mui/view/list'
 @observer
 class TagListView extends MUIListView {
 
+  static defaultProps = {
+    onAddClicked: (state) => state.showTagDetail('_new')
+  }
+
   batchActions(state) {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {

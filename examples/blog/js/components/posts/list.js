@@ -26,6 +26,10 @@ class TagField extends OptionsField {
 @observer
 class PostListView extends MUIListView {
 
+  static defaultProps = {
+    onAddClicked: (state) => state.showPostDetail('_new')
+  }
+
   batchActions(state) {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected items?`)) {

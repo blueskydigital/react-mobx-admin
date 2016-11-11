@@ -13,9 +13,12 @@ export default class DataManipState {
       entity_loading: false
     })
     if(id === '_new') {
-      this._loadCreateData(entityName)
+      return new Promise((resolve, reject) => {
+        this._loadCreateData(entityName)
+        resolve(view.entity)
+      })
     } else {
-      this._loadEditData(entityName, id)
+      return this._loadEditData(entityName, id)
     }
   }
 
