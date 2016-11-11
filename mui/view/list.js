@@ -22,7 +22,7 @@ export default class MUIListView extends React.Component {
   }
 
   render() {
-    const { state } = this.props
+    const { state, onAddClicked } = this.props
 
     function isSelected(idx) {
       return state.currentView.selection.indexOf(idx) >= 0
@@ -57,7 +57,7 @@ export default class MUIListView extends React.Component {
             showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
         )}
         <FlatButton label={state.currentView.addText} icon={<AddIcon />}
-          onTouchTap={()=>state.showEntityDetail(state.currentView.entityName)} />
+          onTouchTap={() => onAddClicked(state)} />
       </CardActions>
     )
 
