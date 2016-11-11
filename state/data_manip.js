@@ -14,27 +14,26 @@ export default class DataManipState {
     })
     if(id === '_new') {
       return new Promise((resolve, reject) => {
-        this._loadCreateData(entityName)
+        this._loadCreateData(view, entityName)
         resolve(view.entity)
       })
     } else {
-      return this._loadEditData(entityName, id)
+      return this._loadEditData(view, entityName, id)
     }
   }
 
-  _loadEditData(entityName, id) {
-    this.currentView.entity_loading = true
+  _loadEditData(view, entityName, id) {
+    view.entity_loading = true
 
     return this.requester.getEntry(entityName, id).then((data) => {
-      this.currentView.entity && this.currentView.entity.merge(data)
-      this.currentView.entity_loading = false
-      // call handler if exists. TODO: Subject to change
-      this.onEntityLoaded && this.onEntityLoaded(this.currentView.entity)
+      view.entity && view.entity.merge(data)
+      view.entity_loading = false
+      return view.entity
     })
   }
 
-  _loadCreateData(fields) {
-    this.currentView.entity.clear()
+  _loadCreateData(view, fields) {
+    view.entity.clear()
   }
 
   _validateField(fieldName, value, validators) {
