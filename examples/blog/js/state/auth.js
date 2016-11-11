@@ -44,7 +44,6 @@ export default class AuthStore extends DataTableState {
 
   @action performLogin(credentials) {
     let self = this
-    this.incRecCount()
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         self.loggedUser = {
@@ -52,7 +51,6 @@ export default class AuthStore extends DataTableState {
           name: 'gandalf the gray'
         }
         localStorage.setItem('gandalf_admin_user', JSON.stringify(self.loggedUser))
-        this.decRecCount()
         resolve(toJS(self.loggedUser))
       }, Math.random() * 2000 + 1000)
     })
