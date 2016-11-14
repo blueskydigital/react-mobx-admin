@@ -4,12 +4,11 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 
 const SelectInput = ({
   attr, labelattr, valueattr, label, record,
-  optionsrecord, optionsattr, errors
+  optionsrecord, optionsattr, errors, onChange
 }) => {
 
-  function handleChange(event, index, value) {
-    const { attr } = this.props
-    this.props.onChange(attr, value)
+  function handleChange(evt) {
+    onChange(attr, evt.target.value)
   }
 
   function renderOptions(options, labelattr, valueattr) {

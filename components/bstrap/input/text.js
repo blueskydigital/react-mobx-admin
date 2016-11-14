@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap'
 
 const TextInput = ({attr, record, label, onChange, errors}, ...rest) => {
 
@@ -8,10 +9,16 @@ const TextInput = ({attr, record, label, onChange, errors}, ...rest) => {
   }
 
   const errorText = errors ? errors.get(attr) : undefined
+  const validationState = errorText ? 'error' : 'success'
   const value = record.get(attr)
-  // TODO: errorText={errorText}
   return (
-    <input name={attr} value={value || ''} onChange={handleChange} {...rest} />
+    <FormGroup controlId={attr} validationState={validationState}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl componentClass="input" name={attr} value={value || ''}
+        onChange={handleChange} {...rest} />
+      <FormControl.Feedback />
+      {errorText ? <HelpBlock>{errorText}</HelpBlock> : null}
+    </FormGroup>
   )
 }
 
