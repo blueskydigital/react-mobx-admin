@@ -4,7 +4,7 @@ import FlatButton from 'material-ui/FlatButton'
 import ChevronLeft from 'material-ui/svg-icons/navigation/chevron-left'
 import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right'
 import { Toolbar, ToolbarGroup } from 'material-ui/Toolbar'
-import PaginationBase from '../../components/datagrid/pagination'
+import PaginationBase from '../../common/datagrid/pagination'
 
 const buttonStyle = { margin: '10px 0' }
 

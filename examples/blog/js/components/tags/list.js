@@ -6,13 +6,13 @@ import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 
-import TextField from 'react-mobx-admin/components/field/text'
-import DateField from 'react-mobx-admin/components/field/date'
-import OptionsField from 'react-mobx-admin/components/field/opts'
-import MultivalueField from 'react-mobx-admin/components/field/multivalue'
-import MUIBoolField from 'react-mobx-admin/mui/field/bool'
-import TextInput from 'react-mobx-admin/mui/input/text'
-import MUIListView from 'react-mobx-admin/mui/view/list'
+import TextField from 'react-mobx-admin/components/common/field/text'
+import DateField from 'react-mobx-admin/components/common/field/date'
+import OptionsField from 'react-mobx-admin/components/common/field/opts'
+import MultivalueField from 'react-mobx-admin/components/common/field/multivalue'
+import MUIBoolField from 'react-mobx-admin/components/mui/field/bool'
+import TextInput from 'react-mobx-admin/components/mui/input/text'
+import MUIListView from 'react-mobx-admin/components/mui/view/list'
 
 @observer
 class TagListView extends MUIListView {

@@ -1,10 +1,10 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import TextInput from 'react-mobx-admin/mui/input/text'
-import DateInput from 'react-mobx-admin/mui/input/date'
-import MarkdownInput from 'react-mobx-admin/mui/input/markdown'
-import SelectInput from 'react-mobx-admin/mui/input/select'
-import MUIEditView from 'react-mobx-admin/mui/view/edit'
+import TextInput from 'react-mobx-admin/components/mui/input/text'
+import DateInput from 'react-mobx-admin/components/mui/input/date'
+import MarkdownInput from 'react-mobx-admin/components/mui/input/markdown'
+import SelectInput from 'react-mobx-admin/components/mui/input/select'
+import MUIEditView from 'react-mobx-admin/components/mui/view/edit'
 
 @observer
 class PostEditView extends MUIEditView {

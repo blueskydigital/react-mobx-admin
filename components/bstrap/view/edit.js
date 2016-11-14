@@ -1,6 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import EditFormBase from '../../components/edit/form'
+import EditFormBase from '../../common/edit/form'
 
 const SubmitButton = observer(({ errors, text, onSubmit }) => (
   errors ? (

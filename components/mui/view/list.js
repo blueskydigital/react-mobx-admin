@@ -1,11 +1,15 @@
 import React from 'react'
+import { Card, CardTitle, CardActions } from 'material-ui/Card'
+import CircularProgress from 'material-ui/CircularProgress'
+import FlatButton from 'material-ui/FlatButton'
+import AddIcon from 'material-ui/svg-icons/content/add'
 import Datagrid from '../datagrid/datagrid'
 import Filters from '../datagrid/filters'
 import Pagination from '../datagrid/pagination'
-import DatagridActions from '../../components/datagrid/actions'
+import DatagridActions from '../../common/datagrid/actions'
 
 
-export default class BStrapListView extends React.Component {
+export default class MUIListView extends React.Component {
 
   onSelectionChange(selection) {
     if(selection === 'all') {
@@ -27,14 +31,15 @@ export default class BStrapListView extends React.Component {
     const loading = (! state.currentView.items) || state.currentView.items.length === 0
 
     if(loading) {
-      return <span>loading</span>
+      return <CircularProgress />
     }
 
+    const title = state.currentView.title ? <CardTitle title={state.currentView.title} /> : null
     const filters = (this.filters && ! loading) ? (
       <Filters.Controls state={state}
         hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} filters={this.filters} />
     ) : null
-    const grid = (
+    const grid = (loading) ? <CircularProgress color="#fff" /> : (
       <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
         titles={state.currentView.headertitles} fields={this.fields}
         rowId={(row)=>row[state.currentView.pkName]}
@@ -42,35 +47,29 @@ export default class BStrapListView extends React.Component {
         onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)} sortstate={state.currentView}
         onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
     )
+    const pagination = (loading) ? null : <Pagination state={state} onChange={(page)=>state.updatePage(state.currentView, page)} />
+    const actions = (loading) ? null : (
+      <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
+        <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(state.currentView)} />
+        {this.batchActions && (<DatagridActions state={state} actions={this.batchActions} />)}
+        {this.filters && (
+          <Filters.Dropdown state={state} title="addfilter" filters={this.filters}
+            showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
+        )}
+        <FlatButton label={state.currentView.addText} icon={<AddIcon />}
+          onTouchTap={() => onAddClicked(state)} />
+      </CardActions>
+    )
 
     const result = (
-      <div className="card">
-        <div className="card-block">
-          <div className="pull-right">
-            <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(state.currentView)} />
-            {this.batchActions && (<DatagridActions state={state} actions={this.batchActions} />)}
-            {this.filters && (
-              <Filters.Dropdown state={state} title="addfilter" filters={this.filters}
-                showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
-            )}
-            <button type="button" className="btn btn-primary"
-              onClick={()=>onAddClicked(state)}>{state.currentView.addText || '+'}</button>
-          </div>
-          {state.currentView.title ? <h4 className="card-title">{state.currentView.title}</h4> : null}
-        </div>
+      <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
+        { actions }
+
+        { title }
         { filters }
-        <div className="card-block">
-          { grid }
-        </div>
-        <div className="card-block">
-          <div className="pull-right">
-            <Pagination.Pagination state={state} onChange={(page)=>state.updatePage(state.currentView, page)} />
-          </div>
-          <div className="pull-left">
-            <Pagination.PageInfo info={state.currentView} />
-          </div>
-        </div>
-      </div>
+        { grid }
+        { pagination }
+      </Card>
     )
 
     return this.renderOuter ? this.renderOuter(result) : result

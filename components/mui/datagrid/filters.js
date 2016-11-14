@@ -7,7 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { CardText } from 'material-ui/Card'
 import ActionHide from 'material-ui/svg-icons/action/highlight-off'
-import FilterBases from '../../components/datagrid/filters'
+import FilterBases from '../../common/datagrid/filters'
 
 // dropdown with available filters
 @observer

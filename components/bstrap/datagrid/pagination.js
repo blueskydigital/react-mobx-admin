@@ -1,6 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import PaginationBase from '../../components/datagrid/pagination'
+import PaginationBase from '../../common/datagrid/pagination'
 
 @observer
 class Pagination extends PaginationBase {

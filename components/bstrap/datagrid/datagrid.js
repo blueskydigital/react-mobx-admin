@@ -1,8 +1,8 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import { Checkbox } from 'react-bootstrap'
-import DatagridBase from '../../components/datagrid/datagrid'
-import HeaderBase from '../../components/datagrid/header'
+import DatagridBase from '../../common/datagrid/datagrid'
+import HeaderBase from '../../common/datagrid/header'
 
 
 class BStrapHeader extends HeaderBase {

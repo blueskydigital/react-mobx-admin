@@ -4,8 +4,8 @@ import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn
 } from 'material-ui/Table'
 import ContentSort from 'material-ui/svg-icons/content/sort'
-import DatagridBase from '../../components/datagrid/datagrid'
-import HeaderBase from '../../components/datagrid/header'
+import DatagridBase from '../../common/datagrid/datagrid'
+import HeaderBase from '../../common/datagrid/header'
 
 
 class MUIHeader extends HeaderBase {

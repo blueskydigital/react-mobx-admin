@@ -1,7 +1,7 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import FilterBases from '../../components/datagrid/filters'
+import FilterBases from '../../common/datagrid/filters'
 
 // dropdown with available filters
 @observer
@@ -13,7 +13,7 @@ class Dropdown extends FilterBases.DropdownBase {
     )
   }
 
-  renderMenu(state, filters) {    
+  renderMenu(state, filters) {
     return (
       <DropdownButton title="Dropdown" id="bg-nested-dropdown">
         {this.createItems(state, filters)}
