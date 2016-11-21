@@ -130,7 +130,7 @@ export default class DataTableState extends DataManipState {
       filters: toJS(view.filters),
       perPage: view.perPage
     }).then((result) => {
-      transaction(() => {
+      result && transaction(() => {
         view.totalItems = result.totalItems
         view.items && view.items.replace(result.data)
       })
