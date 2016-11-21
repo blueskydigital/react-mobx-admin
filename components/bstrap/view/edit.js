@@ -4,7 +4,7 @@ import EditFormBase from '../../common/edit/form'
 
 const SubmitButton = observer(({ errors, text, onSubmit }) => (
   errors ? (
-    <button disabled={errors.size > 0} onClick={onSubmit}>{text}</button>
+    <button type="button" className="btn btn-primary" disabled={errors.size > 0} onClick={onSubmit}>{text}</button>
   ) : null
 ))
 
@@ -29,11 +29,20 @@ export default class MUIEditView extends EditFormBase {
       (state.currentView.createtitle || 'create new item')
     const saveText = state.currentView.saveText || 'SAVE'
 
+    const actionButtons = (
+      <div className="btn-group" role="group">
+        <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={saveText} />
+        <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.currentView.errors}
+          text={state.currentView.saveAndReturnText || 'SAVE and return'} />
+        <button type="button" className="btn btn-secondary" onClick={this.onCancel.bind(this)}>cancel</button>
+      </div>
+    )
+
     return (
       <div className="card">
         <div className="card-block">
           <h4 className="card-title">{title}</h4>
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={saveText} />
+          { actionButtons }
         </div>
 
         <div className="card-block">
@@ -41,10 +50,7 @@ export default class MUIEditView extends EditFormBase {
         </div>
 
         <div className="card-block">
-          <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={saveText} />
-          <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.currentView.errors}
-            text={state.currentView.saveAndReturnText || 'SAVE and return'} />
-          <button onClick={this.onCancel.bind(this)}>cancel</button>
+          { actionButtons }
         </div>
       </div>
     )
