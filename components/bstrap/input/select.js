@@ -7,8 +7,15 @@ const SelectInput = ({
   optionsrecord, optionsattr, errors, onChange
 }) => {
 
+  const errorText = errors ? errors.get(attr) : undefined
+  const value = record.get(attr)
+  const options = optionsrecord.get(optionsattr || attr)
+  valueattr = valueattr || 'value'
+
   function handleChange(evt) {
-    onChange(attr, evt.target.value)
+    const foundOpt = options
+      .find((i) => i[valueattr].toString() === evt.target.value)
+    onChange(attr, foundOpt[valueattr])
   }
 
   function renderOptions(options, labelattr, valueattr) {
@@ -22,15 +29,13 @@ const SelectInput = ({
     return opts
   }
 
-  const errorText = errors ? errors.get(attr) : undefined
-  const value = record.get(attr)
-  const options = optionsrecord.get(optionsattr || attr)
   const renderedOpts = options && options.length &&
-    renderOptions(options, labelattr || 'label', valueattr || 'value')
+    renderOptions(options, labelattr || 'label', valueattr)
   return (
     <FormGroup controlId={attr}>
       <ControlLabel>{label}</ControlLabel>
-      <FormControl componentClass="select" placeholder="select" onChange={handleChange}>
+      <FormControl componentClass="select" placeholder="select"
+        value={value || ''} onChange={handleChange}>
         {renderedOpts}
       </FormControl>
     </FormGroup>
