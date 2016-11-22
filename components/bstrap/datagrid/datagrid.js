@@ -41,12 +41,24 @@ class BStrapDatagrid extends DatagridBase {
     )
   }
 
+  _onSelectAll(e) {
+    e.target.checked ?
+      this.props.onRowSelection('all') :
+      this.props.onRowSelection([])
+  }
+
   renderHeaders() {
-    const { isSelected, onRowSelection } = this.props
+    const { isSelected, onRowSelection, allSelected } = this.props
     const selectable = onRowSelection !== undefined && isSelected !== undefined
     return (
       <thead>
-        <tr>{this.buildHeaders()}</tr>
+        <tr>
+          { selectable ? <td key="chbox">
+            <Checkbox checked={allSelected} inline={true}
+              onChange={this._onSelectAll.bind(this)}></Checkbox>
+          </td> : null }
+          {this.buildHeaders()}
+        </tr>
       </thead>
     )
   }
@@ -62,7 +74,17 @@ class BStrapDatagrid extends DatagridBase {
           {items.map((r, i) => {
             const id = rowId(r)
             const selected = selectable && isSelected(i)
-            return (<tr selected={selected} key={i}>{this.buildCells(r, id)}</tr>)
+            return (
+              <tr selected={selected} key={i}>
+                { selectable ?
+                <td key="chbox">
+                  <Checkbox checked={selected} inline={true}
+                    onChange={() => onRowSelection(i)}></Checkbox>
+                </td>
+                : null }
+                {this.buildCells(r, id)}
+              </tr>
+            )
           })}
         </tbody>
       </table>

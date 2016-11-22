@@ -10,10 +10,11 @@ export default class BStrapListView extends React.Component {
   onSelectionChange(selection) {
     if(selection === 'all') {
       this.props.state.selectAll(this.props.state.currentView)
-    } else if(selection === 'none') {
+    } else if(selection === []) {
       this.props.state.updateSelection(this.props.state.currentView, [])
-    } else {
-      this.props.state.updateSelection(this.props.state.currentView, selection)
+    } else { // we have receive index of selected item
+      // so toggle the selection of da index
+      this.props.state.toggleIndex(this.props.state.currentView, selection)
     }
   }
 
@@ -30,6 +31,8 @@ export default class BStrapListView extends React.Component {
       return <span>loading</span>
     }
 
+    const allSelected = state.currentView.selection.length === state.currentView.items.length
+
     const filters = (this.filters && ! loading) ? (
       <Filters.Controls state={state}
         hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} filters={this.filters} />
@@ -40,7 +43,8 @@ export default class BStrapListView extends React.Component {
         rowId={(row)=>row[state.currentView.pkName]}
         listActions={this.listActions ? this.listActions.bind(this) : undefined}
         onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)} sortstate={state.currentView}
-        onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected} />
+        onRowSelection={this.onSelectionChange.bind(this)} isSelected={isSelected}
+        allSelected={allSelected} />
     )
 
     const result = (

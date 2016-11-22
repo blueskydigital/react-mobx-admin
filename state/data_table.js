@@ -72,6 +72,13 @@ export default class DataTableState extends DataManipState {
     view.selection = data
   }
 
+  @action toggleIndex(view, idx) {
+    const removed = view.selection.remove(idx)
+    if(! removed) {
+      view.selection.push(idx)
+    }
+  }
+
   @action selectAll(view) {
     view.selection = view.items.map((i, idx) => idx)
   }
