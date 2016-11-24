@@ -12,13 +12,13 @@ export default class DataManipState {
       errors: asMap({}),
       entity_loading: false
     })
-    if(id === '_new') {
+    if(id) {  // load for edit existing
+      return this._loadEditData(view, entityName, id)
+    } else {  // create
       return new Promise((resolve, reject) => {
         this._loadCreateData(view, entityName)
         resolve(view.entity)
       })
-    } else {
-      return this._loadEditData(view, entityName, id)
     }
   }
 

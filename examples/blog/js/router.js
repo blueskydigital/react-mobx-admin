@@ -21,13 +21,13 @@ export function startRouter(store) {
   }
 
   page('/entity/posts/:id', _is_logged, (ctx) => {
-    store.showPostDetail(ctx.params.id)
+    store.showPostDetail(ctx.params.id === '_new' ? null : ctx.params.id)
   })
   page('/entity/posts', _is_logged, _parse_query, (ctx) => {
     store.showPostList(ctx.parsedQuery)
   })
   page('/entity/tags/:id', _is_logged, ctx => {
-    store.showTagDetail(ctx.params.id)
+    store.showTagDetail(ctx.params.id === '_new' ? null : ctx.params.id)
   })
   page('/entity/tags', _is_logged, _parse_query, (ctx) => {
     store.showTagList(ctx.parsedQuery)

@@ -23,6 +23,7 @@ export default (BaseClass) => class PostsStore extends BaseClass {
     this.currentView = {
       name: 'post_detail',
       edittitle: 'edit a nice post',
+      createtitle: 'add very interresting post ..',
       validators: {
         'title': [
           {fn: (val) => (val.length === 0), message: this.__('title must be provided')},

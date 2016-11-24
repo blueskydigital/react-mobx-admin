@@ -23,14 +23,11 @@ class TagField extends OptionsField {
   }
 }
 
-@observer
-class PostListView extends MUIListView {
+const PostListView = ({state}) => {
 
-  static defaultProps = {
-    onAddClicked: (state) => state.showPostDetail('_new')
-  }
+  const onAddClicked = (state) => state.showPostDetail(null)
 
-  batchActions(state) {
+  const batchActions = (state) => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected items?`)) {
         state.deleteSelected(state.currentView)
@@ -43,8 +40,7 @@ class PostListView extends MUIListView {
     )
   }
 
-  listActions(row) {
-    const { state } = this.props
+  const listActions = (row) => {
     function _deleteRow(row) {
       if(confirm(`Are you sure you want to delete ${row.title}?`)) {
         state.deleteData(state.currentView, [row])
@@ -57,29 +53,33 @@ class PostListView extends MUIListView {
     ) : null
   }
 
-  fields = [
+  const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      const { state } = this.props
       const onTT = () => state.showPostDetail(row[state.currentView.pkName])
       return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT}/>)
     },
     (attr, row) => (
-      <OptionsField attr={attr} record={row} optionsrecord={this.props.state.options} optionsattr={'categories'} />
+      <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
     ),
     (attr, row) => (<DateField attr={attr} record={row} />),
     (attr, row) => (<MultivalueField attr={attr} record={row} itemRenderer={
       (item, idx, arr) => (
-        <TagField key={idx} attr={idx} record={arr} optionsrecord={this.props.state.options} optionsattr={'tags'}
+        <TagField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'tags'}
           labelattr={'name'} valueattr={'id'} />
       )
     } />)
   ]
 
-  filters = {
+  const filters = {
     'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
   }
 
+  return (
+    <MUIListView state={state} fields={fields} listActions={listActions}
+      batchActions={batchActions} onAddClicked={onAddClicked} />
+  )
+
 }
 
-export default PostListView
+export default observer(PostListView)

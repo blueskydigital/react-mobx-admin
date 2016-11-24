@@ -14,14 +14,11 @@ import MUIBoolField from 'react-mobx-admin/components/mui/field/bool'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
 import MUIListView from 'react-mobx-admin/components/mui/view/list'
 
-@observer
-class TagListView extends MUIListView {
+const TagListView = ({state}) => {
 
-  static defaultProps = {
-    onAddClicked: (state) => state.showTagDetail('_new')
-  }
+  const onAddClicked = () => state.showTagDetail(null)
 
-  batchActions(state) {
+  const batchActions = () => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
         state.deleteSelected(state.currentView)
@@ -34,16 +31,21 @@ class TagListView extends MUIListView {
     )
   }
 
-  fields = [
+  const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      const { state } = this.props
       const onTT = () => state.showTagDetail(row[state.currentView.pkName])
       return <TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT} />
     },
     (attr, row) => (<MUIBoolField attr={attr} record={row} />)
   ]
 
+  return (
+    <MUIListView state={state} fields={fields}
+      batchActions={batchActions} onAddClicked={onAddClicked} />
+
+  )
+
 }
 
-export default TagListView
+export default observer(TagListView)
