@@ -71,7 +71,7 @@ class BStrapDatagrid extends DatagridBase {
       <table className="table table-sm">
         {header}
         <tbody>
-          {items.map((r, i) => {
+          {items && items.length > 0 ? items.map((r, i) => {
             const id = rowId(r)
             const selected = selectable && isSelected(i)
             return (
@@ -85,7 +85,7 @@ class BStrapDatagrid extends DatagridBase {
                 {this.buildCells(r, id)}
               </tr>
             )
-          })}
+          }) : <tr><td>no records</td></tr>}
         </tbody>
       </table>
     )
