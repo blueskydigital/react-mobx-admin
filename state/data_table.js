@@ -135,7 +135,8 @@ export default class DataTableState extends DataManipState {
       sortField: view.sortField,
       sortDir: view.sortDir,
       filters: toJS(view.filters),
-      perPage: view.perPage
+      perPage: view.perPage,
+      extraparams: view.extraparams
     }).then((result) => {
       result && transaction(() => {
         view.totalItems = result.totalItems
