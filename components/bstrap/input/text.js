@@ -2,7 +2,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap'
 
-const TextInput = ({attr, record, label, onChange, errors}, ...rest) => {
+const TextInput = ({attr, record, label, onChange, errors, ...rest}) => {
 
   function handleChange(event) {
     onChange(attr, event.target.value)
