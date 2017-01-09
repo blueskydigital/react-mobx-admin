@@ -21,7 +21,7 @@ export default class MUIEditView extends EditFormBase {
     const loading = (! state.currentView.entity) || state.currentView.entity_loading
 
     if(loading) {
-      return <span>loading</span>
+      return <span className="is-loading">loading</span>
     }
 
     const title = state.currentView.originEntityId ?
@@ -34,7 +34,7 @@ export default class MUIEditView extends EditFormBase {
         <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={saveText} />
         <SubmitButton onSubmit={this.onSaveAndReturn2list.bind(this)} errors={state.currentView.errors}
           text={state.currentView.saveAndReturnText || 'SAVE and return'} />
-        <button type="button" className="btn btn-secondary" onClick={this.onCancel.bind(this)}>cancel</button>
+        <button type="button" className="btn btn-secondary btn-default" onClick={this.onCancel.bind(this)}>cancel</button>
       </div>
     )
 

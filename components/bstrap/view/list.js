@@ -28,7 +28,7 @@ export default class BStrapListView extends React.Component {
     const loading = (! state.currentView.items) || state.currentView.items.length === 0
 
     if(loading) {
-      return <span>loading</span>
+      return <span className="is-loading">loading</span>
     }
 
     const allSelected = state.currentView.selection.length === state.currentView.items.length

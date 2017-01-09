@@ -53,10 +53,10 @@ class BStrapDatagrid extends DatagridBase {
     return (
       <thead>
         <tr>
-          { selectable ? <td key="chbox">
-            <Checkbox checked={allSelected} inline={true}
+          { selectable ? <th key="chbox">
+            <Checkbox checked={allSelected} inline={true} bsClass="btn"
               onChange={this._onSelectAll.bind(this)}></Checkbox>
-          </td> : null }
+          </th> : null }
           {this.buildHeaders()}
         </tr>
       </thead>
