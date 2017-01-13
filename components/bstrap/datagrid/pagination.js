@@ -16,9 +16,9 @@ class Pagination extends PaginationBase {
 
     const pageRange = this.range(page, perPage, totalItems).map(pageNum =>
       (pageNum === '.') ?
-        <span key={pageNum} style={{ padding: '1.2em' }}>&hellip;</span> :
-        <li key={pageNum} className="page-item">
-          <a className="page-link" href="#" onClick={this.onChange(pageNum)}>{pageNum}</a>
+        <span key={pageNum} style={{ padding: '1.2em' }}></span> :
+        <li key={pageNum} className={"page-item " + (page === pageNum ? "active" : "")}>
+          <a className="page-link" href="javascript:void(0)" onClick={this.onChange(pageNum)}>{pageNum}</a>
         </li>
     )
 
@@ -26,7 +26,7 @@ class Pagination extends PaginationBase {
       <ul className="pagination">
       {page > 1 &&
         <li key="prev" className="page-item">
-          <a className="page-link" href="#" aria-label="Previous" onClick={this.onChange(page - 1)}>
+          <a className="page-link" href="javascript:void(0)" aria-label="Previous" onClick={this.onChange(page - 1)}>
             <span aria-hidden="true">&laquo;</span>
             <span className="sr-only">Previous</span>
           </a>
@@ -35,7 +35,7 @@ class Pagination extends PaginationBase {
       {pageRange}
       {page !== nbPages &&
         <li key="next" className="page-item">
-          <a className="page-link" href="#" aria-label="Previous" onClick={this.onChange(page + 1)}>
+          <a className="page-link" href="javascript:void(0)" aria-label="Previous" onClick={this.onChange(page + 1)}>
             <span aria-hidden="true">&raquo;</span>
             <span className="sr-only">Previous</span>
           </a>
@@ -54,7 +54,7 @@ const PageInfo = observer(({info}) => {
   const offsetEnd = Math.min(page * perPage, totalItems)
   const offsetBegin = Math.min((page - 1) * perPage + 1, offsetEnd)
 
-  return (<span>{offsetBegin}-{offsetEnd} of {totalItems}</span>)
+  return (<p className="pagination">{offsetBegin}-{offsetEnd} of {totalItems}</p>)
 })
 
 export default { Pagination, PageInfo }
