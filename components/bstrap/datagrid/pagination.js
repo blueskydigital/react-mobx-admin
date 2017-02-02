@@ -15,8 +15,7 @@ class Pagination extends PaginationBase {
     const displayPagination = perPage < totalItems
 
     const pageRange = this.range(page, perPage, totalItems).map(pageNum =>
-      (pageNum === '.') ?
-        <span key={pageNum} style={{ padding: '1.2em' }}></span> :
+      (pageNum === '.') ? '' :
         <li key={pageNum} className={"page-item " + (page === pageNum ? "active" : "")}>
           <a className="page-link" href="javascript:void(0)" onClick={this.onChange(pageNum)}>{pageNum}</a>
         </li>
