@@ -13,11 +13,15 @@ export default class AuthStore extends DataTableState {
       this.loggedUser = observable(null)
     }
     // create requester here because we need to provide on401 callback for it ..
-    this.requester = new BlogRequester(this.on401.bind(this))
+    this.requester = new BlogRequester(this.on401.bind(this), this.onError.bind(this))
   }
 
   on401(err) {
     alert('we have to login!!')
+  }
+
+  onError(err) {
+    alert(err)
   }
 
   @observable loggedUser = null

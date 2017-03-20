@@ -3,10 +3,16 @@ import React from 'react'
 
 export default class EditFormBase extends React.Component {
 
+  _save() {
+    const savePromise = this.props.state.saveData()
+    const cv = this.props.state.currentView
+    cv.onSaved && savePromise.then(cv.onSaved())
+    return savePromise
+  }
+
   onSave(e) {
     e.preventDefault()
-    const saveOp = this.props.state.saveData()
-    this.onUpdated && saveOp.then(this.onUpdated.bind(this))
+    this._save()
   }
 
   updateField(name, value) {
@@ -15,15 +21,19 @@ export default class EditFormBase extends React.Component {
 
   onSaveAndReturn2list(e) {
     e.preventDefault()
-    this.props.state.saveData().then(this.onUpdated.bind(this))
-    .then(() => {
-      this.props.state.return2List(this.props.state.currentView)
+    this._save().then(() => {
+      this._return2List()
     })
+  }
+
+  _return2List() {
+    const cv = this.props.state.currentView
+    cv.onReturn2list && cv.onReturn2list()
   }
 
   onCancel(e) {
     e.preventDefault()
-    this.props.state.return2List(this.props.state.currentView)
+    this._return2List()
   }
 
   static propTypes = {

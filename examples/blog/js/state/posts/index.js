@@ -37,6 +37,9 @@ export default (BaseClass) => class PostsStore extends BaseClass {
     this.initEntity(this.currentView, 'posts', id)
     // this does not to be observable thats why it is out of da transaction
     this.currentView.onReturn2list = () => this.showPostList()
+    this.currentView.onSaved = () => {
+      this.addMessage('post successfully saved', 'info', 2000)
+    }
   }
 
 }

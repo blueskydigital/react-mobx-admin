@@ -2,12 +2,13 @@ import axios from 'axios'
 
 class DataRequester {
 
-  constructor(convertQuery, getTotalItems, on401, apiUrl) {
+  constructor(convertQuery, getTotalItems, on401, onError, apiUrl) {
     this.apiUrl = apiUrl
     this.convertQuery = convertQuery
     this.getTotalItems = getTotalItems
     this.authHeaders = {}
     this.on401 = on401
+    this.onError = onError
   }
 
   setDefaultHeaders(defHeaders) {
@@ -24,7 +25,7 @@ class DataRequester {
     if(err.response && err.response.status === 401) {
       this.on401(err)
     } else {
-      throw err // rethrow
+      this.onError(err)
     }
   }
 

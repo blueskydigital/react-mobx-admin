@@ -20,11 +20,6 @@ class SubmitButton extends React.Component {
 
 export default class MUIEditView extends EditFormBase {
 
-  onUpdated() {
-    const text = this.props.state.currentView.savedmessage || 'successfully saved'
-    const mess = this.props.state.addMessage(text, 'info', 2000)
-  }
-
   render() {
     const { state } = this.props
 
