@@ -25,24 +25,31 @@ export default (BaseClass) => class PostsStore extends BaseClass {
       edittitle: 'edit a nice post',
       createtitle: 'add very interresting post ..',
       validators: {
-        'title': [
-          {fn: (val) => (! val || val.length === 0), message: this.__('title must be provided')},
-          {fn: (val) => (! val || val.length > 10), message: this.__('title too long')},
-        ],
-        'content': [
-          {fn: (val) => (! val || val.length === 0), message: this.__('this is mandatory')}
-        ],
-        'category': [
-          {fn: (val) => (! val), message: this.__('category must be provided')},
-        ],
-        '_global': [{ // global validators
-          fn: (val) => {
-            const published_at = this.currentView.entity.get('published_at')
-            const unpublished_at = this.currentView.entity.get('unpublished_at')
-            return published_at && unpublished_at && published_at > unpublished_at
-          },
-          message: this.__('published must be less than unpublished')
-        }]
+        'title': (val) => {
+          if (!val || val.length === 0) {
+            return this.__('title must be provided')
+          }
+          if (val.length > 10) {
+            return this.__('title too long')
+          }
+        },
+        'content': (val) => {
+          if (!val || val.length === 0) {
+            return this.__('content must be provided')
+          }
+        },
+        'category': (val) => {
+          if (! val) {
+            return this.__('category must be provided')
+          }
+        },
+        '_global': (val) => { // global validator
+          const published_at = this.currentView.entity.get('published_at')
+          const unpublished_at = this.currentView.entity.get('unpublished_at')
+          if (published_at && unpublished_at && published_at > unpublished_at) {
+            return [this.__('published must be less than unpublished')]
+          }
+        }
       }
     }
     this.initEntity(this.currentView, 'posts', id)

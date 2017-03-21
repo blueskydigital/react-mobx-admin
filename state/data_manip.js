@@ -45,17 +45,12 @@ export default class DataManipState {
     }
   }
 
-  _validateField(fieldName, value, validators) {
-    let errors = []
-    validators.map((v) => {
-      if(v.fn(value) === true) {
-        errors.push(v.message)
-      }
-    })
-    if(errors.length === 0 && this.currentView.errors.has(fieldName)) {
+  _validateField(fieldName, value, validatorFn) {
+    const error = validatorFn(value)
+    if(error === undefined && this.currentView.errors.has(fieldName)) {
       this.currentView.errors.delete(fieldName)
-    } else if (errors.length > 0) {
-      this.currentView.errors.set(fieldName, errors)
+    } else if (error !== undefined) {
+      this.currentView.errors.set(fieldName, error)
     }
   }
 

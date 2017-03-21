@@ -20,10 +20,14 @@ export default (BaseClass) => class TagsStore extends BaseClass {
       this.currentView = {
         name: 'tag_detail',
         validators: {
-          'name': [
-            {fn: (val) => (val.length === 0), message: this.__('value must be provided')},
-            {fn: (val) => (val.length > 10), message: this.__('value too long')},
-          ]
+          'name': (val) => {
+            if (!val || val.length === 0) {
+              return this.__('value must be provided')
+            }
+            if(val.length > 10) {
+              return this.__('value too long')
+            }
+          }
         }
       }
       this.initEntity(this.currentView, 'tags', id)
