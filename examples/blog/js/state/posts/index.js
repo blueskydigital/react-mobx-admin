@@ -26,12 +26,23 @@ export default (BaseClass) => class PostsStore extends BaseClass {
       createtitle: 'add very interresting post ..',
       validators: {
         'title': [
-          {fn: (val) => (val.length === 0), message: this.__('title must be provided')},
-          {fn: (val) => (val.length > 10), message: this.__('title too long')},
+          {fn: (val) => (! val || val.length === 0), message: this.__('title must be provided')},
+          {fn: (val) => (! val || val.length > 10), message: this.__('title too long')},
         ],
         'content': [
-          {fn: (val) => (val.length === 0), message: this.__('this is mandatory')}
-        ]
+          {fn: (val) => (! val || val.length === 0), message: this.__('this is mandatory')}
+        ],
+        'category': [
+          {fn: (val) => (! val), message: this.__('category must be provided')},
+        ],
+        '_global': [{ // global validators
+          fn: (val) => {
+            const published_at = this.currentView.entity.get('published_at')
+            const unpublished_at = this.currentView.entity.get('unpublished_at')
+            return published_at && unpublished_at && published_at > unpublished_at
+          },
+          message: this.__('published must be less than unpublished')
+        }]
       }
     }
     this.initEntity(this.currentView, 'posts', id)

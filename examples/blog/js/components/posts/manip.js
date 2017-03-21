@@ -21,11 +21,14 @@ class PostEditView extends MUIEditView {
             <SelectInput label={state.__('Category')} attr={'category'} record={entity}
               optionsrecord={state.options}
               optionsattr={'categories'}
-              onChange={updateField} />
+              onChange={updateField}
+              errors={state.currentView.errors} />
           </div>
           <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <DateInput label={state.__('published')} attr={'published_at'} record={entity}
-              onChange={updateField} /><br/>
+              onChange={updateField} errors={state.currentView.errors} /><br/>
+            <DateInput label={state.__('unpublished')} attr={'unpublished_at'} record={entity}
+              onChange={updateField} errors={state.currentView.errors} /><br/>
           </div>
         </div>
         <div className="row">

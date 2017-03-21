@@ -18,6 +18,12 @@ class SubmitButton extends React.Component {
   }
 }
 
+const GlobalErrors = observer(({errors}) => {
+  return errors ? (
+    <ul>{errors.map((e, idx) => (<li key={idx} style={{color: 'red'}}>{e}</li>))}</ul>
+  ) : null
+})
+
 export default class MUIEditView extends EditFormBase {
 
   render() {
@@ -42,7 +48,10 @@ export default class MUIEditView extends EditFormBase {
 
         <CardTitle title={title} subtitle={state.currentView.desc} />
 
-        <form style={{ padding: '0 1em 1em 1em' }}>{this.renderForm(state)}</form>
+        <form style={{ padding: '0 1em 1em 1em' }}>
+          {this.renderForm(state)}
+          <GlobalErrors errors={state.currentView.errors.get('_global')} />
+        </form>
 
         <CardActions>
           <SubmitButton onSubmit={this.onSave.bind(this)} errors={state.currentView.errors} text={saveText} />

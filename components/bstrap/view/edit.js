@@ -8,6 +8,12 @@ const SubmitButton = observer(({ errors, text, onSubmit }) => (
   ) : null
 ))
 
+const GlobalErrors = observer(({errors}) => {
+  return errors ? (
+    <ul>{errors.map((e, idx) => (<li key={idx} style={{color: 'red'}}>{e}</li>))}</ul>
+  ) : null
+})
+
 export default class MUIEditView extends EditFormBase {
 
   render() {
@@ -42,6 +48,7 @@ export default class MUIEditView extends EditFormBase {
 
         <div className="card-block">
           <form>{this.renderForm(state)}</form>
+          <GlobalErrors errors={state.currentView.errors.get('_global')} />
         </div>
 
         <div className="card-block">

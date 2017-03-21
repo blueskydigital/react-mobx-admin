@@ -27,12 +27,22 @@ export default class DataManipState {
     return this.requester.getEntry(entityName, id).then((data) => {
       view.entity && view.entity.merge(data)
       view.entity_loading = false
+      this._runValidators()
       return view.entity
     })
   }
 
   _loadCreateData(view, fields) {
     view.entity.clear()
+    this._runValidators()
+  }
+
+  _runValidators() {
+    for (let fieldName in this.currentView.validators) {
+      const value = this.currentView.entity.get(fieldName)
+      const fieldValidators = this.currentView.validators[fieldName]
+      fieldValidators && this._validateField(fieldName, value, fieldValidators)
+    }
   }
 
   _validateField(fieldName, value, validators) {
@@ -54,9 +64,12 @@ export default class DataManipState {
   updateData(fieldName, value, validators) {
     transaction(() => {
       this.currentView.entity.set(fieldName, value)
-      if(this.currentView.validators && this.currentView.validators[fieldName]) {
+      const v = this.currentView.validators
+      if(v && v[fieldName]) {
         this._validateField(fieldName, value, this.currentView.validators[fieldName])
       }
+      // run global validators
+      v && v['_global'] && this._validateField('_global', this.currentView.entity, v['_global'])
     })
   }
 
