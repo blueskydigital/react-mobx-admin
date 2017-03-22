@@ -3,16 +3,9 @@ import React from 'react'
 
 export default class EditFormBase extends React.Component {
 
-  _save() {
-    const savePromise = this.props.state.saveData()
-    const cv = this.props.state.currentView
-    cv.onSaved && savePromise.then(cv.onSaved())
-    return savePromise
-  }
-
   onSave(e) {
     e.preventDefault()
-    this._save()
+    this.props.state.currentView.onSaved()
   }
 
   updateField(name, value) {
@@ -21,7 +14,7 @@ export default class EditFormBase extends React.Component {
 
   onSaveAndReturn2list(e) {
     e.preventDefault()
-    this._save().then(() => {
+    this.props.state.currentView.onSaved().then(() => {
       this._return2List()
     })
   }

@@ -35,7 +35,9 @@ export default (BaseClass) => class TagsStore extends BaseClass {
     // this does not to be observable thats why it is out of da transaction
     this.currentView.onReturn2list = () => this.showTagList()
     this.currentView.onSaved = () => {
-      this.addMessage('tag successfully saved', 'info', 2000)
+      return this.saveData().then((saved) => {
+        this.addMessage('tag successfully saved', 'info', 2000)
+      }).catch(this.onError.bind(this))
     }
   }
 
