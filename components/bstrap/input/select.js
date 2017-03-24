@@ -1,6 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap'
 
 const SelectInput = ({
   attr, labelattr, valueattr, label, record,
@@ -8,6 +8,7 @@ const SelectInput = ({
 }) => {
 
   const errorText = errors ? errors.get(attr) : undefined
+  const validationState = errorText ? 'error' : 'success'
   const value = record.get(attr)
   const options = optionsrecord.get(optionsattr || attr)
   valueattr = valueattr || 'value'
@@ -32,12 +33,13 @@ const SelectInput = ({
   const renderedOpts = options && options.length &&
     renderOptions(options, labelattr || 'label', valueattr)
   return (
-    <FormGroup controlId={attr}>
+    <FormGroup controlId={attr} validationState={validationState}>
       <ControlLabel>{label}</ControlLabel>
       <FormControl componentClass="select" placeholder="select"
         value={value || ''} onChange={handleChange}>
         {renderedOpts}
       </FormControl>
+      {errorText ? <HelpBlock>{errorText}</HelpBlock> : null}
     </FormGroup>
   )
 }
