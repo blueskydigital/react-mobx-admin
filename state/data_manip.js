@@ -61,7 +61,7 @@ export default class DataManipState {
       this.currentView.entity.set(fieldName, value)
       const v = this.currentView.validators
       if(v && v[fieldName]) {
-        this._validateField(fieldName, value, this.currentView.validators[fieldName])
+        this._validateField(fieldName, value, v[fieldName])
       }
       // run global validators
       v && v['_global'] && this._validateField('_global', this.currentView.entity, v['_global'])
