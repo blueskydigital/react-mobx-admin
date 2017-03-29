@@ -25,8 +25,6 @@ class TagField extends OptionsField {
 
 const PostListView = ({state}) => {
 
-  const onAddClicked = (state) => state.showPostDetail(null)
-
   const batchActions = (state) => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected items?`)) {
@@ -56,8 +54,7 @@ const PostListView = ({state}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      const onTT = () => state.showPostDetail(row[state.currentView.pkName])
-      return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT}/>)
+      return (<TextField attr={attr} record={row} maxlen={32} onTouchTap={() => state.currentView.detailClicked(row)}/>)
     },
     (attr, row) => (
       <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
@@ -77,7 +74,7 @@ const PostListView = ({state}) => {
 
   return (
     <MUIListView state={state} fields={fields} listActions={listActions}
-      batchActions={batchActions} onAddClicked={onAddClicked} />
+      batchActions={batchActions} onAddClicked={state.currentView.addClicked} />
   )
 
 }

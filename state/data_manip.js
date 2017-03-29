@@ -2,15 +2,22 @@ import {extendObservable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
-  initEntity(view, entityName, id) {
-
-    extendObservable(view, {
-      entityName: entityName,
-      originEntityId: id,
-      entity: asMap({}),
-      errors: asMap({}),
-      entity_loading: false
+  initEntityView(view, entityName, id, newView, onReturn2list, onSaved) {
+    if(! onReturn2list || ! onSaved) {
+      throw 'onReturn2list and onSaved must be set'
+    }
+    transaction(() => {
+      const atts = Object.assign(newView, {
+        entityName: entityName,
+        originEntityId: id,
+        entity: asMap({}),
+        errors: asMap({}),
+        entity_loading: false
+      })
+      extendObservable(view, atts)
     })
+    view.onReturn2list = onReturn2list
+    view.onSaved = onSaved
     if(id) {  // load for edit existing
       return this._loadEditData(view, entityName, id)
     } else {  // create

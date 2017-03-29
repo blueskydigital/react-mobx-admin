@@ -4,23 +4,24 @@ export default (BaseClass) => class PostsStore extends BaseClass {
 
   showPostList(query = {}) {
     this.loadOptions('tags', '/tags')
-    transaction(() => {
-      this.currentView = {
-        name: 'post_list',
-        perPage: 6,
-        pkName: 'id',
-        sortField: 'title',
-        sortDir: 'ASC',
-        attrs: ['id', 'title', 'category', 'published_at', 'tags'],
-        headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags']
-      }
-      this.initEntityList(this.currentView, 'posts', query)
+    this.initEntityListView(this.currentView, 'posts', query, {
+      name: 'post_list',
+      perPage: 6,
+      pkName: 'id',
+      sortField: 'title',
+      sortDir: 'ASC',
+      attrs: ['id', 'title', 'category', 'published_at', 'tags'],
+      headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags']
+    }, (row) => {
+      this.showPostDetail(row.id)
+    }, () => {
+      this.showPostDetail(null)
     })
   }
 
   showPostDetail(id) {
     this.loadOptions('tags', '/tags')
-    this.currentView = {
+    this.initEntityView(this.currentView, 'posts', id, {
       name: 'post_detail',
       edittitle: 'edit a nice post',
       createtitle: 'add very interresting post ..',
@@ -51,15 +52,13 @@ export default (BaseClass) => class PostsStore extends BaseClass {
           }
         }
       }
-    }
-    this.initEntity(this.currentView, 'posts', id)
-    // this does not to be observable thats why it is out of da transaction
-    this.currentView.onReturn2list = () => this.showPostList()
-    this.currentView.onSaved = () => {
+    }, () => {
+      return this.showPostList()
+    }, () => {
       return this.saveData().then((saved) => {
         this.addMessage('post successfully saved', 'info', 2000)
       }).catch(this.onError.bind(this))
-    }
+    })
   }
 
 }

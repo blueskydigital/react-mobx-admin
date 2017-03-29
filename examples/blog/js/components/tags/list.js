@@ -16,8 +16,6 @@ import MUIListView from 'react-mobx-admin/components/mui/view/list'
 
 const TagListView = ({state}) => {
 
-  const onAddClicked = () => state.showTagDetail(null)
-
   const batchActions = () => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
@@ -34,15 +32,14 @@ const TagListView = ({state}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      const onTT = () => state.showTagDetail(row[state.currentView.pkName])
-      return <TextField attr={attr} record={row} maxlen={32} onTouchTap={onTT} />
+      return <TextField attr={attr} record={row} maxlen={32} onTouchTap={() => state.currentView.detailClicked(row)} />
     },
     (attr, row) => (<MUIBoolField attr={attr} record={row} />)
   ]
 
   return (
     <MUIListView state={state} fields={fields}
-      batchActions={batchActions} onAddClicked={onAddClicked} />
+      batchActions={batchActions} onAddClicked={state.currentView.addClicked} />
 
   )
 

@@ -39,6 +39,6 @@ export default class StateStore extends PostsStore {
     this.messages.delete(message.text)
   }
 
-  @observable currentView = null
+  @observable currentView = {}
 
 }

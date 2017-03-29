@@ -5,17 +5,25 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  initEntityList(view, entityName, query) {
-    extendObservable(view, {
-      entityName: entityName,
-      page: parseInt(query.page || 1),
-      sortField: query.sortField ? query.sortField : view.sortField,
-      sortDir: query.sortDir ? query.sortDir : view.sortDir,
-      totalItems: 0,
-      items: [],
-      selection: [],
-      filters: asMap(query.filters || {})
+  initEntityListView(view, entityName, query, newView, detailClicked, addClicked) {
+    if(! detailClicked || ! addClicked) {
+      throw 'detailClicked and addClicked must be set'
+    }
+    transaction(() => {
+      const atts = Object.assign(newView, {
+        entityName: entityName,
+        page: parseInt(query.page || 1),
+        sortField: query.sortField ? query.sortField : view.sortField,
+        sortDir: query.sortDir ? query.sortDir : view.sortDir,
+        totalItems: 0,
+        items: [],
+        selection: [],
+        filters: asMap(query.filters || {})
+      })
+      extendObservable(view, atts)
     })
+    view.detailClicked = detailClicked
+    view.addClicked = addClicked
     return this._refreshList(view)
   }
 
