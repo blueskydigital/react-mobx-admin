@@ -6,6 +6,7 @@ export default class DataManipState {
     if(! onReturn2list || ! onSaved) {
       throw 'onReturn2list and onSaved must be set'
     }
+    const listViewBackup = Object.assign({}, view)
     transaction(() => {
       const atts = Object.assign(newView, {
         entityName: entityName,
@@ -16,6 +17,7 @@ export default class DataManipState {
       })
       extendObservable(view, atts)
     })
+    view.listViewBackup = listViewBackup
     view.onReturn2list = onReturn2list
     view.onSaved = onSaved
     if(id) {  // load for edit existing

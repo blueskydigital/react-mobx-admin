@@ -9,12 +9,16 @@ export default class DataTableState extends DataManipState {
     if(! detailClicked || ! addClicked) {
       throw 'detailClicked and addClicked must be set'
     }
+    if(view.listViewBackup && view.listViewBackup.entityName === entityName) {
+      Object.assign(query, view.listViewBackup)
+    }
+    view.listViewBackup && delete view.listViewBackup  // delete it, we don't want to influence next views
     transaction(() => {
       const atts = Object.assign(newView, {
         entityName: entityName,
         page: parseInt(query.page || 1),
-        sortField: query.sortField ? query.sortField : view.sortField,
-        sortDir: query.sortDir ? query.sortDir : view.sortDir,
+        sortField: query.sortField ? query.sortField : newView.sortField,
+        sortDir: query.sortDir ? query.sortDir : newView.sortDir,
         totalItems: 0,
         items: [],
         selection: [],
