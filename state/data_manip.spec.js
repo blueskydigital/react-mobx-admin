@@ -22,7 +22,13 @@ test('it should be possible to showEntityDetail', t => {
       "views": 143
     }
 
-    state.initEntity(state.currentView, 'posts', 1)
+    state.initEntityView(state.currentView, 'posts', 1, {
+      name: 'tag_detail',
+    }, () => {
+      console.log('onReturn2list')
+    }, () => {
+      console.log('onSaved')
+    })
 
     setTimeout(() => {
       t.equal(state.currentView.originEntityId, 1)
