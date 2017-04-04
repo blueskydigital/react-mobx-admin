@@ -53,8 +53,8 @@ const MUIListView = ({
         <Filters.Dropdown state={state} title="addfilter" filters={filters}
           showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
       )}
-      <FlatButton label={state.currentView.addText} icon={<AddIcon />}
-        onTouchTap={() => onAddClicked(state)} />
+      {onAddClicked && <FlatButton label={state.currentView.addText} icon={<AddIcon />}
+        onTouchTap={() => onAddClicked(state)} />}
     </CardActions>
   )
 

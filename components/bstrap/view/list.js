@@ -57,8 +57,8 @@ const BStrapListView = ({
             <Filters.Dropdown state={state} title="addfilter" filters={filters}
               showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
           )}
-          <button type="button" className="btn btn-primary"
-            onClick={()=>onAddClicked(state)}>{state.currentView.addText || '+'}</button>
+          {onAddClicked && <button type="button" className="btn btn-primary"
+            onClick={()=>onAddClicked(state)}>{state.currentView.addText || '+'}</button>}
         </div>
         {state.currentView.title ? <h4 className="card-title">{state.currentView.title}</h4> : null}
       </div>
