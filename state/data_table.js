@@ -22,7 +22,8 @@ export default class DataTableState extends DataManipState {
         totalItems: 0,
         items: [],
         selection: [],
-        filters: asMap(query.filters || {})
+        filters: asMap(query.filters || {}),
+        extraparams: newView.extraparams || null
       })
       extendObservable(view, atts)
     })
