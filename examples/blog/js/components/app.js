@@ -37,7 +37,7 @@ export const App = observer( ({ state }) => {
           <MessagesView state={state} />
         </div>
       </MuiThemeProvider>
-      <DevTools />
+      {Conf.debug ? (<DevTools />) : null}
     </div>
   )
 })
