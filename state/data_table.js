@@ -20,12 +20,14 @@ export default class DataTableState extends DataManipState {
         sortField: query.sortField ? query.sortField : newView.sortField,
         sortDir: query.sortDir ? query.sortDir : newView.sortDir,
         totalItems: 0,
-        items: [],
         selection: [],
         filters: asMap(query.filters || {}),
         extraparams: newView.extraparams || null
       })
       extendObservable(view, atts)
+      if (! view.items) {
+        extendObservable(view, {items: []})
+      }
     })
     view.detailClicked = detailClicked
     view.addClicked = addClicked
