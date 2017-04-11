@@ -1,18 +1,22 @@
 import React from 'react'
+import { observer } from 'mobx-react'
 
-const BStrapOptionsField = ({
-  record, attr, onClick, optionsrecord, optionsattr, valueattr
-}) => {
+const BStrapOptionsField = ({record, attr, onClick, optionsrecord, optionsattr, valueattr, labelattr}) => {
+  function handleClick(e) {
+    e.preventDefault()
+    e.stopPropagation() // prevent selecting row ot da table this field is on ...
+    onClick()
+  }
   const val = record[attr]
   const options = optionsrecord.get(optionsattr || attr)
   const found = options && options.filter((i) => {
     return i[valueattr || 'value'] === val
   })
   if(found && found.length > 0) {
-    const val = <span>found[0][labelattr || 'label']</span>
-    return onClick ? (<a href="#" onClick={onClick}>{val}</a>) : val)
+    const text = found[0][labelattr || 'label']
+    return onClick ? (<a href="#" onClick={handleClick}>{text}</a>) : (<span>{text}</span>)
   }
-  return null  
+  return null
 }
 
 BStrapOptionsField.propTypes = {
@@ -25,4 +29,4 @@ BStrapOptionsField.propTypes = {
   onClick: React.PropTypes.func
 }
 
-export default BStrapOptionsField
+export default observer(BStrapOptionsField)
