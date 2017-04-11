@@ -5,7 +5,8 @@ export default class FieldBase extends React.Component {
   handleTouchTap(e) {
     e.preventDefault()
     e.stopPropagation() // prevent selecting row ot da table this field is on ...
-    this.props.onTouchTap()
+    const clickHandler = this.props.onTouchTap || this.props.onClick
+    clickHandler()
   }
 
   renderComponent(label, val) {
@@ -13,9 +14,10 @@ export default class FieldBase extends React.Component {
   }
 
   render() {
-    const { attr, record, onTouchTap } = this.props
+    const { attr, record, onTouchTap, onClick } = this.props
     let val = this.renderVal(record, attr)
-    return val && (onTouchTap ?
+    const clickHandler = onTouchTap || onClick
+    return val && (clickHandler ?
       (<a href="#" onTouchTap={this.handleTouchTap.bind(this)}>{val}</a>) : val)
   }
 
