@@ -48,7 +48,7 @@ export default class DataManipState {
 
   _runValidators() {
     for (let fieldName in this.currentView.validators) {
-      const value = this.currentView.entity.get(fieldName)
+      const value = (fieldName === '_global') ? this.currentView.entity : this.currentView.entity.get(fieldName)
       const fieldValidators = this.currentView.validators[fieldName]
       fieldValidators && this._validateField(fieldName, value, fieldValidators)
     }
