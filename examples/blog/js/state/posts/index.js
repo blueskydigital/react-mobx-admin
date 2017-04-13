@@ -11,7 +11,8 @@ export default (BaseClass) => class PostsStore extends BaseClass {
       sortField: 'title',
       sortDir: 'ASC',
       attrs: ['id', 'title', 'category', 'published_at', 'tags'],
-      headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags']
+      headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags'],
+      title: 'posts'
     }, (row) => {
       this.showPostDetail(row.id)
     }, () => {

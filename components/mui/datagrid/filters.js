@@ -6,8 +6,11 @@ import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { CardText } from 'material-ui/Card'
+import Chip from 'material-ui/Chip'
 import ActionHide from 'material-ui/svg-icons/action/highlight-off'
 import FilterBases from '../../common/datagrid/filters'
+import TextField from 'material-ui/TextField'
+
 
 // dropdown with available filters
 @observer
@@ -29,35 +32,36 @@ class Dropdown extends FilterBases.DropdownBase {
 
 }
 
+const _filterStyle = {'backgroundColor': 'rgb(232, 232, 232)'}
+const styles = {
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  }
+}
+
 // controls to set filter values
 @observer
 class Controls extends FilterBases.ControlsBase {
 
   renderControl(filter, name, state, onHide, onUpdateValue) {
-
-    const deleteLink = (
-      <IconButton iconStyle={{ color: '#00bcd4' }} onTouchTap={onHide} tooltip="Remove this filter">
-        <ActionHide />
-      </IconButton>
-    )
-
     return (
-      <div className={`form-field form-group filter-${name}`} key={name}>
-        <div style={{ float: 'left' }}>
-          {deleteLink}
-        </div>
-        <div style={{ float: 'right' }}>
-          <filter.component record={state.currentView.filters} attr={name} label={filter.label} onChange={onUpdateValue} />
-        </div>
-      </div>
+      <Chip onRequestDelete={onHide} style={styles.chip} key={name}>
+        <div>{filter.title}</div>
+        <filter.component record={state.currentView.filters} attr={name} onChange={onUpdateValue} />
+      </Chip>
     )
   }
 
   renderControls(controls, apply) {
     return (
-      <CardText>
-        {controls}
-        <div style={{ clear: 'both' }}></div>
+      <CardText style={_filterStyle}>
+        <div style={styles.wrapper}>
+          {controls}
+        </div>
       </CardText>
     )
   }
@@ -68,7 +72,7 @@ class Controls extends FilterBases.ControlsBase {
 class Apply extends React.Component {
   render() {
     const { apply, label, state } = this.props
-    const show = state.currentView.filters.size > 0
+    const show = state.currentView.filters.size > 0 && ! state.filtersApplied
     return show && (<RaisedButton label={label} icon={<ContentFilter />} onTouchTap={apply}/>)
   }
 }

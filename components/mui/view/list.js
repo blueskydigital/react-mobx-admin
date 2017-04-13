@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
@@ -23,16 +24,16 @@ const MUIListView = ({
   }
 
   function isSelected(idx) {
-    return state.currentView.selection.indexOf(idx) >= 0
+    return state.currentView.selection && state.currentView.selection.indexOf(idx) >= 0
   }
 
   const title = state.currentView.title ?
     <CardTitle title={state.currentView.title} /> : null
-  const filtersRender = (filters && ! loading) ? (
+  const filtersRender = (filters) ? (
     <Filters.Controls state={state} filters={filters}
       hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} />
   ) : null
-  const grid = (
+  const grid = !state.currentView.loading ? (
     <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
       titles={state.currentView.headertitles} fields={fields}
       rowId={(row)=>row[state.currentView.pkName]}
@@ -40,7 +41,7 @@ const MUIListView = ({
       onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)}
       sortstate={state.currentView}
       onRowSelection={onSelectionChange} isSelected={isSelected} />
-  )
+  ) : null
   const pagination = (
     <Pagination state={state}
       onChange={(page)=>state.updatePage(state.currentView, page)} />
@@ -74,4 +75,4 @@ MUIListView.propTypes = {
   state: React.PropTypes.object.isRequired,
   renderOuter: React.PropTypes.func
 }
-export default MUIListView
+export default observer(MUIListView)

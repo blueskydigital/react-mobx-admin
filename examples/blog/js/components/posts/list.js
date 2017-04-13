@@ -11,6 +11,7 @@ import DateField from 'react-mobx-admin/components/common/field/date'
 import OptionsField from 'react-mobx-admin/components/common/field/opts'
 import MultivalueField from 'react-mobx-admin/components/common/field/multivalue'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
+import SelectInput from 'react-mobx-admin/components/mui/input/select'
 import MUIListView from 'react-mobx-admin/components/mui/view/list'
 
 class TagField extends OptionsField {
@@ -69,11 +70,14 @@ const PostListView = ({state}) => {
   ]
 
   const filters = {
-    'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
+    'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<SelectInput {...props}
+      optionsrecord={state.options}
+      optionsattr={'categories'} />)},
+    'title_like': {title: 'Title', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
   }
 
   return (
-    <MUIListView state={state} fields={fields} listActions={listActions}
+    <MUIListView state={state} fields={fields} listActions={listActions} filters={filters}
       batchActions={batchActions} onAddClicked={state.currentView.addClicked} />
   )
 

@@ -1,5 +1,5 @@
 import {
-  extendObservable, computed, action, transaction, asMap, toJS
+  extendObservable, observable, computed, action, transaction, asMap, toJS
 } from 'mobx'
 import DataManipState from './data_manip'
 
@@ -20,7 +20,9 @@ export default class DataTableState extends DataManipState {
         sortField: query.sortField ? query.sortField : newView.sortField,
         sortDir: query.sortDir ? query.sortDir : newView.sortDir,
         totalItems: 0,
+        loading: true,
         selection: [],
+        appliedfilters: query.filters || {},
         filters: asMap(query.filters || {}),
         extraparams: newView.extraparams || null
       })
@@ -100,6 +102,10 @@ export default class DataTableState extends DataManipState {
 
   // ---------------------- filtration  ----------------------------
 
+  @computed get filtersApplied() {
+    return JSON.stringify(this.currentView.filters) === JSON.stringify(this.currentView.appliedfilters)
+  }
+
   @action
   updateFilterValue(view, name, value) {
     view.filters.set(name, value)
@@ -107,6 +113,7 @@ export default class DataTableState extends DataManipState {
 
   @action
   applyFilters(view) {
+    view.appliedfilters = observable(toJS(view.filters))
     this._refreshList(view)
   }
 
@@ -118,6 +125,7 @@ export default class DataTableState extends DataManipState {
   @action
   hideFilter(view, filter) {
     view.filters.delete(filter)
+    view.appliedfilters = observable(toJS(view.filters))
     this._refreshList(view)
   }
 
@@ -136,8 +144,8 @@ export default class DataTableState extends DataManipState {
     if(view.sortField) {
         rv.push(`sortField=${view.sortField}&sortDir=${view.sortDir}`)
     }
-    if(view.filters.size > 0) {
-      rv.push(`filters=${JSON.stringify(view.filters)}`)
+    if(Object.keys(view.appliedfilters).length > 0) {
+      rv.push(`filters=${JSON.stringify(view.appliedfilters)}`)
     }
     return rv.join('&')
   }
@@ -145,6 +153,7 @@ export default class DataTableState extends DataManipState {
   // ---------------------- privates, support ----------------------------
 
   _refreshList(view) {
+    this.currentView.loading = true
     return this.requester.getEntries(view.entityName, {
       page: view.page,
       sortField: view.sortField,
@@ -154,6 +163,7 @@ export default class DataTableState extends DataManipState {
       extraparams: view.extraparams
     }).then((result) => {
       result && transaction(() => {
+        this.currentView.loading = false
         view.totalItems = result.totalItems
         view.items && view.items.replace(result.data)
       })
