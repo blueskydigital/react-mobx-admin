@@ -11,6 +11,7 @@ export default class DataTableState extends DataManipState {
     }
     if(view.listViewBackup && view.listViewBackup.entityName === entityName) {
       Object.assign(query, view.listViewBackup)
+      query.filters = JSON.parse(JSON.stringify(query.filters))
     }
     view.listViewBackup && delete view.listViewBackup  // delete it, we don't want to influence next views
     transaction(() => {
