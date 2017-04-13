@@ -24,7 +24,8 @@ const SelectInput = ({
     let idx, val, c
     for(idx = 0; idx < options.length; idx++) {
       val = options[idx]
-      c = <option key={idx} value={val[valueattr]}>{val[labelattr]}</option>
+      const text = (typeof labelattr === "function") ? labelattr(val) : val[labelattr]
+      c = <option key={idx} value={val[valueattr]}>{text}</option>
       opts.push(c)
     }
     return opts
@@ -47,7 +48,10 @@ const SelectInput = ({
 SelectInput.propTypes = {
   attr: React.PropTypes.string.isRequired,
   record: React.PropTypes.object.isRequired,
-  labelattr: React.PropTypes.string,
+  labelattr: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.func
+  ]),
   valueattr: React.PropTypes.string,
   label: React.PropTypes.string,
   onChange: React.PropTypes.func.isRequired,
