@@ -15,12 +15,22 @@ class Dropdown extends FilterBases.DropdownBase {
 
   renderMenu(state, filters) {
     return (
-      <DropdownButton title="Dropdown" id="bg-nested-dropdown">
+      <DropdownButton title="filters" id="bg-nested-dropdown">
         {this.createItems(state, filters)}
       </DropdownButton>
     )
   }
 
+}
+
+const styles = {
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  }
 }
 
 // controls to set filter values
@@ -30,26 +40,25 @@ class Controls extends FilterBases.ControlsBase {
   renderControl(filter, name, state, onHide, onUpdateValue) {
 
     const deleteLink = (
-      <button onClick={onHide} tooltip="Remove this filter">
+      <button onClick={onHide}>
         x
       </button>
     )
 
     return (
-      <div className={`form-field form-group filter-${name}`} key={name}>
-        <div>
-          {deleteLink}
+      <div className={`form-field form-group filter-${name}`} style={styles.chip} key={name}>
+        <div style={{ float: 'left' }}>
+          <div>{filter.title}</div>
+          <filter.component record={state.currentView.filters} attr={name} onChange={onUpdateValue} />
         </div>
-        <div style={{ float: 'right' }}>
-          <filter.component record={state.currentView.filters} attr={name} label={filter.label} onChange={onUpdateValue} />
-        </div>
+        {deleteLink}
       </div>
     )
   }
 
   renderControls(controls, apply) {
     return (
-      <div>
+      <div style={styles.wrapper}>
         {controls}
       </div>
     )
@@ -58,7 +67,7 @@ class Controls extends FilterBases.ControlsBase {
 }
 
 const Apply = observer(({ apply, label, state }) => {
-  const show = state.currentView.filters.size > 0
+  const show = state.currentView.filters.size > 0 && ! state.filtersApplied
   return show && (<button onClick={apply}>{label}</button>)
 })
 
