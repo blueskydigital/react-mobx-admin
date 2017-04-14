@@ -47,7 +47,11 @@ const PostListView = ({state}) => {
     }
     return row ? (
       <div>
-        <IconButton onClick={() => { _deleteRow(row)}}><DeleteIcon /></IconButton>
+        <IconButton onClick={(e) => {
+          e.stopPropagation() // prevent selecting deleted row
+          e.preventDefault()
+          _deleteRow(row)
+        }}><DeleteIcon /></IconButton>
       </div>
     ) : null
   }
