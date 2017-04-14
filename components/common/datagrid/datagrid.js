@@ -60,7 +60,9 @@ export default class DatagridBase extends React.Component {
     const selectable = onRowSelection !== undefined && isSelected !== undefined
     const headers = titles && this.renderHeaders()
 
-    return this.renderTable(headers)
+    return (items && items.length > 0) ? this.renderTable(headers) : (
+      <div style={{margin: '3em'}}>nothing found :(</div>
+    )
   }
 
 }
