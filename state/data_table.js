@@ -114,8 +114,11 @@ export default class DataTableState extends DataManipState {
 
   @action
   applyFilters(view) {
-    view.appliedfilters = observable(toJS(view.filters))
-    this._refreshList(view)
+    transaction(() => {
+      view.appliedfilters = observable(toJS(view.filters))
+      view.page = 1 // need to go to 1st page due to limited results
+      this._refreshList(view)
+    })
   }
 
   @action
@@ -125,9 +128,11 @@ export default class DataTableState extends DataManipState {
 
   @action
   hideFilter(view, filter) {
-    view.filters.delete(filter)
-    view.appliedfilters = observable(toJS(view.filters))
-    this._refreshList(view)
+    transaction(() => {
+      view.filters.delete(filter)
+      view.appliedfilters = observable(toJS(view.filters))
+      this._refreshList(view)
+    })
   }
 
   _resetFilters(view, newFilters) {
