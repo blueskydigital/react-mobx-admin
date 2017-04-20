@@ -14,13 +14,16 @@ const SelectInput = ({
   valueattr = valueattr || 'value'
 
   function handleChange(evt) {
+    if (evt.target.value.length === 0) {
+      return onChange(attr, null)
+    }
     const foundOpt = options
       .find((i) => i[valueattr].toString() === evt.target.value)
     onChange(attr, foundOpt[valueattr])
   }
 
   function renderOptions(options, labelattr, valueattr) {
-    let opts = []
+    let opts = [<option key={'_null__'} value={''}></option>]
     let idx, val, c
     for(idx = 0; idx < options.length; idx++) {
       val = options[idx]
