@@ -1,7 +1,8 @@
 import React from 'react'
 
-const BStrapBoolField = ({record, attr}) => {
-  const checked = Boolean(record[attr])
+const BStrapBoolField = ({record, attr, valuemapping}) => {
+  const val = valuemapping ? valuemapping[record[attr]] : record[attr]
+  const checked = Boolean(val)
   return (
     <input className="form-check-input" name={attr} type="checkbox" checked={checked} disabled />
   )
