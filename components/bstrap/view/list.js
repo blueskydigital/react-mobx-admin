@@ -10,39 +10,35 @@ const BStrapListView = ({
   state, onAddClicked, fields, filters, listActions, batchActions, renderOuter
 }) => {
 
+  const cv = state.currentView
+
   function onSelectionChange(selection) {
     if(selection === 'all') {
-      state.selectAll(state.currentView)
+      state.selectAll(cv)
     } else if(selection === []) {
-      state.updateSelection(state.currentView, [])
+      state.updateSelection(cv, [])
     } else { // we have receive index of selected item
       // so toggle the selection of da index
-      state.toggleIndex(state.currentView, selection)
+      state.toggleIndex(cv, selection)
     }
   }
 
   function isSelected(idx) {
-    return state.currentView.selection.indexOf(idx) >= 0
+    return cv.selection.indexOf(idx) >= 0
   }
 
-  const loading = (! state.currentView.items) || state.currentView.items.length === 0
+  const allSelected = cv.selection.length > 0 && cv.selection.length === cv.items.length
 
-  if(loading) {
-    return <span className="is-loading">loading</span>
-  }
-
-  const allSelected = state.currentView.selection.length === state.currentView.items.length
-
-  const filtersRender = (filters && ! loading) ? (
+  const filtersRender = (filters && ! cv.loading) ? (
     <Filters.Controls state={state}
-      hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} filters={filters} />
+      hideFilter={(filter)=>state.hideFilter(cv, filter)} filters={filters} />
   ) : null
-  const grid = (
-    <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
-      titles={state.currentView.headertitles} fields={fields}
-      rowId={(row)=>row[state.currentView.pkName]}
+  const grid = cv.loading ? null : (
+    <Datagrid items={cv.items} attrs={cv.attrs}
+      titles={cv.headertitles} fields={fields}
+      rowId={(row)=>row[cv.pkName]}
       listActions={listActions}
-      onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)} sortstate={state.currentView}
+      onSort={(field, dir)=>state.updateSort(cv, field, dir)} sortstate={cv}
       onRowSelection={onSelectionChange} isSelected={isSelected}
       allSelected={allSelected} />
   )
@@ -51,29 +47,31 @@ const BStrapListView = ({
     <div className="card">
       <div className="card-block">
         <div className="pull-right">
-          <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(state.currentView)} />
+          <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(cv)} />
           {batchActions && (<DatagridActions state={state} actions={batchActions} />)}
           {filters && (
             <Filters.Dropdown state={state} title="addfilter" filters={filters}
-              showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
+              showFilter={(filter)=>state.showFilter(cv, filter)} />
           )}
           {onAddClicked && <button type="button" className="btn btn-primary"
-            onClick={()=>onAddClicked(state)}>{state.currentView.addText || '+'}</button>}
+            onClick={()=>onAddClicked(state)}>{cv.addText || '+'}</button>}
         </div>
-        {state.currentView.title ? <h4 className="card-title">{state.currentView.title}</h4> : null}
+        {cv.title ? <h4 className="card-title">{cv.title}</h4> : null}
       </div>
       { filtersRender }
       <div className="card-block">
-        { grid }
+        { (cv.loading) ? <span className="is-loading">loading</span> : grid }
       </div>
-      <div className="card-block">
-        <div className="pull-right">
-          <Pagination.Pagination state={state} onChange={(page)=>state.updatePage(state.currentView, page)} />
+      {(cv.loading) ? null :
+        <div className="card-block">
+          <div className="pull-right">
+            <Pagination.Pagination state={state} onChange={(page)=>state.updatePage(cv, page)} />
+          </div>
+          <div className="pull-left">
+            <Pagination.PageInfo info={cv} />
+          </div>
         </div>
-        <div className="pull-left">
-          <Pagination.PageInfo info={state.currentView} />
-        </div>
-      </div>
+      }
     </div>
   )
 
