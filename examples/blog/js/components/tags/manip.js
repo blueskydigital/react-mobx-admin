@@ -6,23 +6,26 @@ import SelectInput from 'react-mobx-admin/components/mui/input/select'
 import MUIBoolInput from 'react-mobx-admin/components/mui/input/bool'
 import MUIEditView from 'react-mobx-admin/components/mui/view/edit'
 
-@observer
-class TagsEditView extends MUIEditView {
+const TagEditForm = ({state}) => {
 
-  renderForm(state) {
-    const entity = state.currentView.entity
-    const updateField = this.updateField.bind(this)
-    return (
-      <div className="row">
-        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <TextInput label={state.__('name')} attr={'name'} record={entity} onChange={updateField}
-            errors={state.currentView.errors} /><br/>
-          <MUIBoolInput label={state.__('Published')} attr={'published'} record={entity} onChange={updateField} />
-        </div>
+  const entity = state.currentView.entity
+  const updateField = state.updateData.bind(state)
+
+  return (
+    <div className="row">
+      <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <TextInput label={state.__('name')} attr={'name'} record={entity} onChange={updateField}
+          errors={state.currentView.errors} /><br/>
+        <MUIBoolInput label={state.__('Published')} attr={'published'} record={entity} onChange={updateField} />
       </div>
-    )
-  }
-
+    </div>
+  )
+}
+TagEditForm.propTypes = {
+  state: React.PropTypes.object.isRequired
 }
 
+const TagsEditView = ({state}) => (
+  <MUIEditView state={state}><TagEditForm state={state} /></MUIEditView>
+)
 export default TagsEditView
