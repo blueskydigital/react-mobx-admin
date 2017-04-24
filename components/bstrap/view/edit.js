@@ -59,5 +59,5 @@ const BStrapEditView = observer( ({state, children}) => {
       </div>
     </div>
   )
-}
+})
 export default BStrapEditView
