@@ -24,9 +24,9 @@ const GlobalErrors = observer(({errors}) => {
 })
 
 const MUIEditView = observer( ({state, children}) => {
-  
+
   const cv = state.currentView
-  const loading = (! cv.entity) || cv.entity_loading
+  const loading = (! cv.entity) || cv.loading
 
   if(loading) {
     return <CircularProgress />

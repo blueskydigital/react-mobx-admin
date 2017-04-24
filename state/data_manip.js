@@ -13,7 +13,7 @@ export default class DataManipState {
         originEntityId: id,
         entity: asMap({}),
         errors: asMap({}),
-        entity_loading: false
+        loading: false
       })
       extendObservable(view, atts)
     })
@@ -31,11 +31,11 @@ export default class DataManipState {
   }
 
   _loadEditData(view, entityName, id) {
-    view.entity_loading = true
+    view.loading = true
 
     return this.requester.getEntry(entityName, id).then((data) => {
       view.entity && view.entity.merge(data)
-      view.entity_loading = false
+      view.loading = false
       this._runValidators()
       return view.entity
     })

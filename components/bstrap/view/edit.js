@@ -16,7 +16,7 @@ const GlobalErrors = observer(({errors}) => {
 const BStrapEditView = observer( ({state, children}) => {
 
   const cv = state.currentView
-  const loading = (! cv.entity) || cv.entity_loading
+  const loading = (! cv.entity) || cv.loading
 
   if(loading) {
     return <span className="is-loading">loading</span>
