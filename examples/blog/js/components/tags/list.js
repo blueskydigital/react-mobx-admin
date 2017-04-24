@@ -12,7 +12,7 @@ import OptionsField from 'react-mobx-admin/components/common/field/opts'
 import MultivalueField from 'react-mobx-admin/components/common/field/multivalue'
 import MUIBoolField from 'react-mobx-admin/components/mui/field/bool'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
-import MUIListView from 'react-mobx-admin/components/bstrap/view/list'
+import MUIListView from 'react-mobx-admin/components/mui/view/list'
 
 const TagListView = ({state}) => {
 
