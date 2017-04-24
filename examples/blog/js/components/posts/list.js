@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { asMap } from 'mobx'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -56,6 +57,12 @@ const PostListView = ({state}) => {
     ) : null
   }
 
+  const _tagComponent = ({value, ...rest}) => {
+    return <TagField key={value.id} attr={'a'} record={asMap({a:value.name})}
+      optionsrecord={state.options} optionsattr={'tags'}
+      labelattr={'name'} valueattr={'id'} />
+  }
+
   const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
@@ -65,12 +72,7 @@ const PostListView = ({state}) => {
       <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
     ),
     (attr, row) => (<DateField attr={attr} record={row} />),
-    (attr, row) => (<MultivalueField attr={attr} record={row} itemRenderer={
-      (item, idx, arr) => (
-        <TagField key={idx} attr={idx} record={arr} optionsrecord={state.options} optionsattr={'tags'}
-          labelattr={'name'} valueattr={'id'} />
-      )
-    } />)
+    (attr, row) => (<MultivalueField items={row.attr} Item={_tagComponent} />)
   ]
 
   const filters = {

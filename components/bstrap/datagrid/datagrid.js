@@ -1,8 +1,8 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import { Checkbox } from 'react-bootstrap'
-import DatagridBase from '../../common/datagrid/datagrid'
 import HeaderBase from '../../common/datagrid/header'
+import * as TUtils from '../../common/datagrid/table'
 
 
 class BStrapHeader extends HeaderBase {
@@ -11,11 +11,12 @@ class BStrapHeader extends HeaderBase {
   }
 }
 
+const BStrapDatagrid = ({
+  state, attrs, fields, titles, rowId, isSelected,
+  onRowSelection, onSort, sortstate, listActions, allSelected
+}) => {
 
-@observer
-class BStrapDatagrid extends DatagridBase {
-
-  renderHeader(name, label, sort, onSort) {
+  function _renderHeader(name, label, sort, onSort) {
     return (
       <th key={`th_${name}`}>
         <BStrapHeader sort={sort} name={name} label={label} onSort={onSort} />
@@ -23,11 +24,11 @@ class BStrapDatagrid extends DatagridBase {
     )
   }
 
-  renderListActionsHeader(listActions) {
-    return <th key={'_actions'}>{listActions()}</th>
-  }
+  const listActionsRender = listActions ? (
+    <th key={'_actions'}>{ listActions() }</th>
+  ) : null
 
-  renderCell(row, name, creatorFn, rowId) {
+  function _renderCell(row, name, creatorFn, rowId) {
     return (
       <td key={`td_${rowId}_${name}`}>
         {creatorFn(name, row)}
@@ -35,60 +36,53 @@ class BStrapDatagrid extends DatagridBase {
     )
   }
 
-  renderListActions(listActions) {
-    return(
-      <td key={'datagrid-actions'}>{listActions}</td>
-    )
+  function _renderRowActions(row) {
+    return listActions ? (
+      <td key={'datagrid-actions'}>{listActions(row)}</td>
+    ) : null
   }
 
-  _onSelectAll(e) {
-    e.target.checked ?
-      this.props.onRowSelection('all') :
-      this.props.onRowSelection([])
+  function _onSelectAll(e) {
+    e.target.checked ? onRowSelection('all') : onRowSelection([])
   }
 
-  renderHeaders() {
-    const { isSelected, onRowSelection, allSelected } = this.props
-    const selectable = onRowSelection !== undefined && isSelected !== undefined
+  const selectable = onRowSelection !== undefined && isSelected !== undefined
+
+  let tableChildren = state.loading ? (
+    <tr><td>loadiny</td></tr>
+  ) : state.items.length === 0 ? (
+    <tr><td>EMPTY</td></tr>
+  ) : state.items.map((r, i) => {
+    const id = rowId(r)
+    const selected = selectable && isSelected(i)
     return (
-      <thead>
-        <tr>
-          { selectable ? <th key="chbox">
-            <Checkbox checked={allSelected} inline={true} bsClass="btn"
-              onChange={this._onSelectAll.bind(this)}></Checkbox>
-          </th> : null }
-          {this.buildHeaders()}
-        </tr>
-      </thead>
+      <tr selected={selected} key={i}>
+        { selectable ?
+        <td key="chbox">
+          <Checkbox checked={selected} inline={true}
+            onChange={() => onRowSelection(i)}></Checkbox>
+        </td>
+        : null }
+        {TUtils.buildCells(attrs, fields, r, rowId, _renderCell, _renderRowActions)}
+      </tr>
     )
-  }
+  })
 
-  renderTable(header) {
-    const { rowId, items, isSelected, onRowSelection } = this.props
-    const selectable = onRowSelection !== undefined && isSelected !== undefined
-
-    return (
-      <table className="table table-sm">
-        {header}
-        <tbody>
-          {items && items.length > 0 ? items.map((r, i) => {
-            const id = rowId(r)
-            const selected = selectable && isSelected(i)
-            return (
-              <tr selected={selected} key={i}>
-                { selectable ?
-                <td key="chbox">
-                  <Checkbox checked={selected} inline={true}
-                    onChange={() => onRowSelection(i)}></Checkbox>
-                </td>
-                : null }
-                {this.buildCells(r, id)}
-              </tr>
-            )
-          }) : <tr><td>no records</td></tr>}
-        </tbody>
-      </table>
-    )
-  }
+  return (
+    <table className="table table-sm">
+      {titles ? (
+        <thead>
+          <tr>
+            { selectable ? <th key="chbox">
+              <Checkbox checked={allSelected} inline={true} bsClass="btn"
+                onChange={_onSelectAll}></Checkbox>
+            </th> : null }
+            { TUtils.buildHeaders(attrs, titles, _renderHeader, listActionsRender, onSort, sortstate) }
+          </tr>
+        </thead>
+      ) : null}
+      <tbody>{tableChildren}</tbody>
+    </table>
+  )
 }
-export default BStrapDatagrid
+export default observer(BStrapDatagrid)

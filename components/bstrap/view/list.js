@@ -33,14 +33,15 @@ const BStrapListView = ({
     <Filters.Controls state={state}
       hideFilter={(filter)=>state.hideFilter(cv, filter)} filters={filters} />
   ) : null
-  const grid = cv.loading ? null : (
-    <Datagrid items={cv.items} attrs={cv.attrs}
-      titles={cv.headertitles} fields={fields}
-      rowId={(row)=>row[cv.pkName]}
-      listActions={listActions}
-      onSort={(field, dir)=>state.updateSort(cv, field, dir)} sortstate={cv}
-      onRowSelection={onSelectionChange} isSelected={isSelected}
-      allSelected={allSelected} />
+  const pagination = (
+    <div className="card-block">
+      <div className="pull-right">
+        <Pagination.Pagination state={state} onChange={(page)=>state.updatePage(cv, page)} />
+      </div>
+      <div className="pull-left">
+        <Pagination.PageInfo info={cv} />
+      </div>
+    </div>
   )
 
   const result = (
@@ -60,18 +61,15 @@ const BStrapListView = ({
       </div>
       { filtersRender }
       <div className="card-block">
-        { (cv.loading) ? <span className="is-loading">loading</span> : grid }
+        <Datagrid state={cv} attrs={cv.attrs}
+          titles={cv.headertitles} fields={fields}
+          rowId={(row)=>row[cv.pkName]}
+          listActions={listActions}
+          onSort={(field, dir)=>state.updateSort(cv, field, dir)} sortstate={cv}
+          onRowSelection={onSelectionChange} isSelected={isSelected}
+          allSelected={allSelected} />
       </div>
-      {(cv.loading) ? null :
-        <div className="card-block">
-          <div className="pull-right">
-            <Pagination.Pagination state={state} onChange={(page)=>state.updatePage(cv, page)} />
-          </div>
-          <div className="pull-left">
-            <Pagination.PageInfo info={cv} />
-          </div>
-        </div>
-      }
+      { pagination }
     </div>
   )
 

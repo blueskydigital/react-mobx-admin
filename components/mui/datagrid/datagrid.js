@@ -3,8 +3,9 @@ import { observer } from 'mobx-react'
 import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn
 } from 'material-ui/Table'
+import CircularProgress from 'material-ui/CircularProgress'
 import ContentSort from 'material-ui/svg-icons/content/sort'
-import DatagridBase from '../../common/datagrid/datagrid'
+import * as TUtils from '../../common/datagrid/table'
 import HeaderBase from '../../common/datagrid/header'
 
 
@@ -14,62 +15,68 @@ class MUIHeader extends HeaderBase {
   }
 }
 
+const MUIDatagrid = ({
+  state, attrs, fields, titles, rowId, isSelected,
+  onRowSelection, onSort, sortstate, listActions
+}) => {
 
-@observer
-class MUIDatagrid extends DatagridBase {
+  const selectable = onRowSelection !== undefined && isSelected !== undefined
 
-  renderHeader(name, label, sort, onSort) {
+  function _renderHeader(name, label, sort, onSort) {
     return (
-      <TableHeaderColumn key={`th_${name}`}>
+      <TableHeaderColumn key={'th_' + name}>
         <MUIHeader sort={sort} name={name} label={label} onSort={onSort} />
       </TableHeaderColumn>
     )
   }
 
-  renderListActionsHeader(listActions) {
-    return <TableHeaderColumn key={'_actions'}>{listActions()}</TableHeaderColumn>
-  }
+  const listActionsRender = listActions ? (
+    <TableHeaderColumn key={'_actions'}>
+      { listActions() }
+    </TableHeaderColumn>
+  ) : null
 
-  renderCell(row, name, creatorFn, rowId) {
+  function _renderCell(row, name, creatorFn, rowId) {
     return (
-      <TableRowColumn key={`td_${rowId}_${name}`}>
+      <TableRowColumn key={'td_' + rowId + name}>
         {creatorFn(name, row)}
       </TableRowColumn>
     )
   }
 
-  renderListActions(listActions) {
-    return(
-      <TableRowColumn key={'datagrid-actions'}>{listActions}</TableRowColumn>
-    )
+  function _renderRowActions(row) {
+    return listActions ? (
+      <TableRowColumn key={'datagrid-actions'}>{listActions(row)}</TableRowColumn>
+    ) : null
   }
 
-  renderHeaders() {
-    const { isSelected, onRowSelection } = this.props
-    const selectable = onRowSelection !== undefined && isSelected !== undefined
+  let tableChildren = state.loading ? (
+    <TableRow><TableRowColumn><CircularProgress /></TableRowColumn></TableRow>
+  ) : state.items.length === 0 ? (
+    <TableRow><TableRowColumn>EMPTY</TableRowColumn></TableRow>
+  ) : state.items.map((r, i) => {
+    const id = rowId(r)
+    const selected = isSelected && isSelected(i)
     return (
-      <TableHeader displaySelectAll={selectable}>
-        <TableRow>{this.buildHeaders()}</TableRow>
-      </TableHeader>
+      <TableRow selected={selected} key={i}>
+        { TUtils.buildCells(attrs, fields, r, rowId, _renderCell, _renderRowActions) }
+      </TableRow>
     )
-  }
+  })
 
-  renderTable(header) {
-    const { rowId, items, isSelected, onRowSelection } = this.props
-    const selectable = onRowSelection !== undefined && isSelected !== undefined
-
-    return (
-      <Table selectable={selectable} onRowSelection={this.props.onRowSelection} multiSelectable={true}>
-        {header}
-        <TableBody displayRowCheckbox={selectable} deselectOnClickaway={false}>
-          {items.map((r, i) => {
-            const id = rowId(r)
-            const selected = selectable && isSelected(i)
-            return (<TableRow selected={selected} key={i}>{this.buildCells(r, id)}</TableRow>)
-          })}
-        </TableBody>
-      </Table>
-    )
-  }
+  return (
+    <Table selectable={selectable} onRowSelection={onRowSelection} multiSelectable={true}>
+      {titles ? (
+        <TableHeader displaySelectAll={selectable}>
+          <TableRow>
+            { TUtils.buildHeaders(attrs, titles, _renderHeader, listActionsRender, onSort, sortstate) }
+          </TableRow>
+        </TableHeader>
+      ) : null}
+      <TableBody displayRowCheckbox={selectable} deselectOnClickaway={false}>
+        {tableChildren}
+      </TableBody>
+    </Table>
+  )
 }
-export default MUIDatagrid
+export default observer(MUIDatagrid)

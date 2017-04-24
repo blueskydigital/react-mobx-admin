@@ -1,7 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
-import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import AddIcon from 'material-ui/svg-icons/content/add'
 import Datagrid from '../datagrid/datagrid'
@@ -13,58 +12,56 @@ const MUIListView = ({
   state, onAddClicked, fields, filters, listActions, batchActions, renderOuter
 }) => {
 
+  const cv = state.currentView
+
   function onSelectionChange(selection) {
     if(selection === 'all') {
-      state.selectAll(state.currentView)
+      state.selectAll(cv)
     } else if(selection === 'none') {
-      state.updateSelection(state.currentView, [])
+      state.updateSelection(cv, [])
     } else {
-      state.updateSelection(state.currentView, selection)
+      state.updateSelection(cv, selection)
     }
   }
 
   function isSelected(idx) {
-    return state.currentView.selection && state.currentView.selection.indexOf(idx) >= 0
+    return cv.selection && cv.selection.indexOf(idx) >= 0
   }
 
-  const title = state.currentView.title ?
-    <CardTitle title={state.currentView.title} /> : null
   const filtersRender = (filters) ? (
     <Filters.Controls state={state} filters={filters}
-      hideFilter={(filter)=>state.hideFilter(state.currentView, filter)} />
-  ) : null
-  const grid = !state.currentView.loading ? (
-    <Datagrid items={state.currentView.items} attrs={state.currentView.attrs}
-      titles={state.currentView.headertitles} fields={fields}
-      rowId={(row)=>row[state.currentView.pkName]}
-      listActions={listActions}
-      onSort={(field, dir)=>state.updateSort(state.currentView, field, dir)}
-      sortstate={state.currentView}
-      onRowSelection={onSelectionChange} isSelected={isSelected} />
+      hideFilter={(filter)=>state.hideFilter(cv, filter)} />
   ) : null
   const pagination = (
-    <Pagination state={state}
-      onChange={(page)=>state.updatePage(state.currentView, page)} />
+    <Pagination state={state} onChange={(page)=>state.updatePage(cv, page)} />
   )
   const actions = (
     <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-      <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(state.currentView)} />
+      <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(cv)} />
       {batchActions && (<DatagridActions state={state} actions={batchActions} />)}
       {filters && (
         <Filters.Dropdown state={state} title="addfilter" filters={filters}
-          showFilter={(filter)=>state.showFilter(state.currentView, filter)} />
+          showFilter={(filter)=>state.showFilter(cv, filter)} />
       )}
-      {onAddClicked && <FlatButton label={state.currentView.addText} icon={<AddIcon />}
+      {onAddClicked && <FlatButton label={cv.addText} icon={<AddIcon />}
         onTouchTap={() => onAddClicked(state)} />}
     </CardActions>
   )
 
   const result = (
-    <Card style={{ margin: '2em', opacity: state.loading ? 0.8 : 1 }}>
+    <Card>
       { actions }
-      { title }
+      { cv.title ? <CardTitle title={cv.title} /> : null }
       { filtersRender }
-      { grid }
+      <div style={{clear: "both"}}>
+        <Datagrid state={cv} attrs={cv.attrs}
+          titles={cv.headertitles} fields={fields}
+          rowId={(row)=>row[cv.pkName]}
+          listActions={listActions}
+          onSort={(field, dir)=>state.updateSort(cv, field, dir)}
+          sortstate={cv}
+          onRowSelection={onSelectionChange} isSelected={isSelected} />
+      </div>
       { pagination }
     </Card>
   )
