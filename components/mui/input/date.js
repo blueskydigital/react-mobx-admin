@@ -2,41 +2,33 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import DatePicker from 'material-ui/DatePicker'
 
-@observer
-class TextInput extends React.Component {
+const MUIDateInput = ({ attr, record, label, errors, onChange }) => {
 
-  static propTypes = {
-    attr: React.PropTypes.string.isRequired,
-    record: React.PropTypes.object.isRequired,
-    label: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired,
-    errors: React.PropTypes.object
+  function handleChange(_, value) {
+    onChange(attr, value)
   }
 
-  handleChange = (_, value) => {
-    const { attr } = this.props
-    this.props.onChange(attr, value)
-  }
-
-  datify(value) {
+  function datify(value) {
     const dateVal = value instanceof Date ? value : new Date(value)
     return isNaN(dateVal.getTime()) ? null : dateVal
   }
 
-  render() {
-    const { attr, label, record, errors } = this.props
-    const errorText = errors ? errors.get(attr) : undefined
-    const dateVal = this.datify(record.get(attr))
-    return (
-      <DatePicker
-        errorText={errorText}
-        floatingLabelText={label}
-        container="inline"
-        autoOk
-        value={dateVal}
-        onChange={this.handleChange.bind(this)} />
-    )
-  }
+  const errorText = errors ? errors.get(attr) : undefined
+  return (
+    <DatePicker
+      errorText={errorText}
+      floatingLabelText={label}
+      container="inline"
+      autoOk
+      value={datify(record.get(attr))}
+      onChange={handleChange} />
+  )
 }
-
-export default TextInput
+MUIDateInput.propTypes = {
+  attr: React.PropTypes.string.isRequired,
+  record: React.PropTypes.object.isRequired,
+  label: React.PropTypes.string,
+  onChange: React.PropTypes.func.isRequired,
+  errors: React.PropTypes.object
+}
+export default observer(MUIDateInput)

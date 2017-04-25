@@ -4,27 +4,22 @@ import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 
 
-@observer
-class SelectInput extends React.Component {
+const MUISelectInput = ({
+  attr, record, label,
+  optionsrecord, optionsattr,
+  labelattr, valueattr,
+  errors, onChange
+}) => {
 
-  static propTypes = {
-    attr: React.PropTypes.string.isRequired,
-    record: React.PropTypes.object.isRequired,
-    labelattr: React.PropTypes.string,
-    valueattr: React.PropTypes.string,
-    label: React.PropTypes.string,
-    onChange: React.PropTypes.func.isRequired,
-    optionsrecord: React.PropTypes.object.isRequired,
-    optionsattr: React.PropTypes.string,
-    errors: React.PropTypes.object
+  function handleChange(event, index, value) {
+    onChange(attr, value)
   }
 
-  handleChange(event, index, value) {
-    const { attr } = this.props
-    this.props.onChange(attr, value)
-  }
+  const errorText = errors ? errors.get(attr) : undefined
+  const value = record.get(attr)
+  const options = optionsrecord.get(optionsattr || attr)
 
-  renderOptions(options, labelattr, valueattr) {
+  function renderOptions(options, labelattr, valueattr) {
     let opts = []
     let idx, val, c
     for(idx = 0; idx < options.length; idx++) {
@@ -35,23 +30,24 @@ class SelectInput extends React.Component {
     return opts
   }
 
-  render() {
-    const {
-      attr, labelattr, valueattr, label, record,
-      optionsrecord, optionsattr, errors
-    } = this.props
-    const errorText = errors ? errors.get(attr) : undefined
-    const value = record.get(attr)
-    const options = optionsrecord.get(optionsattr || attr)
-    const renderedOpts = options && options.length &&
-      this.renderOptions(options, labelattr || 'label', valueattr || 'value')
-    return (
-      <SelectField value={value} onChange={this.handleChange.bind(this)}
-          floatingLabelText={label} fullWidth={true} errorText={errorText}>
-        {renderedOpts}
-      </SelectField>
-    )
-  }
+  const renderedOpts = options && options.length &&
+    renderOptions(options, labelattr || 'label', valueattr || 'value')
+  return (
+    <SelectField value={value} onChange={handleChange}
+        floatingLabelText={label} fullWidth={true} errorText={errorText}>
+      {renderedOpts}
+    </SelectField>
+  )
 }
-
-export default SelectInput
+MUISelectInput.propTypes = {
+  attr: React.PropTypes.string.isRequired,
+  record: React.PropTypes.object.isRequired,
+  labelattr: React.PropTypes.string,
+  valueattr: React.PropTypes.string,
+  label: React.PropTypes.string,
+  onChange: React.PropTypes.func.isRequired,
+  optionsrecord: React.PropTypes.object.isRequired,
+  optionsattr: React.PropTypes.string,
+  errors: React.PropTypes.object
+}
+export default observer(MUISelectInput)

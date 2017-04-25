@@ -1,23 +1,23 @@
 import React from 'react'
-import FieldBase from './base'
 
-export default class MultivalueField extends FieldBase {
+const MultivalueField = ({items, label, Item, ...rest}) => {
 
-  static propTypes = {
-    attr: React.PropTypes.string.isRequired,
-    record: React.PropTypes.object.isRequired,
-    itemRenderer: React.PropTypes.func,
-    onTouchTap: React.PropTypes.func
-  }
-
-  renderVal(record, attr) {
-    const renderItem = (this.props.itemRenderer === undefined) ? function(i, idx) {
-      return (<span className="tag" key={idx}>{i}</span>)
-    } : this.props.itemRenderer
-    let val = record[attr]
-    return val ? (
-      <div>{val.map((i, idx) => renderItem(i, idx, val))}</div>
-    ) : null
-  }
+  return items && items.length > 0 ? (
+    <div>
+    {
+      items.map((i, idx) => (
+        <div key={idx}><Item attr={idx} record={items} {...rest} /></div>
+      ))
+    }
+    </div>
+  ) : null
 
 }
+MultivalueField.propTypes = {
+  items: React.PropTypes.oneOfType([
+    React.PropTypes.object,
+    React.PropTypes.array,
+  ]).isRequired,
+  Item: React.PropTypes.func.isRequired
+}
+export default MultivalueField
