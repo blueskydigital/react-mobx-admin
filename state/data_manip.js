@@ -2,7 +2,7 @@ import {extendObservable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
-  initEntityView(view, entityName, id, newView, onReturn2list, onSaved) {
+  initEntityView(view, entityName, id, newView, onReturn2list, onSaved, initNew) {
     if(! onReturn2list || ! onSaved) {
       throw 'onReturn2list and onSaved must be set'
     }
@@ -23,10 +23,7 @@ export default class DataManipState {
     if(id) {  // load for edit existing
       return this._loadEditData(view, entityName, id)
     } else {  // create
-      return new Promise((resolve, reject) => {
-        this._loadCreateData(view, entityName)
-        resolve(view.entity)
-      })
+      return this._loadCreateData(view, entityName, initNew)
     }
   }
 
@@ -41,9 +38,18 @@ export default class DataManipState {
     })
   }
 
-  _loadCreateData(view, fields) {
-    view.entity.clear()
-    this._runValidators()
+  _loadCreateData(view, fields, initNew) {
+    view.loading = true
+    let p = new Promise((resolve, reject) => {
+      view.entity.clear()
+      resolve(view.entity)
+    })
+    p = initNew !== undefined ? p.then(initNew) : p
+    p.then((entity) => {
+      this._runValidators()
+      view.loading = false
+    })
+    return p
   }
 
   _runValidators() {

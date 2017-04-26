@@ -35,6 +35,14 @@ export default (BaseClass) => class TagsStore extends BaseClass {
       return this.saveData().then((saved) => {
         this.addMessage('tag successfully saved', 'info', 2000)
       }).catch(this.onError.bind(this))
+    }, (entity) => {
+      // simulation of loading or time expansive operation
+      return new Promise((resolve, reject) => {
+        setTimeout(()=> {
+          entity.set('published', true)
+          resolve(entity)
+        }, 2000)
+      })
     })
   }
 
