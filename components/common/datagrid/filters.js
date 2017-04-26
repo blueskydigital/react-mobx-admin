@@ -34,13 +34,20 @@ class ControlsBase extends React.Component {
   static propTypes = {
     filters: React.PropTypes.object.isRequired,
     state: React.PropTypes.object.isRequired,
-    hideFilter: React.PropTypes.func.isRequired
+    hideFilter: React.PropTypes.func.isRequired,
+    showAttrFilters: React.PropTypes.bool
   }
 
-  buildRows(filters, state) {
+  buildRows(filters, state, showAttrFilters) {
     let rows = []
     for(let name in filters) {
-      if(state.currentView.filters.has(name)) {  // is visible
+
+      const showAttribFilter = showAttrFilters && _.find(state.currentView.attrs, (i) => {
+        return name.indexOf(i) >= 0
+      })
+      const visible = state.currentView.filters.has(name)
+
+      if (visible && showAttribFilter) {
         const value = state.currentView.filters[name]
         const filter = filters[name]
         const onHide = () => {this.props.hideFilter(name)}
@@ -53,8 +60,8 @@ class ControlsBase extends React.Component {
   }
 
   render() {
-    const { filters, apply, state } = this.props
-    const controls = this.buildRows(filters, state)
+    const { filters, apply, state, showAttrFilters } = this.props
+    const controls = this.buildRows(filters, state, showAttrFilters)
     const show = controls.length > 0 && state.currentView.filters.size > 0
     return (show) ? this.renderControls(controls, apply) : null
   }

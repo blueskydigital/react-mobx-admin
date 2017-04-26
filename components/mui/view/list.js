@@ -29,7 +29,7 @@ const MUIListView = ({
   }
 
   const filtersRender = (filters) ? (
-    <Filters.Controls state={state} filters={filters}
+    <Filters.Controls state={state} filters={filters} showAttrFilters={true}
       hideFilter={(filter)=>state.hideFilter(cv, filter)} />
   ) : null
   const pagination = (
