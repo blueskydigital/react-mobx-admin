@@ -4,7 +4,7 @@ import TextInput from 'react-mobx-admin/components/mui/input/text'
 import DateInput from 'react-mobx-admin/components/mui/input/date'
 import MarkdownInput from 'react-mobx-admin/components/mui/input/markdown'
 import SelectInput from 'react-mobx-admin/components/mui/input/select'
-import MUIEditView from 'react-mobx-admin/components/mui/view/edit'
+import EditView from 'react-mobx-admin/components/mui/view/edit'
 
 const PostEditForm = ({state}) => {
 
@@ -40,6 +40,6 @@ const PostEditForm = ({state}) => {
 }
 
 const PostEditView = ({state}) => (
-  <MUIEditView state={state}><PostEditForm state={state} /></MUIEditView>
+  <EditView state={state}><PostEditForm state={state} /></EditView>
 )
 export default PostEditView

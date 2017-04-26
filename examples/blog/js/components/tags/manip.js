@@ -1,10 +1,8 @@
 import React from 'react'
 import { observer } from 'mobx-react'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
-import DateInput from 'react-mobx-admin/components/mui/input/date'
-import SelectInput from 'react-mobx-admin/components/mui/input/select'
-import MUIBoolInput from 'react-mobx-admin/components/mui/input/bool'
-import MUIEditView from 'react-mobx-admin/components/mui/view/edit'
+import BoolInput from 'react-mobx-admin/components/mui/input/bool'
+import EditView from 'react-mobx-admin/components/mui/view/edit'
 
 const TagEditForm = ({state}) => {
 
@@ -16,7 +14,7 @@ const TagEditForm = ({state}) => {
       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <TextInput label={state.__('name')} attr={'name'} record={entity} onChange={updateField}
           errors={state.currentView.errors} /><br/>
-        <MUIBoolInput label={state.__('Published')} attr={'published'} record={entity} onChange={updateField} />
+        <BoolInput label={state.__('Published')} attr={'published'} record={entity} onChange={updateField} />
       </div>
     </div>
   )
@@ -26,6 +24,6 @@ TagEditForm.propTypes = {
 }
 
 const TagsEditView = ({state}) => (
-  <MUIEditView state={state}><TagEditForm state={state} /></MUIEditView>
+  <EditView state={state}><TagEditForm state={state} /></EditView>
 )
 export default TagsEditView

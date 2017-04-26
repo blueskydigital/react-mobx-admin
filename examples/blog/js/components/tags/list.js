@@ -5,14 +5,10 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
-
 import TextField from 'react-mobx-admin/components/mui/field/text'
-import DateField from 'react-mobx-admin/components/mui/field/date'
-import OptionsField from 'react-mobx-admin/components/common/field/opts'
-import MultivalueField from 'react-mobx-admin/components/common/field/multivalue'
 import BoolField from 'react-mobx-admin/components/mui/field/bool'
-import TextInput from 'react-mobx-admin/components/mui/input/text'
 import ListView from 'react-mobx-admin/components/mui/view/list'
+
 
 const TagListView = ({state}) => {
 
