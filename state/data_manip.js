@@ -3,8 +3,8 @@ import {extendObservable, computed, action, transaction, asMap} from 'mobx'
 export default class DataManipState {
 
   initEntityView(view, entityName, id, newView, onReturn2list, onSaved, initNew) {
-    if(! onReturn2list || ! onSaved) {
-      throw 'onReturn2list and onSaved must be set'
+    if(! onReturn2list) {
+      throw 'onReturn2list must be set'
     }
     const listViewBackup = Object.assign({}, view)
     transaction(() => {
@@ -86,7 +86,14 @@ export default class DataManipState {
   @action
   saveData() {
     const id = this.currentView.originEntityId
-    return this.requester.saveEntry(this.currentView.entityName, this.currentView.entity, id)
+    const cv = this.currentView
+    const p = this.requester.saveEntry(cv.entityName, cv.entity, id)
+    .then((saved) => {
+      cv.entity.clear()
+      cv.entity.merge(saved)
+      cv.originEntityId = saved.id
+    })
+    return cv.onSaved ? p.then(cv.onSaved) : p // conditionaly run cv.onSaved
   }
 
 }

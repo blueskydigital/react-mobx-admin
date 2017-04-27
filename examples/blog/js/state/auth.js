@@ -21,7 +21,7 @@ export default class AuthStore extends DataTableState {
   }
 
   onError(err) {
-    alert(err)
+    this.addMessage(err.message || err, 'error', 2000)
   }
 
   @observable loggedUser = null

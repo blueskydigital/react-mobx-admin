@@ -13,7 +13,7 @@ export default (BaseClass) => class TagsStore extends BaseClass {
       this.showTagDetail(row.id)
     }, () => {
       this.showTagDetail(null)
-    })
+    }).catch(this.onError.bind(this))
   }
 
   @action showTagDetail(id) {
@@ -31,10 +31,8 @@ export default (BaseClass) => class TagsStore extends BaseClass {
       }
     }, () => {
       this.showTagList()
-    }, () => {
-      return this.saveData().then((saved) => {
-        this.addMessage('tag successfully saved', 'info', 2000)
-      }).catch(this.onError.bind(this))
+    }, (saved) => {
+      this.addMessage('tag successfully saved', 'info', 2000)
     }, (entity) => {
       // simulation of loading or time expansive operation
       return new Promise((resolve, reject) => {
@@ -43,7 +41,7 @@ export default (BaseClass) => class TagsStore extends BaseClass {
           resolve(entity)
         }, 2000)
       })
-    })
+    }).catch(this.onError.bind(this))
   }
 
 }

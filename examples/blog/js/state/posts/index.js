@@ -17,7 +17,7 @@ export default (BaseClass) => class PostsStore extends BaseClass {
       this.showPostDetail(row.id)
     }, () => {
       this.showPostDetail(null)
-    })
+    }).catch(this.onError.bind(this))
   }
 
   showPostDetail(id) {
@@ -55,11 +55,9 @@ export default (BaseClass) => class PostsStore extends BaseClass {
       }
     }, () => {
       return this.showPostList()
-    }, () => {
-      return this.saveData().then((saved) => {
-        this.addMessage('post successfully saved', 'info', 2000)
-      }).catch(this.onError.bind(this))
-    })
+    }, (saved) => {
+      this.addMessage('post successfully saved', 'info', 2000)
+    }).catch(this.onError.bind(this))
   }
 
 }

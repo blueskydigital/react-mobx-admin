@@ -38,9 +38,9 @@ const MUIEditView = observer( ({state, children}) => {
   const saveText = cv.saveText || 'SAVE'
 
   function onSaveAndReturn() {
-    cv.onSaved().then(()=>{
+    state.saveData().then(()=>{
       cv.onReturn2list()
-    })
+    }).catch(state.onError.bind(state))
   }
 
   return (
@@ -57,7 +57,8 @@ const MUIEditView = observer( ({state, children}) => {
       </form>
 
       <CardActions>
-        <SubmitButton onSubmit={cv.onSaved} errors={cv.errors} text={saveText} />
+        <SubmitButton errors={cv.errors} text={saveText}
+          onSubmit={() => state.saveData().catch(state.onError.bind(state))} />
         <SubmitButton onSubmit={onSaveAndReturn} errors={cv.errors}
           text={cv.saveAndReturnText || 'SAVE and return'} />
         <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={cv.onReturn2list}/>
