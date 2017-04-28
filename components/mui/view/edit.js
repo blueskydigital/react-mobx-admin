@@ -23,7 +23,7 @@ const GlobalErrors = observer(({errors}) => {
   ) : null
 })
 
-const MUIEditView = observer( ({state, children}) => {
+const MUIEditView = observer( ({state, onSave, onReturn2list, children}) => {
 
   const cv = state.currentView
   const loading = (! cv.entity) || cv.loading
@@ -37,16 +37,12 @@ const MUIEditView = observer( ({state, children}) => {
     (cv.createtitle || 'create new item')
   const saveText = cv.saveText || 'SAVE'
 
-  function onSaveAndReturn() {
-    state.saveData().then(()=>{
-      cv.onReturn2list()
-    }).catch(state.onError.bind(state))
-  }
+  const sumbit = <SubmitButton onSubmit={onSave} errors={cv.errors} text={saveText} />
 
   return (
     <Card style={{ margin: '1em'}}>
       <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-        <SubmitButton onSubmit={cv.onSaved} errors={cv.errors} text={saveText} />
+        {sumbit}
       </CardActions>
 
       <CardTitle title={title} subtitle={cv.desc} />
@@ -57,11 +53,10 @@ const MUIEditView = observer( ({state, children}) => {
       </form>
 
       <CardActions>
-        <SubmitButton errors={cv.errors} text={saveText}
-          onSubmit={() => state.saveData().catch(state.onError.bind(state))} />
-        <SubmitButton onSubmit={onSaveAndReturn} errors={cv.errors}
+        {sumbit}
+        <SubmitButton onSubmit={()=>onSave(onReturn2list)} errors={cv.errors}
           text={cv.saveAndReturnText || 'SAVE and return'} />
-        <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={cv.onReturn2list}/>
+        <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={()=>onReturn2list()}/>
       </CardActions>
     </Card>
   )

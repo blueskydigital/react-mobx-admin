@@ -1,4 +1,4 @@
-import { transaction } from 'mobx'
+import { transaction, action } from 'mobx'
 
 export default (BaseClass) => class PostsStore extends BaseClass {
 
@@ -18,6 +18,14 @@ export default (BaseClass) => class PostsStore extends BaseClass {
     }, () => {
       this.showPostDetail(null)
     }).catch(this.onError.bind(this))
+  }
+
+  @action savePost(onReturn2list = null) {
+    let p = this.saveData().then((saved) => {
+      this.addMessage('post successfully saved', 'info', 2000)
+    })
+    p = onReturn2list ? p.then(onReturn2list) : p
+    return p.catch(this.onError.bind(this))
   }
 
   showPostDetail(id) {
@@ -53,10 +61,6 @@ export default (BaseClass) => class PostsStore extends BaseClass {
           }
         }
       }
-    }, () => {
-      return this.showPostList()
-    }, (saved) => {
-      this.addMessage('post successfully saved', 'info', 2000)
     }).catch(this.onError.bind(this))
   }
 

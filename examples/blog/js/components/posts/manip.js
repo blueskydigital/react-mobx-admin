@@ -40,6 +40,8 @@ const PostEditForm = ({state}) => {
 }
 
 const PostEditView = ({state}) => (
-  <EditView state={state}><PostEditForm state={state} /></EditView>
+  <EditView state={state} onReturn2list={state.showPostList.bind(state)} onSave={state.savePost.bind(state)}>
+    <PostEditForm state={state} />
+  </EditView>
 )
 export default PostEditView

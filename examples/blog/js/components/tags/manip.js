@@ -24,6 +24,8 @@ TagEditForm.propTypes = {
 }
 
 const TagsEditView = ({state}) => (
-  <EditView state={state}><TagEditForm state={state} /></EditView>
+  <EditView state={state} onReturn2list={state.showTagList.bind(state)} onSave={state.saveTag.bind(state)}>
+    <TagEditForm state={state} />
+  </EditView>
 )
 export default TagsEditView

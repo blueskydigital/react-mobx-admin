@@ -29,10 +29,6 @@ export default (BaseClass) => class TagsStore extends BaseClass {
           }
         }
       }
-    }, () => {
-      this.showTagList()
-    }, (saved) => {
-      this.addMessage('tag successfully saved', 'info', 2000)
     }, (entity) => {
       // simulation of loading or time expansive operation
       return new Promise((resolve, reject) => {
@@ -42,6 +38,14 @@ export default (BaseClass) => class TagsStore extends BaseClass {
         }, 2000)
       })
     }).catch(this.onError.bind(this))
+  }
+
+  @action saveTag(onReturn2list = null) {
+    let p = this.saveData().then((saved) => {
+      this.addMessage('tag successfully saved', 'info', 2000)
+    })
+    p = onReturn2list ? p.then(onReturn2list) : p
+    return p.catch(this.onError.bind(this))
   }
 
 }
