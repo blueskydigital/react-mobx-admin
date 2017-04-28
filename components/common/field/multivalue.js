@@ -17,7 +17,7 @@ MultivalueField.propTypes = {
   items: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.array,
-  ]).isRequired,
+  ]),
   Item: React.PropTypes.func.isRequired
 }
 export default MultivalueField
