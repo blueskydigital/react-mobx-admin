@@ -3,12 +3,8 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  initEntityListView(entityname) {
-    const cfg = this.listconfs[entityname]
-    if (! cfg) {
-      return this.on404('unknown entity ' + entityname)
-    }
-    transaction(() => {
+  initEntityListView(entityname, cfg) {
+    return transaction(() => {
       this.router.queryParams._page = this.router.queryParams._page || 1
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign({}, cfg.view, {
@@ -24,20 +20,9 @@ export default class DataTableState extends DataManipState {
     })
   }
 
-  beforeListViewEnter() {
-
-  }
-
   beforeListViewExit() {
     const queryParamsBackup = Object.assign({}, this.router.queryParams)
     this.listQParamsBackup = queryParamsBackup
-  }
-
-  onListParamsChange(params, queryParams) {
-    if (this.cv.type !== 'entity_list' || params.entityname !== this.cv.entityname) {
-      return this.initEntityListView(params.entityname)
-    }
-    return this._refreshList()
   }
 
   detailClicked(row) {
@@ -73,7 +58,7 @@ export default class DataTableState extends DataManipState {
 
   @action
   refresh() {
-    this._refreshList()
+    return this._refreshList()
   }
 
   // ---------------------- delete  ----------------------------

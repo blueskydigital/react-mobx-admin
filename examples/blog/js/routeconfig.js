@@ -26,7 +26,7 @@ const views = {
       store.beforeListViewEnter(route, params, store, queryParams)
     },
     onEnter: (route, params, store) => {
-      store.initEntityListView(params.entityname)
+      store.showEntityListView(params.entityname)
     },
     onParamsChange: (route, nextParams, store, nextQueryParams) => {
       store.onListParamsChange(nextParams, nextQueryParams)
@@ -36,10 +36,10 @@ const views = {
     path: '/entity/:entityname/:id',
     component: <EntityEdit />,
     onEnter: (route, params, store) => {
-      store.initEntityView(params.entityname, params.id)
+      store.showEntityUpdateView(params.entityname, params.id)
     },
     onParamsChange: (route, nextParams, store) => {
-      store.initEntityView(nextParams.entityname, nextParams.id)
+      store.showEntityUpdateView(nextParams.entityname, nextParams.id)
     }
   })
 }

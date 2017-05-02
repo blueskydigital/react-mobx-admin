@@ -2,11 +2,7 @@ import {observable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
-  initEntityView(entityname, id) {
-    const cfg = this.editconfs[entityname]
-    if (! cfg) {
-      return this.on404('unknown entity ' + entityname)
-    }
+  initEntityView(entityname, id, cfg) {
     transaction(() => {
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign(cfg.view, {

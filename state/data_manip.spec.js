@@ -33,7 +33,6 @@ const cfg = {
 
 function _createState() {
   const state = new State()
-  state.editconfs = {posts: cfg}
   state.requester = new MockRequester()
   return state
 }
@@ -47,7 +46,7 @@ test('it should be possible to showEntityDetail', t => {
     "views": 143
   }
 
-  state.initEntityView('posts', 1)
+  state.initEntityView('posts', 1, cfg)
   t.equal(state.cv.loading, true)
 
   setTimeout(() => {
