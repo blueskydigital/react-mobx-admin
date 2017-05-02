@@ -4,7 +4,7 @@ import PostListPage from './posts/list'
 import TagsListPage from './tags/list'
 
 const EntityList = ({store}) => {
-  switch (store.cv.entityname) {
+  switch (store.router.params.entityname) {
     case 'posts':
       return <PostListPage store={store} />
     case 'tags':

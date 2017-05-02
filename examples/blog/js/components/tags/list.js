@@ -1,5 +1,4 @@
 import React from 'react'
-import { observer } from 'mobx-react'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -41,4 +40,4 @@ const TagListView = ({store}) => {
 
 }
 
-export default observer(['store'], TagListView)
+export default TagListView

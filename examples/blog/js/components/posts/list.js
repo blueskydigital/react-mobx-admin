@@ -1,6 +1,4 @@
 import React from 'react'
-import { observer } from 'mobx-react'
-import { asMap } from 'mobx'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
@@ -88,4 +86,4 @@ const PostListView = ({store}) => {
 
 }
 
-export default observer(['store'], PostListView)
+export default PostListView
