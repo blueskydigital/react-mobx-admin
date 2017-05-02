@@ -21,7 +21,7 @@ export default class AuthStore extends DataTableState {
   }
 
   onError(err) {
-    if (err.status) {
+    if (err.status || err.config) {
       return this.addMessage(err.message || err, 'error', 2000)
     }
     throw err
