@@ -7,38 +7,59 @@ class State extends DataManipState {
   @observable currentView = {}
 }
 
+const cfg = {
+  view: {
+    validators: {
+      'title': (val) => {
+        if (!val || val.length === 0) {
+          return 'value must be provided'
+        }
+        if(val.length > 10) {
+          return 'value too long'
+        }
+      }
+    }
+  },
+  initNew: (entity) => {
+    // simulation of loading or time expansive operation
+    return new Promise((resolve, reject) => {
+      setTimeout(()=> {
+        entity.set('published', true)
+        resolve(entity)
+      }, 200)
+    })
+  }
+}
+
 function _createState() {
   const state = new State()
+  state.editconfs = {posts: cfg}
   state.requester = new MockRequester()
   return state
 }
 
 test('it should be possible to showEntityDetail', t => {
-    const state = _createState()
-    state.requester.data = {
-      "id": 1,
-      "title": "Sauron attacks",
-      "body": "<p>Rerum velit quos est <ur veniam fugit",
-      "views": 143
-    }
+  const state = _createState()
+  state.requester.data = {
+    "id": 1,
+    "title": "Sauron attacks",
+    "body": "<p>Rerum velit quos est <ur veniam fugit",
+    "views": 143
+  }
 
-    state.initEntityView(state.currentView, 'posts', 1, {
-      name: 'tag_detail',
-    }, () => {
-      console.log('onReturn2list')
-    }, () => {
-      console.log('onSaved')
-    })
+  state.initEntityView('posts', 1)
+  t.equal(state.cv.loading, true)
 
-    setTimeout(() => {
-      t.equal(state.currentView.originEntityId, 1)
-      t.equal(state.currentView.entityName, 'posts')
-      t.equal(state.currentView.entity.has('title'), true)
-      t.equal(state.currentView.entity.get('title'), state.requester.data.title)
-      t.equal(state.currentView.entity.has('body'), true)
-      t.equal(state.currentView.entity.get('body'), state.requester.data.body)
-      t.end()
-    }, 500)
+  setTimeout(() => {
+    t.equal(state.cv.loading, false)
+    t.equal(state.cv.originEntityId, 1)
+    t.equal(state.cv.entityname, 'posts')
+    t.equal(state.cv.entity.has('title'), true)
+    t.equal(state.cv.entity.get('title'), state.requester.data.title)
+    t.equal(state.cv.entity.has('body'), true)
+    t.equal(state.cv.entity.get('body'), state.requester.data.body)
+    t.end()
+  }, 500)
 })
 
 // test('it should not be possible to read documents without login', t => {
