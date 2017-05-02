@@ -1,17 +1,12 @@
 import React from 'react'
 import { observer, Provider } from 'mobx-react'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui'
-import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import { MobxRouter } from 'mobx-router'
 import UserInfo from './header'
 import MessagesView from './messages'
 import views from '../routeconfig'
 
-
-const Loading = observer( ({state}) => {
-  return state.loading ? <CircularProgress color="#fff" /> : <span />
-})
 
 export const App = observer( ({ store }) => {
   return (
@@ -31,7 +26,6 @@ export const App = observer( ({ store }) => {
           <FlatButton onTouchTap={() => store.changeLang()}>ChangeLang</FlatButton>
         </ToolbarGroup>
         <ToolbarGroup>
-          <Loading state={store}/>
           <UserInfo state={store}/>
         </ToolbarGroup>
       </Toolbar>
