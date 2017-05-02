@@ -23,6 +23,10 @@ export default class StateStore extends OptionsStore {
     return this.router.cv
   }
 
+  set cv(val) {
+    this.router.cv = val
+  }
+
   @observable messages = asMap({})
 
   @action addMessage(text, type, timeout = 0) {

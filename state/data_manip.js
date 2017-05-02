@@ -1,4 +1,4 @@
-import {extendObservable, computed, action, transaction, asMap} from 'mobx'
+import {observable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
@@ -9,15 +9,14 @@ export default class DataManipState {
     }
     transaction(() => {
       cfg.init && cfg.init(this)
-      const atts = Object.assign(cfg.view, {
+      this.cv = observable(Object.assign(cfg.view, {
         type: 'entity_detail',
         entityname: entityname,
         originEntityId: id,
         entity: asMap({}),
         errors: asMap({}),
         loading: true
-      })
-      extendObservable(this.cv, atts)
+      }))
     })
     this.cv.onSave = cfg.onSave
     if(id) {  // load for edit existing

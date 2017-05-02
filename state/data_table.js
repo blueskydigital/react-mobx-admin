@@ -1,6 +1,4 @@
-import {
-  extendObservable, observable, computed, action, transaction, asMap, toJS
-} from 'mobx'
+import {observable, computed, action, transaction, asMap, toJS} from 'mobx'
 import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
@@ -13,20 +11,17 @@ export default class DataTableState extends DataManipState {
     transaction(() => {
       this.router.queryParams._page = this.router.queryParams._page || 1
       cfg.init && cfg.init(this)
-      const atts = Object.assign({}, cfg.view, {
+      this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_list',
         entityname: entityname,
+        items: [],
         totalItems: 0,
         loading: true,
         selection: [],
         filters: asMap(this.appliedFilters)
-      })
-      extendObservable(this.cv, atts)
-      if (! this.cv.items) {
-        extendObservable(this.cv, {items: []})
-      }
+      }))
+      return this._refreshList()
     })
-    return this._refreshList()
   }
 
   beforeListViewEnter() {
