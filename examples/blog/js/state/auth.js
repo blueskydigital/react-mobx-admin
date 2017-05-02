@@ -61,8 +61,8 @@ export default class AuthStore extends DataTableState {
         resolve(toJS(self.loggedUser))
       }, Math.random() * 2000 + 1000)
     }).then((user) => {
-      this.showPostList()
       this.router.cv.submitted = false
+      this.router.goTo(this.views.entity_list, {entityname: 'posts'}, this, {_page: 1})
     })
   }
 
