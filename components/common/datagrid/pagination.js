@@ -3,7 +3,7 @@ import React from 'react'
 export default class PaginationBase extends React.Component {
 
   static propTypes = {
-      state: React.PropTypes.object.isRequired,
+      store: React.PropTypes.object.isRequired,
       onChange: React.PropTypes.func.isRequired
   }
 

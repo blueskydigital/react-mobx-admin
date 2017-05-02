@@ -15,6 +15,6 @@ const TextField = ({ attr, record, onTouchTap }) => {
   }
 
   const valRender = (<span>{val}</span>)
-  return onTouchTap ? (<a href="#" onTouchTap={handleTouchTap}>{valRender}</a>) : valRender
+  return onTouchTap ? (<a href="javascript:void(0)" onTouchTap={handleTouchTap}>{valRender}</a>) : valRender
 }
 export default TextField

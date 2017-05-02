@@ -3,7 +3,7 @@ import { observer } from 'mobx-react'
 
 const DatagridActions = ({actions, state}) => {
 
-  return (state.currentView.selection.length > 0) ? actions(state) : null
+  return (state.cv.selection.length > 0) ? actions(state) : null
 
 }
 

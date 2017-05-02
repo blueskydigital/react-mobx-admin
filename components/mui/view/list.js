@@ -9,18 +9,18 @@ import Pagination from '../datagrid/pagination'
 import DatagridActions from '../../common/datagrid/actions'
 
 const MUIListView = ({
-  state, onAddClicked, fields, filters, listActions, batchActions, renderOuter
+  store, onAddClicked, fields, filters, listActions, batchActions, renderOuter
 }) => {
 
-  const cv = state.currentView
+  const cv = store.cv
 
   function onSelectionChange(selection) {
     if(selection === 'all') {
-      state.selectAll(cv)
+      store.selectAll()
     } else if(selection === 'none') {
-      state.updateSelection(cv, [])
+      store.updateSelection([])
     } else {
-      state.updateSelection(cv, selection)
+      store.updateSelection(selection)
     }
   }
 
@@ -29,22 +29,22 @@ const MUIListView = ({
   }
 
   const filtersRender = (filters) ? (
-    <Filters.Controls state={state} filters={filters} showAttrFilters={true}
-      hideFilter={(filter)=>state.hideFilter(cv, filter)} />
+    <Filters.Controls state={store} filters={filters} showAttrFilters={true}
+      hideFilter={store.hideFilter.bind(store)} />
   ) : null
   const pagination = (
-    <Pagination state={state} onChange={(page)=>state.updatePage(cv, page)} />
+    <Pagination store={store} onChange={store.updatePage.bind(store)} />
   )
   const actions = (
     <CardActions style={{ zIndex: 2, display: 'inline-block', float: 'right' }}>
-      <Filters.Apply state={state} label={'apply filters'} apply={()=>state.applyFilters(cv)} />
-      {batchActions && (<DatagridActions state={state} actions={batchActions} />)}
+      <Filters.Apply state={store} label={'apply filters'} apply={store.applyFilters.bind(store)} />
+      {batchActions && (<DatagridActions state={store} actions={batchActions} />)}
       {filters && (
-        <Filters.Dropdown state={state} title="addfilter" filters={filters}
-          showFilter={(filter)=>state.showFilter(cv, filter)} />
+        <Filters.Dropdown state={store} title="addfilter" filters={filters}
+          showFilter={store.showFilter.bind(store)} />
       )}
       {onAddClicked && <FlatButton label={cv.addText} icon={<AddIcon />}
-        onTouchTap={() => onAddClicked(state)} />}
+        onTouchTap={() => onAddClicked(store)} />}
     </CardActions>
   )
 
@@ -58,8 +58,8 @@ const MUIListView = ({
           titles={cv.headertitles} fields={fields}
           rowId={(row)=>row[cv.pkName]}
           listActions={listActions}
-          onSort={(field, dir)=>state.updateSort(cv, field, dir)}
-          sortstate={cv}
+          onSort={store.updateSort.bind(store)}
+          sortstate={store.router.queryParams}
           onRowSelection={onSelectionChange} isSelected={isSelected} />
       </div>
       { pagination }
@@ -69,7 +69,7 @@ const MUIListView = ({
   return renderOuter ? renderOuter(result) : result
 }
 MUIListView.propTypes = {
-  state: React.PropTypes.object.isRequired,
+  store: React.PropTypes.object.isRequired,
   renderOuter: React.PropTypes.func
 }
 export default observer(MUIListView)

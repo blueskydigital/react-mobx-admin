@@ -2,7 +2,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import DevTools from 'mobx-react-devtools'
-import { startRouter } from './router'
+import { startRouter } from 'mobx-router'
+import views from './routeconfig'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -11,8 +12,8 @@ injectTapEventPlugin()
 
 // use it to create the app state
 import StateStore from './state'
-const state = new StateStore()
-startRouter(state)
+const store = new StateStore(views)
+startRouter(views, store)
 
 // init react components part using the only prop: the store
 import { App } from './components/app'
@@ -20,7 +21,7 @@ const mount = document.getElementById("app")  // mountpoint
 render((
   <div>
     <MuiThemeProvider className="view-wrapper">
-      <App state={state} />
+      <App store={store} />
     </MuiThemeProvider>
     {Conf.debug ? (<DevTools />) : null}
   </div>

@@ -6,42 +6,42 @@ import MarkdownInput from 'react-mobx-admin/components/mui/input/markdown'
 import SelectInput from 'react-mobx-admin/components/mui/input/select'
 import EditView from 'react-mobx-admin/components/mui/view/edit'
 
-const PostEditForm = ({state}) => {
+const PostEditForm = ({store}) => {
 
-  const entity = state.currentView.entity
-  const updateField = state.updateData.bind(state)
+  const entity = store.cv.entity
+  const updateField = store.updateData.bind(store)
   return (
     <div>
       <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <TextInput label={state.__('title')} attr={'title'} record={entity}
-            onChange={updateField} errors={state.currentView.errors} /><br/>
-          <SelectInput label={state.__('Category')} attr={'category'} record={entity}
-            optionsrecord={state.options}
+          <TextInput label={store.__('title')} attr={'title'} record={entity}
+            onChange={updateField} errors={store.cv.errors} /><br/>
+          <SelectInput label={store.__('Category')} attr={'category'} record={entity}
+            optionsrecord={store.options}
             optionsattr={'categories'}
             onChange={updateField}
-            errors={state.currentView.errors} />
+            errors={store.cv.errors} />
         </div>
         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <DateInput label={state.__('published')} attr={'published_at'} record={entity}
-            onChange={updateField} errors={state.currentView.errors} /><br/>
-          <DateInput label={state.__('unpublished')} attr={'unpublished_at'} record={entity}
-            onChange={updateField} errors={state.currentView.errors} /><br/>
+          <DateInput label={store.__('published')} attr={'published_at'} record={entity}
+            onChange={updateField} errors={store.cv.errors} /><br/>
+          <DateInput label={store.__('unpublished')} attr={'unpublished_at'} record={entity}
+            onChange={updateField} errors={store.cv.errors} /><br/>
         </div>
       </div>
       <div className="row">
         <div className="col-xs-12">
-          <MarkdownInput label={state.__('content')} attr={'content'} record={entity}
-            onChange={updateField} errors={state.currentView.errors} mdrender={marked} />
+          <MarkdownInput label={store.__('content')} attr={'content'} record={entity}
+            onChange={updateField} errors={store.cv.errors} mdrender={marked} />
         </div>
       </div>
     </div>
   )
 }
 
-const PostEditView = ({state}) => (
-  <EditView state={state} onReturn2list={state.showPostList.bind(state)} onSave={state.savePost.bind(state)}>
-    <PostEditForm state={state} />
+const PostEditView = ({store}) => (
+  <EditView store={store} onReturn2list={store.onReturn2list.bind(store)} onSave={store.saveEntity.bind(store)}>
+    <PostEditForm store={store} />
   </EditView>
 )
 export default PostEditView

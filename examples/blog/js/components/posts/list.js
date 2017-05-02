@@ -16,7 +16,7 @@ import SelectInput from 'react-mobx-admin/components/mui/input/select'
 import ListView from 'react-mobx-admin/components/mui/view/list'
 
 
-const PostListView = ({state}) => {
+const PostListView = ({store}) => {
 
   const _tagOptionComponent = ({attr, record}) => {
     function onTouchTap() {
@@ -26,14 +26,14 @@ const PostListView = ({state}) => {
       <Chip style={{float: 'left'}} onTouchTap={onTouchTap}>{text}</Chip>
     )
     return <OptionsField attr={attr} record={record}
-      optionsrecord={state.options} optionsattr={'tags'}
+      optionsrecord={store.options} optionsattr={'tags'}
       labelattr={'name'} valueattr={'id'} Component={_tagComponent} />
   }
 
-  const batchActions = (state) => {
+  const batchActions = (store) => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected items?`)) {
-        state.deleteSelected(state.currentView)
+        store.deleteSelected()
       }
     }
     return (
@@ -46,7 +46,7 @@ const PostListView = ({state}) => {
   const listActions = (row) => {
     function _deleteRow(row) {
       if(confirm(`Are you sure you want to delete ${row.title}?`)) {
-        state.deleteData(state.currentView, [row])
+        store.deleteData([row])
       }
     }
     return row ? (
@@ -63,10 +63,10 @@ const PostListView = ({state}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      return (<TextField attr={attr} record={row} onTouchTap={() => state.currentView.detailClicked(row)}/>)
+      return (<TextField attr={attr} record={row} onTouchTap={() => store.detailClicked(row)}/>)
     },
     (attr, row) => (
-      <OptionsField attr={attr} record={row} optionsrecord={state.options} optionsattr={'categories'} />
+      <OptionsField attr={attr} record={row} optionsrecord={store.options} optionsattr={'categories'} />
     ),
     (attr, row) => (<DateField attr={attr} record={row} />),
     (attr, row) => {
@@ -76,16 +76,16 @@ const PostListView = ({state}) => {
 
   const filters = {
     'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<SelectInput {...props}
-      optionsrecord={state.options}
+      optionsrecord={store.options}
       optionsattr={'categories'} />)},
     'title_like': {title: 'Title', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
   }
 
   return (
-    <ListView state={state} fields={fields} listActions={listActions} filters={filters}
-      batchActions={batchActions} onAddClicked={state.currentView.addClicked} />
+    <ListView store={store} fields={fields} listActions={listActions} filters={filters}
+      batchActions={batchActions} onAddClicked={store.addClicked.bind(store)} />
   )
 
 }
 
-export default observer(PostListView)
+export default observer(['store'], PostListView)

@@ -23,9 +23,9 @@ const GlobalErrors = observer(({errors}) => {
   ) : null
 })
 
-const MUIEditView = observer( ({state, onSave, onReturn2list, children}) => {
+const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
 
-  const cv = state.currentView
+  const cv = store.cv
   const loading = (! cv.entity) || cv.loading
 
   if(loading) {

@@ -10,12 +10,12 @@ import BoolField from 'react-mobx-admin/components/mui/field/bool'
 import ListView from 'react-mobx-admin/components/mui/view/list'
 
 
-const TagListView = ({state}) => {
+const TagListView = ({store}) => {
 
   const batchActions = () => {
     function _batchDelete() {
       if(confirm(`Are you sure you want to delete selected tags?`)) {
-        state.deleteSelected(state.currentView)
+        store.deleteSelected()
       }
     }
     return (
@@ -28,17 +28,17 @@ const TagListView = ({state}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} record={row} />),
     (attr, row) => {
-      return <TextField attr={attr} record={row} onTouchTap={() => state.currentView.detailClicked(row)} />
+      return <TextField attr={attr} record={row} onTouchTap={() => store.detailClicked(row)} />
     },
     (attr, row) => (<BoolField attr={attr} record={row} />)
   ]
 
   return (
-    <ListView state={state} fields={fields}
-      batchActions={batchActions} onAddClicked={state.currentView.addClicked} />
+    <ListView store={store} fields={fields}
+      batchActions={batchActions} onAddClicked={store.addClicked.bind(store)} />
 
   )
 
 }
 
-export default observer(TagListView)
+export default observer(['store'], TagListView)

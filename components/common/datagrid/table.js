@@ -5,7 +5,7 @@ export function buildHeaders(attrs, titles, renderHeader, listActionsRender, onS
   for(i = 0; i < attrs.length; i++) {
     const attr = attrs[i]
     const title = titles[i]
-    const sort = sortstate && (sortstate.sortField === attr) ? sortstate.sortDir : null
+    const sort = sortstate && (sortstate._sortField === attr) ? sortstate._sortDir : null
     const header = renderHeader(attr, title, sort, onSort)
     headers.push(header)
   }

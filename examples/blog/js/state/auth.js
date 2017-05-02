@@ -21,7 +21,10 @@ export default class AuthStore extends DataTableState {
   }
 
   onError(err) {
-    this.addMessage(err.message || err, 'error', 2000)
+    if (err.status) {
+      return this.addMessage(err.message || err, 'error', 2000)
+    }
+    throw err
   }
 
   @observable loggedUser = null
@@ -32,31 +35,34 @@ export default class AuthStore extends DataTableState {
 
   @action
   showLogin() {
-    this.currentView = {
-      name: 'login'
-    }
+    this.router.cv = observable({
+      uname: '',
+      pwd: '',
+      submitted: false
+    })
   }
 
   @action
   logout() {
     this.loggedUser = null
     localStorage.removeItem('gandalf_admin_user')
-    this.currentView = {
-      name: 'login'
-    }
   }
 
-  @action performLogin(credentials) {
+  @action performLogin() {
+    this.router.cv.submitted = true
     let self = this
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         self.loggedUser = {
-          uname: credentials.uname,
+          uname: self.router.cv.uname,
           name: 'gandalf the gray'
         }
         localStorage.setItem('gandalf_admin_user', JSON.stringify(self.loggedUser))
         resolve(toJS(self.loggedUser))
       }, Math.random() * 2000 + 1000)
+    }).then((user) => {
+      this.showPostList()
+      this.router.cv.submitted = false
     })
   }
 

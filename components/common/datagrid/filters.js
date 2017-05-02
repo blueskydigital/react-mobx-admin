@@ -13,7 +13,7 @@ class DropdownBase extends React.Component {
   createItems(state, filters) {
     const onShowFilter = this.props.showFilter
     return _.map(filters, (val, name) => {
-      if(state.currentView.filters.has(name)) {
+      if(state.cv.filters.has(name)) {
         return null // don't add to menu already visible filters
       } else {
         return this.renderItem(name, val.title, val.icon, () => {onShowFilter(name)})
@@ -23,7 +23,7 @@ class DropdownBase extends React.Component {
 
   render() {
     const { filters, state } = this.props
-    const show = state.currentView.filters.size < Object.keys(filters).length
+    const show = state.cv.filters.size < Object.keys(filters).length
     return (show) ? this.renderMenu(state, filters) : null
   }
 }
@@ -42,16 +42,16 @@ class ControlsBase extends React.Component {
     let rows = []
     for(let name in filters) {
 
-      const showAttribFilter = showAttrFilters && _.find(state.currentView.attrs, (i) => {
+      const showAttribFilter = showAttrFilters && _.find(state.cv.attrs, (i) => {
         return name.indexOf(i) >= 0
       })
-      const visible = state.currentView.filters.has(name)
+      const visible = state.cv.filters.has(name)
 
       if (visible && showAttribFilter) {
-        const value = state.currentView.filters[name]
+        const value = state.cv.filters.get(name)
         const filter = filters[name]
         const onHide = () => {this.props.hideFilter(name)}
-        const onUpdate = (name, val) => {state.updateFilterValue(state.currentView, name, val)}
+        const onUpdate = state.updateFilterValue.bind(state)
         const ctrl = this.renderControl(filter, name, state, onHide, onUpdate)
         rows.push(ctrl)
       }
@@ -62,7 +62,7 @@ class ControlsBase extends React.Component {
   render() {
     const { filters, apply, state, showAttrFilters } = this.props
     const controls = this.buildRows(filters, state, showAttrFilters)
-    const show = controls.length > 0 && state.currentView.filters.size > 0
+    const show = controls.length > 0 && state.cv.filters.size > 0
     return (show) ? this.renderControls(controls, apply) : null
   }
 }

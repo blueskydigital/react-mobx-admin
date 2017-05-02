@@ -1,16 +1,19 @@
 
 export function convertQuery(q) {
-  const perPage = q.perPage
-  let converted = {
-    _start: (q.page - 1) * perPage,
-    _limit: perPage
+  const converted = {}
+  if (q._page) {
+    converted._start = (q._page - 1) * q._perPage,
+    converted._limit = q._perPage
   }
-  if(q.sortField) {
-    converted._sort = q.sortField
-    converted._order = q.sortDir
+
+  if(q._sortField) {
+    converted._sort = q._sortField
+    converted._order = q._sortDir
   }
-  for(let i in q.filters) {
-    converted[i] = q.filters[i]
+
+  for(let i in q) {
+    if (i[0] !== '_')
+    converted[i] = q[i]
   }
   return converted
 }

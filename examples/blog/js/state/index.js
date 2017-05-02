@@ -1,24 +1,26 @@
 import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import { RouterStore } from 'mobx-router'
 import OptionsStore from './options'
-import PostsStoreInit from './posts'
-import TagsStoreInit from './tags'
 
-// lego pattern :)
-const TagsStore = TagsStoreInit(OptionsStore)
-const PostsStore = PostsStoreInit(TagsStore)
+import PostsInfoInit from './posts'
+import TagsInfoInit from './tags'
 
-export default class StateStore extends PostsStore {
 
-  @computed get currentPath() {
-    const _id = () => this.currentView.originEntityId ? this.currentView.originEntityId : '_new'
-    const viewName = this.currentView ? this.currentView.name : 'login'
-    switch(viewName) {
-      case 'login': return '/login'
-      case 'post_list': return `/entity/posts?${this.table_query(this.currentView)}`
-      case 'post_detail': return '/entity/posts/' + _id()
-      case 'tag_list': return `/entity/tags?${this.table_query(this.currentView)}`
-      case 'tag_detail': return '/entity/tags/' + _id()
-    }
+export default class StateStore extends OptionsStore {
+
+  constructor(views) {
+    super()
+    this.router = new RouterStore()
+    this.views = views
+    this.router.cv = {}
+    this.listconfs = {}
+    this.editconfs = {}
+    PostsInfoInit(this, this.editconfs, this.listconfs)
+    TagsInfoInit(this, this.editconfs, this.listconfs)
+  }
+
+  get cv() {
+    return this.router.cv
   }
 
   @observable messages = asMap({})
@@ -38,7 +40,5 @@ export default class StateStore extends PostsStore {
   @action removeMessage(message) {
     this.messages.delete(message.text)
   }
-
-  @observable currentView = {}
 
 }

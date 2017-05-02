@@ -1,35 +1,30 @@
 import { action, transaction } from 'mobx'
 
-export default (BaseClass) => class TagsStore extends BaseClass {
+export default function(store, editconfs, listconfs) {
 
-  @action showTagList(query = {}) {
-    this.initEntityListView(this.currentView, 'tags', query, {
-      name: 'tag_list',
+  listconfs.tags = {
+    view: {
       perPage: 3,
       pkName: 'id',
       attrs: ['id', 'name', 'published'],
-      headertitles: ['ID', this.__('Name'), 'Published']
-    }, (row) => {
-      this.showTagDetail(row.id)
-    }, () => {
-      this.showTagDetail(null)
-    }).catch(this.onError.bind(this))
+      headertitles: ['ID', store.__('Name'), 'Published']
+    }
   }
 
-  @action showTagDetail(id) {
-    this.initEntityView(this.currentView, 'tags', id, {
-      name: 'tag_detail',
+  editconfs.tags = {
+    view: {
       validators: {
         'name': (val) => {
           if (!val || val.length === 0) {
-            return this.__('value must be provided')
+            return store.__('value must be provided')
           }
           if(val.length > 10) {
-            return this.__('value too long')
+            return store.__('value too long')
           }
         }
       }
-    }, (entity) => {
+    },
+    initNew: (entity) => {
       // simulation of loading or time expansive operation
       return new Promise((resolve, reject) => {
         setTimeout(()=> {
@@ -37,15 +32,7 @@ export default (BaseClass) => class TagsStore extends BaseClass {
           resolve(entity)
         }, 2000)
       })
-    }).catch(this.onError.bind(this))
-  }
-
-  @action saveTag(onReturn2list = null) {
-    let p = this.saveData().then((saved) => {
-      this.addMessage('tag successfully saved', 'info', 2000)
-    })
-    p = onReturn2list ? p.then(onReturn2list) : p
-    return p.catch(this.onError.bind(this))
+    }
   }
 
 }

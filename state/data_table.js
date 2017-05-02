@@ -5,173 +5,188 @@ import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
 
-  initEntityListView(view, entityName, query, newView, detailClicked, addClicked) {
-    if(! detailClicked || ! addClicked) {
-      throw 'detailClicked and addClicked must be set'
+  initEntityListView(entityname) {
+    const cfg = this.listconfs[entityname]
+    if (! cfg) {
+      return this.on404('unknown entity ' + entityname)
     }
-    if(view.listViewBackup && view.listViewBackup.entityName === entityName) {
-      Object.assign(query, view.listViewBackup)
-      query.filters = JSON.parse(JSON.stringify(query.filters))
-    }
-    view.listViewBackup && delete view.listViewBackup  // delete it, we don't want to influence next views
     transaction(() => {
-      const atts = Object.assign(newView, {
-        entityName: entityName,
-        page: parseInt(query.page || 1),
-        sortField: query.sortField ? query.sortField : newView.sortField,
-        sortDir: query.sortDir ? query.sortDir : newView.sortDir,
+      this.router.queryParams._page = this.router.queryParams._page || 1
+      cfg.init && cfg.init(this)
+      const atts = Object.assign({}, cfg.view, {
+        type: 'entity_list',
+        entityname: entityname,
         totalItems: 0,
         loading: true,
         selection: [],
-        appliedfilters: query.filters || {},
-        filters: asMap(query.filters || {}),
-        extraparams: newView.extraparams || null
+        filters: asMap(this.appliedFilters)
       })
-      extendObservable(view, atts)
-      if (! view.items) {
-        extendObservable(view, {items: []})
+      extendObservable(this.cv, atts)
+      if (! this.cv.items) {
+        extendObservable(this.cv, {items: []})
       }
     })
-    view.detailClicked = detailClicked
-    view.addClicked = addClicked
-    return this._refreshList(view)
+    return this._refreshList()
+  }
+
+  beforeListViewEnter() {
+
+  }
+
+  beforeListViewExit() {
+    const queryParamsBackup = Object.assign({}, this.router.queryParams)
+    this.listQParamsBackup = queryParamsBackup
+  }
+
+  onListParamsChange(params, queryParams) {
+    if (this.cv.type !== 'entity_list' || params.entityname !== this.cv.entityname) {
+      return this.initEntityListView(params.entityname)
+    }
+    return this._refreshList()
+  }
+
+  detailClicked(row) {
+    this.router.goTo(this.views.entity_detail, {
+      entityname: this.router.params.entityname,
+      id: row[this.cv.pkName || 'id']
+    }, this)
+  }
+
+  addClicked() {
+    this.router.goTo(this.views.entity_detail, {
+      entityname: this.router.params.entityname,
+      id: '_new'
+    }, this)
   }
 
   @action
-  updatePage(view, page) {
-    view.page = parseInt(page)
-    this._refreshList(view)
-  }
-
-  @action
-  updateSort(view, sortField, sortDir) {
-    transaction(() => {
-      view.sortField = sortField
-      view.sortDir = sortDir
+  updatePage(page) {
+    const newQPars = Object.assign(toJS(this.router.queryParams), {
+      '_page': page
     })
-    this._refreshList(view)
+    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
   @action
-  refresh(view) {
-    this._refreshList(view)
+  updateSort(sortField, sortDir) {
+    const newQPars = Object.assign(toJS(this.router.queryParams), {
+      '_sortField': sortField,
+      '_sortDir': sortDir
+    })
+    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
   @action
-  deleteData(view, data) {
-    const id = data[0][view.pkName]
-    return this.requester.deleteEntry(view.entityName, id).then(()=>{
-      return this._refreshList(view)
+  refresh() {
+    this._refreshList()
+  }
+
+  // ---------------------- delete  ----------------------------
+
+  @action
+  deleteData(data) {
+    const id = data[0][this.cv.pkName]
+    return this.requester.deleteEntry(this.cv.entityname, id).then(() => {
+      return this._refreshList()
     })
   }
 
   @action
-  deleteSelected(view) {
-    const promises = view.selection.map((selected) => {
-      const id = view.items[selected][view.pkName]
-      return this.requester.deleteEntry(view.entityName, id)
+  deleteSelected() {
+    const promises = this.cv.selection.map((selected) => {
+      const id = this.cv.items[selected][this.cv.pkName]
+      return this.requester.deleteEntry(this.cv.entityname, id)
     })
     return Promise.all(promises).then(() => {   // wait for all delete reqests
-      view.selection = []
-      return this._refreshList(view)
+      this.cv.selection = []
+      return this._refreshList()
     })
   }
 
   // ---------------------- selection  ----------------------------
 
   @computed get selected_ids() {
-    return this.currentView.selection.map((selected) => {
-      return this.currentView.items[selected][this.currentView.pkName]
+    return this.cv.selection.map((selected) => {
+      return this.cv.items[selected][this.cv.pkName]
     })
   }
 
   @action
-  updateSelection(view, data) {
-    view.selection = data
+  updateSelection(data) {
+    this.cv.selection = data
   }
 
-  @action toggleIndex(view, idx) {
-    const removed = view.selection.remove(idx)
+  @action toggleIndex(idx) {
+    const removed = this.cv.selection.remove(idx)
     if(! removed) {
-      view.selection.push(idx)
+      this.cv.selection.push(idx)
     }
   }
 
-  @action selectAll(view) {
-    view.selection = view.items.map((i, idx) => idx)
+  @action selectAll() {
+    this.cv.selection = this.cv.items.map((i, idx) => idx)
   }
 
   // ---------------------- filtration  ----------------------------
 
-  @computed get filtersApplied() {
-    return JSON.stringify(this.currentView.filters) === JSON.stringify(this.currentView.appliedfilters)
+  @computed get appliedFilters() {
+    const applied = {}
+    for (let k in this.router.queryParams) {
+      if (k[0] !== '_') {
+        applied[k] = this.router.queryParams[k]
+      }
+    }
+    return applied
+  }
+
+  @computed get areFiltersApplied() {
+    return JSON.stringify(this.cv.filters) === JSON.stringify(this.appliedFilters)
   }
 
   @action
-  updateFilterValue(view, name, value) {
-    view.filters.set(name, value)
+  updateFilterValue(name, value) {
+    this.cv.filters.set(name, value)
   }
 
   @action
-  applyFilters(view) {
-    transaction(() => {
-      view.appliedfilters = observable(toJS(view.filters))
-      view.page = 1 // need to go to 1st page due to limited results
-      this._refreshList(view)
+  applyFilters() {
+    const newQPars = Object.assign(this.cv.filters.toJS(), {
+      '_page': 1,  // need to go to 1st page due to limited results
+      '_sortField': this.router.queryParams['_sortField'],
+      '_sortDir': this.router.queryParams['_sortDir']
     })
+    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
   @action
-  showFilter(view, filter) {
-    view.filters.set(filter, undefined)
+  showFilter(filter) {
+    this.cv.filters.set(filter, undefined)
   }
 
   @action
-  hideFilter(view, filter) {
-    transaction(() => {
-      view.filters.delete(filter)
-      view.appliedfilters = observable(toJS(view.filters))
-      this._refreshList(view)
+  hideFilter(filter) {
+    this.cv.filters.delete(filter)
+    const newQPars = Object.assign(this.cv.filters.toJS(), {
+      '_page': this.router.queryParams['_page'],
+      '_sortField': this.router.queryParams['_sortField'],
+      '_sortDir': this.router.queryParams['_sortDir']
     })
-  }
-
-  _resetFilters(view, newFilters) {
-    view.filters.clear()
-    for(let i in newFilters) {
-      view.filters.set(i, newFilters[i])
-    }
-  }
-
-  table_query(view) {
-    const rv = []
-    if(view.page) {
-      rv.push(`page=${view.page}`)
-    }
-    if(view.sortField) {
-        rv.push(`sortField=${view.sortField}&sortDir=${view.sortDir}`)
-    }
-    if(Object.keys(view.appliedfilters).length > 0) {
-      rv.push(`filters=${JSON.stringify(view.appliedfilters)}`)
-    }
-    return rv.join('&')
+    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
   // ---------------------- privates, support ----------------------------
 
-  _refreshList(view) {
-    this.currentView.loading = true
-    return this.requester.getEntries(view.entityName, {
-      page: view.page,
-      sortField: view.sortField,
-      sortDir: view.sortDir,
-      filters: toJS(view.filters),
-      perPage: view.perPage,
-      extraparams: view.extraparams
-    }).then((result) => {
+  _refreshList() {
+    this.cv.loading = true
+    const pars = Object.assign({}, this.router.queryParams, this.cv.extraparams, {
+      _perPage: this.cv.perPage
+    })
+    return this.requester.getEntries(this.cv.entityname, pars)
+    .then((result) => {
       result && transaction(() => {
-        this.currentView.loading = false
-        view.totalItems = result.totalItems
-        view.items && view.items.replace(result.data)
+        this.cv.loading = false
+        this.cv.totalItems = result.totalItems
+        this.cv.items && this.cv.items.replace(result.data)
       })
     })
   }

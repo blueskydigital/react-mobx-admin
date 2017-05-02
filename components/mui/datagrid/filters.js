@@ -51,7 +51,7 @@ class Controls extends FilterBases.ControlsBase {
     return (
       <Chip onRequestDelete={onHide} style={styles.chip} key={name}>
         <div>{filter.title}</div>
-        <filter.component record={state.currentView.filters} attr={name} onChange={onUpdateValue} />
+        <filter.component record={state.cv.filters} attr={name} onChange={onUpdateValue} />
       </Chip>
     )
   }
@@ -72,7 +72,7 @@ class Controls extends FilterBases.ControlsBase {
 class Apply extends React.Component {
   render() {
     const { apply, label, state } = this.props
-    const show = state.currentView.filters.size > 0 && ! state.filtersApplied
+    const show = state.cv.filters.size > 0 && ! state.filtersApplied
     return show && (<RaisedButton label={label} icon={<ContentFilter />} onTouchTap={apply}/>)
   }
 }

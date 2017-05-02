@@ -2,92 +2,103 @@ import {extendObservable, computed, action, transaction, asMap} from 'mobx'
 
 export default class DataManipState {
 
-  initEntityView(view, entityName, id, newView, initNew) {
-    const listViewBackup = Object.assign({}, view)
+  initEntityView(entityname, id) {
+    const cfg = this.editconfs[entityname]
+    if (! cfg) {
+      return this.on404('unknown entity ' + entityname)
+    }
     transaction(() => {
-      const atts = Object.assign(newView, {
-        entityName: entityName,
+      cfg.init && cfg.init(this)
+      const atts = Object.assign(cfg.view, {
+        type: 'entity_detail',
+        entityname: entityname,
         originEntityId: id,
         entity: asMap({}),
         errors: asMap({}),
-        loading: false
+        loading: true
       })
-      extendObservable(view, atts)
+      extendObservable(this.cv, atts)
     })
-    view.listViewBackup = listViewBackup
+    this.cv.onSave = cfg.onSave
     if(id) {  // load for edit existing
-      return this._loadEditData(view, entityName, id)
+      return this._loadEditData(entityname, id)
     } else {  // create
-      return this._loadCreateData(view, entityName, initNew)
+      return this._loadCreateData(entityname, cfg.initNew)
     }
   }
 
-  _loadEditData(view, entityName, id) {
-    view.loading = true
-
-    return this.requester.getEntry(entityName, id).then((data) => {
-      view.entity && view.entity.merge(data)
-      view.loading = false
+  _loadEditData(entityname, id) {
+    return this.requester.getEntry(entityname, id).then((data) => {
+      this.cv.entity && this.cv.entity.merge(data)
+      this.cv.loading = false
       this._runValidators()
-      return view.entity
+      return this.cv.entity
     })
   }
 
-  _loadCreateData(view, fields, initNew) {
-    view.loading = true
+  _loadCreateData(entityname, initNew) {
     let p = new Promise((resolve, reject) => {
-      view.entity.clear()
-      resolve(view.entity)
+      this.cv.entity.clear()
+      resolve(this.cv.entity)
     })
     p = initNew !== undefined ? p.then(initNew) : p
     p.then((entity) => {
       this._runValidators()
-      view.loading = false
+      this.cv.loading = false
     })
     return p
   }
 
   _runValidators() {
-    for (let fieldName in this.currentView.validators) {
-      const value = (fieldName === '_global') ? this.currentView.entity : this.currentView.entity.get(fieldName)
-      const fieldValidators = this.currentView.validators[fieldName]
+    for (let fieldName in this.cv.validators) {
+      const value = (fieldName === '_global') ? this.cv.entity : this.cv.entity.get(fieldName)
+      const fieldValidators = this.cv.validators[fieldName]
       fieldValidators && this._validateField(fieldName, value, fieldValidators)
     }
   }
 
   _validateField(fieldName, value, validatorFn) {
     const error = validatorFn(value)
-    if(error === undefined && this.currentView.errors.has(fieldName)) {
-      this.currentView.errors.delete(fieldName)
+    if(error === undefined && this.cv.errors.has(fieldName)) {
+      this.cv.errors.delete(fieldName)
     } else if (error !== undefined) {
-      this.currentView.errors.set(fieldName, error)
+      this.cv.errors.set(fieldName, error)
     }
+  }
+
+  @action
+  saveEntity(onReturn2list = null) {
+    const cv = this.cv
+    let p = this.requester.saveEntry(cv.entityname, cv.entity, cv.originEntityId)
+    .then((saved) => {
+      cv.entity.clear()
+      cv.entity.merge(saved)
+      cv.originEntityId = saved.id
+      return cv.entity
+    })
+    p = cv.onSave ? p.then(cv.onSave) : p
+    p = onReturn2list ? p.then(onReturn2list) : p
+    return p.catch(this.onError.bind(this))
   }
 
   // called on each update of edit form. Validation performed if got some validators
   @action
   updateData(fieldName, value, validators) {
     transaction(() => {
-      this.currentView.entity.set(fieldName, value)
-      const v = this.currentView.validators
+      this.cv.entity.set(fieldName, value)
+      const v = this.cv.validators
       if(v && v[fieldName]) {
         this._validateField(fieldName, value, v[fieldName])
       }
       // run global validators
-      v && v['_global'] && this._validateField('_global', this.currentView.entity, v['_global'])
+      v && v['_global'] && this._validateField('_global', this.cv.entity, v['_global'])
     })
   }
 
-  @action
-  saveData() {
-    const id = this.currentView.originEntityId
-    const cv = this.currentView
-    return this.requester.saveEntry(cv.entityName, cv.entity, id)
-    .then((saved) => {
-      cv.entity.clear()
-      cv.entity.merge(saved)
-      cv.originEntityId = saved.id
-    })
+  onReturn2list() {
+    this.router.goTo(this.views.entity_list, {
+      entityname: this.router.params.entityname
+    }, this, this.listQParamsBackup || {_page: 1})
   }
 
 }
