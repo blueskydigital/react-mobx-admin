@@ -12,7 +12,7 @@ module.exports = {
         // NOTE: you need modify exclude regexp when used in separate project
         // to allow babel to transpile!!!
         // E.g. /node_modules(?!\/react-mobx-admin)/
-        exclude: /(node_modules)/,
+        exclude: /node_modules(?!\/mobx-router)/,
         loader: 'babel-loader'
       }
     ]
@@ -30,7 +30,8 @@ module.exports = {
   // e.g.: import DataRequester from 'react-mobx-admin/services/requester'
   resolve: {
     alias: {
-      'react-mobx-admin': __dirname
+      'react-mobx-admin': __dirname,
+      'mobx-router': path.join(__dirname, 'node_modules', 'mobx-router'),
     }
   }
 }
