@@ -26,12 +26,13 @@ export default function(store, editconfs, listconfs) {
     },
     onLoaded: (entity) => {
       // simulation of loading or time expansive operation
-      return new Promise((resolve, reject) => {
+      return entity.has('id') ? entity : new Promise((resolve, reject) => {
         setTimeout(()=> {
           entity.set('published', true)
           resolve(entity)
         }, 2000)
       })
+
     }
   }
 
