@@ -45,5 +45,8 @@
   },
   "scripts": {
     "test": "make test"
+  },
+  "dependencies": {
+    "deep-equal": "^1.0.1"
   }
 }

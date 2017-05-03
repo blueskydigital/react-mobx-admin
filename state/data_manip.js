@@ -1,4 +1,5 @@
-import {observable, computed, action, transaction, asMap} from 'mobx'
+import {observable, computed, action, transaction, asMap, toJS} from 'mobx'
+import deepEqual from 'deep-equal'
 
 export default class DataManipState {
 
@@ -15,33 +16,29 @@ export default class DataManipState {
       }))
     })
     this.cv.onSave = cfg.onSave
-    if(id) {  // load for edit existing
-      return this._loadEditData(entityname, id)
-    } else {  // create
-      return this._loadCreateData(entityname, cfg.initNew)
-    }
+    let p = (id) ?
+      this._loadEditData(entityname, id) :  // load for edit existing
+      this._loadCreateData(entityname)  // create
+    p = cfg.onLoaded !== undefined ? p.then(cfg.onLoaded) : p
+    return p.then((entity) => {
+      this.cv.origEntity = JSON.parse(JSON.stringify(entity))  // deep clone :)
+      this._runValidators()
+      this.cv.loading = false
+    })
   }
 
   _loadEditData(entityname, id) {
     return this.requester.getEntry(entityname, id).then((data) => {
       this.cv.entity && this.cv.entity.merge(data)
-      this.cv.loading = false
-      this._runValidators()
       return this.cv.entity
     })
   }
 
   _loadCreateData(entityname, initNew) {
-    let p = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.cv.entity.clear()
       resolve(this.cv.entity)
     })
-    p = initNew !== undefined ? p.then(initNew) : p
-    p.then((entity) => {
-      this._runValidators()
-      this.cv.loading = false
-    })
-    return p
   }
 
   _runValidators() {
@@ -61,6 +58,11 @@ export default class DataManipState {
     }
   }
 
+  @computed get isEntityChanged() {
+    const entity = toJS(this.cv.entity)
+    return ! deepEqual(this.cv.origEntity, entity, {strict: true})
+  }
+
   @action
   saveEntity(onReturn2list = null) {
     const cv = this.cv
@@ -69,6 +71,7 @@ export default class DataManipState {
       cv.entity.clear()
       cv.entity.merge(saved)
       cv.originEntityId = saved.id
+      cv.origEntity = JSON.parse(JSON.stringify(saved)) // update origEntity coz saved
       return cv.entity
     })
     p = cv.onSave ? p.then(cv.onSave) : p

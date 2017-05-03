@@ -24,7 +24,7 @@ export default function(store, editconfs, listconfs) {
         }
       }
     },
-    initNew: (entity) => {
+    onLoaded: (entity) => {
       // simulation of loading or time expansive operation
       return new Promise((resolve, reject) => {
         setTimeout(()=> {

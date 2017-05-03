@@ -5,17 +5,12 @@ import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 
-@observer
-class SubmitButton extends React.Component {
-  render() {
-    const { errors, text } = this.props
-
-    return errors ? (
-      <RaisedButton label={text} primary={true} icon={<SaveIcon />}
-        disabled={errors.size > 0} onTouchTap={this.props.onSubmit}/>
-    ) : null
-  }
-}
+const SubmitButton = observer( ({errors, text, onSubmit, hasChanged}) => {
+  return errors ? (
+    <RaisedButton label={text} primary={true} icon={<SaveIcon />}
+      disabled={errors.size > 0 || ! hasChanged()} onTouchTap={onSubmit}/>
+  ) : null
+})
 
 const GlobalErrors = observer(({errors}) => {
   return errors ? (
@@ -37,7 +32,10 @@ const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
     (cv.createtitle || 'create new item')
   const saveText = cv.saveText || 'SAVE'
 
-  const sumbit = <SubmitButton onSubmit={onSave} errors={cv.errors} text={saveText} />
+  const sumbit = (
+    <SubmitButton onSubmit={onSave} errors={cv.errors}
+      text={saveText} hasChanged={()=>(store.isEntityChanged)} />
+  )
 
   return (
     <Card style={{ margin: '1em'}}>
@@ -55,7 +53,8 @@ const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
       <CardActions>
         {sumbit}
         <SubmitButton onSubmit={()=>onSave(onReturn2list)} errors={cv.errors}
-          text={cv.saveAndReturnText || 'SAVE and return'} />
+          text={cv.saveAndReturnText || 'SAVE and return'}
+          hasChanged={()=>(store.isEntityChanged)} />
         <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={()=>onReturn2list()}/>
       </CardActions>
     </Card>
