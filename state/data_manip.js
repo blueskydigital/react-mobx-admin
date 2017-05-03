@@ -68,10 +68,12 @@ export default class DataManipState {
     const cv = this.cv
     let p = this.requester.saveEntry(cv.entityname, cv.entity, cv.originEntityId)
     .then((saved) => {
-      cv.entity.clear()
-      cv.entity.merge(saved)
-      cv.originEntityId = saved.id
       cv.origEntity = JSON.parse(JSON.stringify(saved)) // update origEntity coz saved
+      transaction(() => {
+        cv.entity.clear()
+        cv.entity.merge(saved)
+        cv.originEntityId = saved.id
+      })
       return cv.entity
     })
     p = cv.onSave ? p.then(cv.onSave) : p
