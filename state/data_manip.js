@@ -5,7 +5,7 @@ export default class DataManipState {
 
   initEntityView(entityname, id, cfg) {
     transaction(() => {
-      cfg.init && cfg.init(this)
+      cfg.init && cfg.init(this, id, entityname)
       this.cv = observable(Object.assign(cfg.view, {
         type: 'entity_detail',
         entityname: entityname,
@@ -21,7 +21,11 @@ export default class DataManipState {
       this._loadCreateData(entityname)  // create
     p = cfg.onLoaded !== undefined ? p.then(cfg.onLoaded) : p
     return p.then((entity) => {
-      this.cv.origEntity = JSON.parse(JSON.stringify(entity))  // deep clone :)
+      try {
+        this.cv.origEntity = JSON.parse(JSON.stringify(entity))  // deep clone :)
+      } catch(e) {
+        throw new Error('maybe you have forgotten to return entity from onLoaded?')
+      }
       this._runValidators()
       this.cv.loading = false
     })
@@ -72,13 +76,13 @@ export default class DataManipState {
       transaction(() => {
         cv.entity.clear()
         cv.entity.merge(saved)
-        cv.originEntityId = saved.id
+        cv.originEntityId = saved[cv.pkName || 'id']
       })
       return cv.entity
     })
     p = cv.onSave ? p.then(cv.onSave) : p
     p = onReturn2list ? p.then(onReturn2list) : p
-    return p.catch(this.onError.bind(this))
+    return p
   }
 
   // called on each update of edit form. Validation performed if got some validators

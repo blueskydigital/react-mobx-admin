@@ -49,7 +49,7 @@ export default function(store, editconfs, listconfs) {
         }
       }
     },
-    init: (store) => {
+    init: (store, id, entityname) => {
       store.loadOptions('tags', '/tags')
     },
     onSave: (saved) => {

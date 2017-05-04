@@ -158,8 +158,9 @@ export default class DataTableState extends DataManipState {
 
   _refreshList() {
     this.cv.loading = true
-    const pars = Object.assign({}, this.router.queryParams, this.cv.extraparams, {
-      _perPage: this.cv.perPage
+    const pars = Object.assign({}, this.router.queryParams, {
+      _perPage: this.cv.perPage,
+      _extraparams: this.cv.extraparams
     })
     return this.requester.getEntries(this.cv.entityname, pars)
     .then((result) => {

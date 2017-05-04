@@ -51,6 +51,11 @@ export default class StateStore extends OptionsStore {
     return this.refresh().catch(this.onError.bind(this))
   }
 
+  // overrided method adding catch handler
+  saveEntity(onReturn2list) {
+    super.saveEntity(onReturn2list).catch(this.onError.bind(this))
+  }
+
   beforeListViewEnter() {
     // TODO: dodelat
   }
