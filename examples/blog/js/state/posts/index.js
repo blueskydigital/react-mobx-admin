@@ -40,6 +40,11 @@ export default function(store, editconfs, listconfs) {
             return store.__('category must be provided')
           }
         },
+        'published_at': (val) => {
+          if (! val) {
+            return store.__('published at must be provided')
+          }
+        },
         '_global': (val) => { // global validator
           const published_at = store.cv.entity.get('published_at')
           const unpublished_at = store.cv.entity.get('unpublished_at')
