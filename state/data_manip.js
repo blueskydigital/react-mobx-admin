@@ -54,7 +54,8 @@ export default class DataManipState {
   }
 
   _validateField(fieldName, value, validatorFn) {
-    const error = validatorFn(value)
+    const secondPar = (fieldName === '_global') ? this.cv.errors : undefined
+    const error = validatorFn(value, secondPar)
     if(error === undefined && this.cv.errors.has(fieldName)) {
       this.cv.errors.delete(fieldName)
     } else if (error !== undefined) {
