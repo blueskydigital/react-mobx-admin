@@ -24,11 +24,12 @@ export default function(store, editconfs, listconfs) {
         }
       }
     },
-    onLoaded: (entity) => {
+    prepareNew: (entity) => {
       // simulation of loading or time expansive operation
       const p = entity.has('id') ? entity : new Promise((resolve, reject) => {
         setTimeout(()=> {
           entity.set('published', true)
+          entity.set('name', 'default name')
           resolve(entity)
         }, 2000)
       })

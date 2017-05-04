@@ -16,10 +16,10 @@ export default class DataManipState {
       }))
     })
     this.cv.onSave = cfg.onSave
+    this.cv.onLoaded = cfg.onLoaded
     let p = (id) ?
-      this._loadEditData(entityname, id) :  // load for edit existing
-      this._loadCreateData(entityname)  // create
-    p = cfg.onLoaded !== undefined ? p.then(cfg.onLoaded) : p
+      this._loadEditData(entityname, id, cfg.onLoaded) :  // load for edit existing
+      this._loadCreateData(entityname, cfg.prepareNew)  // create
     return p.then((entity) => {
       try {
         this.cv.origEntity = JSON.parse(JSON.stringify(entity))  // deep clone :)
@@ -31,18 +31,20 @@ export default class DataManipState {
     })
   }
 
-  _loadEditData(entityname, id) {
-    return this.requester.getEntry(entityname, id).then((data) => {
+  _loadEditData(entityname, id, onLoaded) {
+    const p = this.requester.getEntry(entityname, id).then((data) => {
       this.cv.entity && this.cv.entity.merge(data)
       return this.cv.entity
     })
+    return onLoaded !== undefined ? p.then(onLoaded) : p
   }
 
-  _loadCreateData(entityname, initNew) {
-    return new Promise((resolve, reject) => {
+  _loadCreateData(entityname, prepareNew) {
+    const p = new Promise((resolve, reject) => {
       this.cv.entity.clear()
       resolve(this.cv.entity)
     })
+    return prepareNew !== undefined ? p.then(prepareNew) : p
   }
 
   _runValidators() {
@@ -63,6 +65,11 @@ export default class DataManipState {
     }
   }
 
+  runGlobalValidator() {
+    ('_global' in this.cv.validators) &&
+      this._validateField('_global', this.cv.entity, this.cv.validators['_global'])
+  }
+
   @computed get isEntityChanged() {
     const entity = toJS(this.cv.entity)
     return ! deepEqual(this.cv.origEntity, entity, {strict: true})
@@ -77,7 +84,13 @@ export default class DataManipState {
       transaction(() => {
         cv.entity.clear()
         cv.entity.merge(saved)
-        cv.originEntityId = saved[cv.pkName || 'id']
+        const id = saved[cv.pkName || 'id']
+        if (! cv.originEntityId) {
+          // if new is saved, we need to:
+          this.cv.onLoaded && this.cv.onLoaded(cv.entity) //  run onLoaded
+          this.router.params.id = id  // change param from _new to id
+        }
+        cv.originEntityId = id
       })
       return cv.entity
     })

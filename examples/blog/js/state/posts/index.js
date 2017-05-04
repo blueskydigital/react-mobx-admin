@@ -59,6 +59,10 @@ export default function(store, editconfs, listconfs) {
     },
     onSave: (saved) => {
       store.addMessage('post successfully saved', 'info', 2000)
+    },
+    onLoaded: (entity) => {
+      alert('post onLoaded')
+      return entity
     }
   }
 
