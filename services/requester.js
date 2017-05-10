@@ -22,7 +22,7 @@ class DataRequester {
 
   _defaultCatcher(err) {
     if(err.response && err.response.status === 401) {
-      return this.on401(err)
+      this.on401(err)
     }
     throw err // rethrow upwards
   }
