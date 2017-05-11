@@ -67,6 +67,7 @@ const PostListView = ({store}) => {
       <OptionsField attr={attr} record={row} optionsrecord={store.options} optionsattr={'categories'} />
     ),
     (attr, row) => (<DateField attr={attr} record={row} />),
+    (attr, row) => (<DateField attr={attr} record={row} />),
     (attr, row) => {
       return <MultivalueField items={row[attr]} Item={_tagOptionComponent} />
     }

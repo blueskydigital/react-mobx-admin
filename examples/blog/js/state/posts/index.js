@@ -8,8 +8,8 @@ export default function(store, editconfs, listconfs) {
       pkName: 'id',
       sortField: 'title',
       sortDir: 'ASC',
-      attrs: ['id', 'title', 'category', 'published_at', 'tags'],
-      headertitles: ['ID', 'Title', 'Cat', 'Published', 'Tags'],
+      attrs: ['id', 'title', 'category', 'published_at', 'unpublished_at', 'tags'],
+      headertitles: ['id', 'title', 'cat', 'published', 'unpublished', 'tags'],
       title: 'posts'
     },
     init: (store) => {
