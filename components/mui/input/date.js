@@ -14,13 +14,14 @@ const MUIDateInput = ({ attr, record, label, errors, onChange }) => {
   }
 
   const errorText = errors ? errors.get(attr) : undefined
+  const val = record.get(attr)
   return (
     <DatePicker
       errorText={errorText}
       floatingLabelText={label}
       container="inline"
       autoOk
-      value={datify(record.get(attr))}
+      value={val ? datify(val) : null}
       onChange={handleChange} />
   )
 }
