@@ -42,9 +42,9 @@ class ControlsBase extends React.Component {
     let rows = []
     for(let name in filters) {
 
-      const showAttribFilter = showAttrFilters && _.find(state.cv.attrs, (i) => {
+      const showAttribFilter = showAttrFilters || _.find(state.cv.attrs, (i) => {
         return name.indexOf(i) >= 0
-      })
+      }) !== null
       const visible = state.cv.filters.has(name)
 
       if (visible && showAttribFilter) {
