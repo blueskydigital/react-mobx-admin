@@ -41,7 +41,7 @@ export default class DataTableState extends DataManipState {
 
   @action
   updatePage(page) {
-    const newQPars = Object.assign(toJS(this.router.queryParams), {
+    const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_page': page
     })
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
@@ -49,7 +49,7 @@ export default class DataTableState extends DataManipState {
 
   @action
   updateSort(sortField, sortDir) {
-    const newQPars = Object.assign(toJS(this.router.queryParams), {
+    const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_sortField': sortField,
       '_sortDir': sortDir
     })
@@ -130,7 +130,7 @@ export default class DataTableState extends DataManipState {
 
   @action
   applyFilters() {
-    const newQPars = Object.assign(this.cv.filters.toJS(), {
+    const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': 1,  // need to go to 1st page due to limited results
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
@@ -146,7 +146,7 @@ export default class DataTableState extends DataManipState {
   @action
   hideFilter(filter) {
     this.cv.filters.delete(filter)
-    const newQPars = Object.assign(this.cv.filters.toJS(), {
+    const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': this.router.queryParams['_page'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
