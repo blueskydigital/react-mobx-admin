@@ -9,10 +9,13 @@ export default class DataManipState {
       this.cv = observable(Object.assign(cfg.view, {
         type: 'entity_detail',
         entityname: entityname,
-        originEntityId: id,
-        entity: asMap({}),
+        origRecordId: id,
+        record: asMap({}),
         errors: asMap({}),
-        loading: true
+        loading: true,
+        entity: computed(function() {   // backward compatibility
+          return this.record
+        })
       }))
     })
     this.cv.onSave = cfg.onSave
@@ -20,11 +23,11 @@ export default class DataManipState {
     let p = (id) ?
       this._loadEditData(entityname, id, cfg.onLoaded) :  // load for edit existing
       this._loadCreateData(entityname, cfg.prepareNew)  // create
-    return p.then((entity) => {
+    return p.then((record) => {
       try {
-        this.cv.origEntity = JSON.parse(JSON.stringify(entity))  // deep clone :)
+        this.cv.origRecord = JSON.parse(JSON.stringify(record))  // deep clone :)
       } catch(e) {
-        throw new Error('maybe you have forgotten to return entity from onLoaded?')
+        throw new Error('maybe you have forgotten to return record from onLoaded?')
       }
       this._runValidators()
       this.cv.loading = false
@@ -33,66 +36,70 @@ export default class DataManipState {
 
   _loadEditData(entityname, id, onLoaded) {
     const p = this.requester.getEntry(entityname, id).then((data) => {
-      this.cv.entity && this.cv.entity.merge(data)
-      return this.cv.entity
+      this.cv.record && this.cv.record.merge(data)
+      return this.cv.record
     })
     return onLoaded !== undefined ? p.then(onLoaded) : p
   }
 
   _loadCreateData(entityname, prepareNew) {
     const p = new Promise((resolve, reject) => {
-      this.cv.entity.clear()
-      resolve(this.cv.entity)
+      this.cv.record.clear()
+      resolve(this.cv.record)
     })
     return prepareNew !== undefined ? p.then(prepareNew) : p
   }
 
-  _runValidators() {
-    for (let fieldName in this.cv.validators) {
-      const value = (fieldName === '_global') ? this.cv.entity : this.cv.entity.get(fieldName)
-      const fieldValidators = this.cv.validators[fieldName]
-      fieldValidators && this._validateField(fieldName, value, fieldValidators)
+  _runValidators(state) {
+    state = state ? state : this.cv
+    for (let fieldName in state.validators) {
+      const value = (fieldName === '_global') ? state.record : state.record.get(fieldName)
+      this._validateField(fieldName, value, state)
     }
   }
 
-  _validateField(fieldName, value, validatorFn) {
-    const secondPar = (fieldName === '_global') ? this.cv.errors : undefined
-    const error = validatorFn(value, secondPar)
-    if(error === undefined && this.cv.errors.has(fieldName)) {
-      this.cv.errors.delete(fieldName)
-    } else if (error !== undefined) {
-      this.cv.errors.set(fieldName, error)
+  _validateField(fieldName, value, state) {
+    state = state ? state : this.cv
+    if (state.validators && state.validators[fieldName]) {
+      const validatorFn = state.validators[fieldName]
+      const secondPar = (fieldName === '_global') ? state.errors : undefined
+      const error = validatorFn(value, secondPar)
+      if(error === undefined && state.errors.has(fieldName)) {
+        state.errors.delete(fieldName)
+      } else if (error !== undefined) {
+        state.errors.set(fieldName, error)
+      }
     }
   }
 
-  runGlobalValidator() {
-    ('_global' in this.cv.validators) &&
-      this._validateField('_global', this.cv.entity, this.cv.validators['_global'])
+  runGlobalValidator(state) {
+    state = state ? state : this.cv
+    this._validateField('_global', state.record, state)
   }
 
   @computed get isEntityChanged() {
-    const entity = toJS(this.cv.entity)
-    return ! deepEqual(this.cv.origEntity, entity, {strict: true})
+    const record = toJS(this.cv.record)
+    return ! deepEqual(this.cv.origRecord, record, {strict: true})
   }
 
   @action
   saveEntity(onReturn2list = null) {
     const cv = this.cv
-    let p = this.requester.saveEntry(cv.entityname, cv.entity, cv.originEntityId)
+    let p = this.requester.saveEntry(cv.entityname, cv.record, cv.origRecordId)
     .then((saved) => {
       cv.origEntity = JSON.parse(JSON.stringify(saved)) // update origEntity coz saved
       transaction(() => {
-        cv.entity.clear()
-        cv.entity.merge(saved)
+        cv.record.clear()
+        cv.record.merge(saved)
         const id = saved[cv.pkName || 'id']
-        if (! cv.originEntityId) {
+        if (! cv.origRecordId) {
           // if new is saved, we need to:
-          this.cv.onLoaded && this.cv.onLoaded(cv.entity) //  run onLoaded
+          this.cv.onLoaded && this.cv.onLoaded(cv.record) //  run onLoaded
           this.router.params.id = id  // change param from _new to id
         }
-        cv.originEntityId = id
+        cv.origRecordId = id
       })
-      return cv.entity
+      return cv.record
     })
     p = cv.onSave ? p.then(cv.onSave) : p
     p = onReturn2list ? p.then(onReturn2list) : p
@@ -101,15 +108,15 @@ export default class DataManipState {
 
   // called on each update of edit form. Validation performed if got some validators
   @action
-  updateData(fieldName, value, validators) {
+  updateData(state, fieldName, value) {
+    state = state ? state : this.cv
     transaction(() => {
-      this.cv.entity.set(fieldName, value)
-      const v = this.cv.validators
-      if(v && v[fieldName]) {
-        this._validateField(fieldName, value, v[fieldName])
-      }
-      // run global validators
-      v && v['_global'] && this._validateField('_global', this.cv.entity, v['_global'])
+      state.record.set(fieldName, value)
+      this._validateField(fieldName, value, state)
+      this._validateField('_global', state.record, state)
+      // run listeners
+      state.onFieldChange && state.onFieldChange[fieldName] &&
+        state.onFieldChange[fieldName](value, state)
     })
   }
 

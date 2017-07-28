@@ -27,7 +27,7 @@ const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
     return <CircularProgress />
   }
 
-  const title = cv.originEntityId ?
+  const title = cv.origRecordId ?
     (cv.edittitle || 'edit item') :
     (cv.createtitle || 'create new item')
   const saveText = cv.saveText || 'SAVE'

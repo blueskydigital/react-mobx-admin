@@ -51,7 +51,7 @@ test('it should be possible to showEntityDetail', t => {
 
   setTimeout(() => {
     t.equal(state.cv.loading, false)
-    t.equal(state.cv.originEntityId, 1)
+    t.equal(state.cv.origRecordId, 1)
     t.equal(state.cv.entityname, 'posts')
     t.equal(state.cv.entity.has('title'), true)
     t.equal(state.cv.entity.get('title'), state.requester.data.title)

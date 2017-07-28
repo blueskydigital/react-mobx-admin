@@ -6,7 +6,7 @@ import EditView from 'react-mobx-admin/components/mui/view/edit'
 const TagEditForm = ({store}) => {
 
   const entity = store.cv.entity
-  const updateField = store.updateData.bind(store)
+  const updateField = store.updateData.bind(store, store.cv)
 
   return (
     <div className="row">
