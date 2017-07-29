@@ -12,10 +12,7 @@ export default class DataManipState {
         origRecordId: id,
         record: asMap({}),
         errors: asMap({}),
-        loading: true,
-        entity: computed(function() {   // backward compatibility
-          return this.record
-        })
+        loading: true
       }))
     })
     this.cv.onSave = cfg.onSave
