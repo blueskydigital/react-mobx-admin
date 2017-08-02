@@ -22,14 +22,18 @@ export default function(store, editconfs, listconfs) {
       edittitle: 'edit a nice post',
       createtitle: 'add very interresting post ..',
       validators: {
-        'title': (val) => {
-          if (!val || val.length === 0) {
-            return store.__('title must be provided')
+        'title': [
+          (val) => {
+            if (!val || val.length === 0) {
+              return store.__('title must be provided')
+            }
+          },
+          (val) => {
+            if (val.length > 10) {
+              return store.__('title too long')
+            }
           }
-          if (val.length > 10) {
-            return store.__('title too long')
-          }
-        },
+        ],
         'content': (val) => {
           if (!val || val.length === 0) {
             return store.__('content must be provided')
@@ -45,9 +49,9 @@ export default function(store, editconfs, listconfs) {
             return store.__('published at must be provided')
           }
         },
-        '_global': (val) => { // global validator
-          const published_at = store.cv.entity.get('published_at')
-          const unpublished_at = store.cv.entity.get('unpublished_at')
+        '_global': (entity) => { // global validator
+          const published_at = entity.get('published_at')
+          const unpublished_at = entity.get('unpublished_at')
           if (published_at && unpublished_at && published_at > unpublished_at) {
             return [store.__('published must be less than unpublished')]
           }

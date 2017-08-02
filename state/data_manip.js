@@ -47,33 +47,32 @@ export default class DataManipState {
     return prepareNew !== undefined ? p.then(prepareNew) : p
   }
 
-  _runValidators(state) {
+  _runValidators(state, opts) {
     state = state ? state : this.cv
     for (let fieldName in state.validators) {
       const value = (fieldName === '_global') ? state.record : state.record.get(fieldName)
-      this._validateField(fieldName, value, state)
+      this._validateField(fieldName, value, state, opts)
     }
   }
 
-  _validateField(fieldName, value, state) {
+  _validateField(fieldName, value, state, opts) {
     state = state ? state : this.cv
     if (state.validators && state.validators[fieldName]) {
       const validatorFn = state.validators[fieldName]
-      const secondPar = (fieldName === '_global') ? state.errors : undefined
 
-      function runValidatorsArray (value, secondPar, validatorArray) {
+      function runValidatorsArray (validatorArray) {
         let validatorFn, error, i
         for (i = 0; i < validatorArray.length; i++) {
           validatorFn = validatorArray[i]
-          error = validatorFn(value, secondPar)
+          error = validatorFn(value, state.errors, opts)
           if (error !== undefined) {
             return error
           }
         }
       }
-      const error = Array.isArray(validatorFn)
-        ? runValidatorsArray(validatorFn, value, secondPar)
-        : validatorFn(value, secondPar)
+      const error = validatorFn.call === undefined
+        ? runValidatorsArray(validatorFn)
+        : validatorFn(value, state.errors, opts)
       if(error === undefined && state.errors.has(fieldName)) {
         state.errors.delete(fieldName)
       } else if (error !== undefined) {
@@ -82,9 +81,9 @@ export default class DataManipState {
     }
   }
 
-  runGlobalValidator(state) {
+  runGlobalValidator(state, opts) {
     state = state ? state : this.cv
-    this._validateField('_global', state.record, state)
+    this._validateField('_global', state.record, state, opts)
   }
 
   @computed get isEntityChanged() {
