@@ -60,7 +60,20 @@ export default class DataManipState {
     if (state.validators && state.validators[fieldName]) {
       const validatorFn = state.validators[fieldName]
       const secondPar = (fieldName === '_global') ? state.errors : undefined
-      const error = validatorFn(value, secondPar)
+
+      function runValidatorsArray (value, secondPar, validatorArray) {
+        let validatorFn, error, i
+        for (i = 0; i < validatorArray.length; i++) {
+          validatorFn = validatorArray[i]
+          error = validatorFn(value, secondPar)
+          if (error !== undefined) {
+            return error
+          }
+        }
+      }
+      const error = Array.isArray(validatorFn)
+        ? runValidatorsArray(validatorFn, value, secondPar)
+        : validatorFn(value, secondPar)
       if(error === undefined && state.errors.has(fieldName)) {
         state.errors.delete(fieldName)
       } else if (error !== undefined) {
