@@ -4,7 +4,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
-import TextField from 'react-mobx-admin/components/mui/field/text'
+import TextField from 'react-mobx-admin/components/common/field/text'
 import BoolField from 'react-mobx-admin/components/mui/field/bool'
 import ListView from 'react-mobx-admin/components/mui/view/list'
 
@@ -27,7 +27,10 @@ const TagListView = ({store}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
-      return <TextField attr={attr} val={row[attr]} onTouchTap={() => store.detailClicked(row)} />
+      const DetailLink = ({text}) => (
+        <a href='javascript:void(0)' onTouchTap={() => store.detailClicked(row)}>{text}</a>
+      )
+      return <TextField attr={attr} val={row[attr]} Component={DetailLink} />
     },
     (attr, row) => (<BoolField attr={attr} val={row[attr]} />)
   ]

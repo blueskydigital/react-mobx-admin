@@ -5,9 +5,9 @@ import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import Chip from 'material-ui/Chip'
-import TextField from 'react-mobx-admin/components/mui/field/text'
-import DateField from 'react-mobx-admin/components/mui/field/date'
-import OptionsField from 'react-mobx-admin/components/common/field/opts_observed'
+import TextField from 'react-mobx-admin/components/common/field/text'
+import DateField from 'react-mobx-admin/components/common/field/date'
+import OptionsField from 'react-mobx-admin/components/common/field/opts'
 import MultivalueField from 'react-mobx-admin/components/common/field/multivalue'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
 import SelectInput from 'react-mobx-admin/components/mui/input/select'
@@ -61,7 +61,10 @@ const PostListView = ({store}) => {
   const fields = [
     (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
-      return (<TextField attr={attr} val={row[attr]} onTouchTap={() => store.detailClicked(row)}/>)
+      const DetailLink = ({text}) => (
+        <a href='javascript:void(0)' onTouchTap={() => store.detailClicked(row)}>{text}</a>
+      )
+      return <TextField attr={attr} val={row[attr]} Component={DetailLink} />
     },
     (attr, row) => (
       <OptionsField attr={attr} val={row[attr]} optionsrecord={store.options} optionsattr={'categories'} />

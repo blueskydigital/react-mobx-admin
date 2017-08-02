@@ -1,19 +1,32 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const OptionsField = ({ attr, val, getText, ...rest }) => {
-  const onClick = rest.onClick || rest.onTouchTap
+const OptionsField = ({val, attr, options, valueattr, labelattr, Component}) => {
+  const found = options && options.filter((i) => {
+    return i[valueattr || 'value'] === val
+  })
+  if (found && found.length > 0) {
+    const text = (typeof labelattr === 'function')
+      ? labelattr(found[0]) : found[0][labelattr || 'label']
 
-  function handleTouchTap (e) {
-    e.preventDefault()
-    e.stopPropagation() // prevent selecting row on da table this field is on ...
-    onClick()
+    return Component ? <Component text={text} /> : <span>{text}</span>
   }
-
-  if (!val) {
-    return null
-  }
-
-  const valRender = (<span>{getText(val)}</span>)
-  return onClick ? (<a href='javascript:void(0)' onClick={handleTouchTap}>{valRender}</a>) : valRender
+  return null
 }
+
+OptionsField.propTypes = {
+  attr: PropTypes.any.isRequired,
+  val: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  options: PropTypes.object,
+  labelattr: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]),
+  valueattr: PropTypes.string,
+  Component: PropTypes.func
+}
+
 export default OptionsField
