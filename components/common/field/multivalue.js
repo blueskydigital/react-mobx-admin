@@ -1,12 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const MultivalueField = ({items, label, Item, ...rest}) => {
+const MultivalueField = ({val, Item, ...rest}) => {
 
-  return items && items.length > 0 ? (
+  return val && val.length > 0 ? (
     <div>
     {
-      items.map((i, idx) => (
-        <div key={idx}><Item attr={idx} record={items} {...rest} /></div>
+      val.map((i, idx) => (
+        <div key={idx}><Item attr={idx} val={i} {...rest} /></div>
       ))
     }
     </div>
@@ -14,10 +15,10 @@ const MultivalueField = ({items, label, Item, ...rest}) => {
 
 }
 MultivalueField.propTypes = {
-  items: React.PropTypes.oneOfType([
-    React.PropTypes.object,
-    React.PropTypes.array,
+  items: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array
   ]),
-  Item: React.PropTypes.func.isRequired
+  Item: PropTypes.func.isRequired
 }
 export default MultivalueField

@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export default class PaginationBase extends React.Component {
 
   static propTypes = {
-      store: React.PropTypes.object.isRequired,
-      onChange: React.PropTypes.func.isRequired
+      store: PropTypes.object.isRequired,
+      onChange: PropTypes.func.isRequired
   }
 
   onChange(page) {

@@ -1,19 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const ObservedOptionsField = ({ attr, record, optionsrecord, optionsattr, labelattr, valueattr, ...rest }) => {
-
+const ObservedOptionsField = ({ attr, val, optionsrecord, optionsattr, labelattr, valueattr, ...rest }) => {
   const onClick = rest.onClick || rest.onTouchTap
-  const Component = rest.Component
 
-  function handleTouchTap(e) {
+  function handleTouchTap (e) {
     e.preventDefault()
     e.stopPropagation() // prevent selecting row on da table this field is on ...
     onClick()
   }
 
-  const val = record[attr]
-
-  if (! val) {
+  if (!val) {
     return null
   }
 
@@ -23,16 +20,15 @@ const ObservedOptionsField = ({ attr, record, optionsrecord, optionsattr, labela
   })
   const text = (found && found.length > 0) ? found[0][labelattr || 'label'] : val
   const valRender = rest.Component ? <rest.Component text={text} /> : (<span>{text}</span>)
-  return onClick ? (<a href="#" onClick={handleTouchTap}>{valRender}</a>) : valRender
+  return onClick ? (<a href='javascript:void(0)' onClick={handleTouchTap}>{valRender}</a>) : valRender
 }
 ObservedOptionsField.propTypes = {
-  attr: React.PropTypes.any.isRequired,
-  record: React.PropTypes.object.isRequired,
-  optionsrecord: React.PropTypes.object.isRequired,
-  optionsattr: React.PropTypes.string,
-  labelattr: React.PropTypes.string,
-  valueattr: React.PropTypes.string,
-  onTouchTap: React.PropTypes.func,
-  onTouchTap: React.PropTypes.func
+  attr: PropTypes.any.isRequired,
+  val: PropTypes.string,
+  optionsrecord: PropTypes.object.isRequired,
+  optionsattr: PropTypes.string,
+  labelattr: PropTypes.string,
+  valueattr: PropTypes.string,
+  onTouchTap: PropTypes.func
 }
 export default ObservedOptionsField

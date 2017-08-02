@@ -1,13 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 // dropdown with available filters
 class DropdownBase extends React.Component {
 
   static propTypes = {
-    filters: React.PropTypes.object.isRequired,
-    state: React.PropTypes.object.isRequired,
-    showFilter: React.PropTypes.func.isRequired
+    filters: PropTypes.object.isRequired,
+    state: PropTypes.object.isRequired,
+    showFilter: PropTypes.func.isRequired
   }
 
   createItems(state, filters) {
@@ -32,10 +33,10 @@ class DropdownBase extends React.Component {
 class ControlsBase extends React.Component {
 
   static propTypes = {
-    filters: React.PropTypes.object.isRequired,
-    state: React.PropTypes.object.isRequired,
-    hideFilter: React.PropTypes.func.isRequired,
-    showAttrFilters: React.PropTypes.bool
+    filters: PropTypes.object.isRequired,
+    state: PropTypes.object.isRequired,
+    hideFilter: PropTypes.func.isRequired,
+    showAttrFilters: PropTypes.bool
   }
 
   buildRows(filters, state, showAttrFilters) {

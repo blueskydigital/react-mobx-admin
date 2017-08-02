@@ -37,16 +37,19 @@
     "mobx-react": "^3.5.1",
     "mobx-react-devtools": "^4.2.6",
     "mobx-router": "github:vencax77/mobx-router",
-    "react": "^15.2.1",
     "react-addons-test-utils": "^15.3.0",
     "tape": "^4.6.2",
     "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.14.1"
+    "webpack-dev-server": "^1.16.5"
   },
   "scripts": {
     "test": "make test"
   },
   "dependencies": {
-    "deep-equal": "^1.0.1"
+    "deep-equal": "^1.0.1",
+    "material-ui": "^0.18.7",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-tap-event-plugin": "^2.0.1"
   }
 }

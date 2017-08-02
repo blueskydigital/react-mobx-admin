@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
@@ -40,14 +41,14 @@ const MUISelectInput = ({
   )
 }
 MUISelectInput.propTypes = {
-  attr: React.PropTypes.string.isRequired,
-  record: React.PropTypes.object.isRequired,
-  labelattr: React.PropTypes.string,
-  valueattr: React.PropTypes.string,
-  label: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
-  optionsrecord: React.PropTypes.object.isRequired,
-  optionsattr: React.PropTypes.string,
-  errors: React.PropTypes.object
+  attr: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
+  labelattr: PropTypes.string,
+  valueattr: PropTypes.string,
+  label: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  optionsrecord: PropTypes.object.isRequired,
+  optionsattr: PropTypes.string,
+  errors: PropTypes.object
 }
 export default observer(MUISelectInput)

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class ColumnHeader extends React.Component {
 
@@ -10,7 +11,7 @@ class ColumnHeader extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const { sort, label, onSort } = this.props
     let element = <span>{label}</span>
 
@@ -19,7 +20,7 @@ class ColumnHeader extends React.Component {
       if (sort) {
           sortIcon = this.renderIcon(sort)
       }
-      const sortDir = 'ASC' === sort ? 'DESC' : 'ASC'
+      const sortDir = (sort === 'ASC') ? 'DESC' : 'ASC'
 
       element = <a onClick={this.onSort(sortDir)}>{label}{sortIcon}</a>
     }
@@ -29,10 +30,10 @@ class ColumnHeader extends React.Component {
 }
 
 ColumnHeader.propTypes = {
-    label: React.PropTypes.string.isRequired,
-    sort: React.PropTypes.string,
-    name: React.PropTypes.string,
-    onSort: React.PropTypes.func
+  label: PropTypes.string.isRequired,
+  sort: PropTypes.string,
+  name: PropTypes.string,
+  onSort: PropTypes.func
 }
 
 export default ColumnHeader

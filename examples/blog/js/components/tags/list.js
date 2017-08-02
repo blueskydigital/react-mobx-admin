@@ -12,24 +12,24 @@ import ListView from 'react-mobx-admin/components/mui/view/list'
 const TagListView = ({store}) => {
 
   const batchActions = () => {
-    function _batchDelete() {
-      if(confirm(`Are you sure you want to delete selected tags?`)) {
+    function _batchDelete () {
+      if (confirm(`Are you sure you want to delete selected tags?`)) {
         store.deleteSelected()
       }
     }
     return (
       <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
-        <MenuItem primaryText="delete" leftIcon={<DeleteIcon />} onClick={() => _batchDelete()}/>
+        <MenuItem primaryText='delete' leftIcon={<DeleteIcon />} onClick={() => _batchDelete()} />
       </IconMenu>
     )
   }
 
   const fields = [
-    (attr, row) => (<TextField attr={attr} record={row} />),
+    (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
-      return <TextField attr={attr} record={row} onTouchTap={() => store.detailClicked(row)} />
+      return <TextField attr={attr} val={row[attr]} onTouchTap={() => store.detailClicked(row)} />
     },
-    (attr, row) => (<BoolField attr={attr} record={row} />)
+    (attr, row) => (<BoolField attr={attr} val={row[attr]} />)
   ]
 
   return (
@@ -37,7 +37,6 @@ const TagListView = ({store}) => {
       batchActions={batchActions} onAddClicked={store.addClicked.bind(store)} />
 
   )
-
 }
 
 export default TagListView

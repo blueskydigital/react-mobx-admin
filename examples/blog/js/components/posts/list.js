@@ -59,17 +59,17 @@ const PostListView = ({store}) => {
   }
 
   const fields = [
-    (attr, row) => (<TextField attr={attr} record={row} />),
+    (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
-      return (<TextField attr={attr} record={row} onTouchTap={() => store.detailClicked(row)}/>)
+      return (<TextField attr={attr} val={row[attr]} onTouchTap={() => store.detailClicked(row)}/>)
     },
     (attr, row) => (
-      <OptionsField attr={attr} record={row} optionsrecord={store.options} optionsattr={'categories'} />
+      <OptionsField attr={attr} val={row[attr]} optionsrecord={store.options} optionsattr={'categories'} />
     ),
-    (attr, row) => (<DateField attr={attr} record={row} />),
-    (attr, row) => (<DateField attr={attr} record={row} />),
+    (attr, row) => (<DateField attr={attr} val={row[attr]} />),
+    (attr, row) => (<DateField attr={attr} val={row[attr]} />),
     (attr, row) => {
-      return <MultivalueField items={row[attr]} Item={_tagOptionComponent} />
+      return <MultivalueField attr={attr} val={row[attr]} Item={_tagOptionComponent} />
     }
   ]
 
