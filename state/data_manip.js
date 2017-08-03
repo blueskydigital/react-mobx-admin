@@ -6,7 +6,7 @@ export default class DataManipState {
   initEntityView(entityname, id, cfg) {
     transaction(() => {
       cfg.init && cfg.init(this, id, entityname)
-      this.cv = observable(Object.assign(cfg.view, {
+      this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_detail',
         entityname: entityname,
         origRecordId: id,
