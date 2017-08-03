@@ -12,7 +12,7 @@ export default class DataManipState {
         origRecordId: id,
         record: asMap({}),
         errors: asMap({}),
-        loading: true
+        state: 'loading'
       }))
     })
     this.cv.onSave = cfg.onSave
@@ -27,7 +27,7 @@ export default class DataManipState {
         throw new Error('maybe you have forgotten to return record from onLoaded?')
       }
       this._runValidators()
-      this.cv.loading = false
+      this.cv.state = 'ready'
     })
   }
 
@@ -94,6 +94,7 @@ export default class DataManipState {
   @action
   saveEntity(onReturn2list = null) {
     const cv = this.cv
+    this.cv.state = 'saving'
     let p = this.requester.saveEntry(cv.entityname, cv.record, cv.origRecordId)
     .then((saved) => {
       cv.origRecord = JSON.parse(JSON.stringify(saved)) // update origRecord coz saved
@@ -108,6 +109,7 @@ export default class DataManipState {
         }
         cv.origRecordId = id
       })
+      this.cv.state = 'ready'
       return cv.record
     })
     p = cv.onSave ? p.then(cv.onSave) : p
