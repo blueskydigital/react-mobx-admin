@@ -48,6 +48,15 @@ export default class DataTableState extends DataManipState {
   }
 
   @action
+  setPerPage(num) {
+    const newQPars = Object.assign({}, toJS(this.router.queryParams), {
+      '_page': 1,
+      '_perPage': num
+    })
+    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
+  }
+
+  @action
   updateSort(sortField, sortDir) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_sortField': sortField,
@@ -159,7 +168,6 @@ export default class DataTableState extends DataManipState {
   _refreshList() {
     this.cv.loading = true
     const pars = Object.assign({}, this.router.queryParams, {
-      _perPage: this.cv.perPage,
       _extraparams: this.cv.extraparams
     })
     return this.requester.getEntries(this.cv.entityname, pars)
