@@ -4,8 +4,10 @@ import DataManipState from './data_manip'
 export default class DataTableState extends DataManipState {
 
   initEntityListView(entityname, cfg) {
+    const qParams = this.router.queryParams
     return transaction(() => {
-      this.router.queryParams._page = this.router.queryParams._page || 1
+      qParams._page = qParams._page || 1
+      qParams._perPage = qParams._perPage || cfg.perPage || 10
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_list',
