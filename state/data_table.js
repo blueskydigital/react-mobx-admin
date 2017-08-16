@@ -143,6 +143,7 @@ export default class DataTableState extends DataManipState {
   applyFilters() {
     const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': 1,  // need to go to 1st page due to limited results
+      '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
@@ -159,6 +160,7 @@ export default class DataTableState extends DataManipState {
     this.cv.filters.delete(filter)
     const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': this.router.queryParams['_page'],
+      '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
