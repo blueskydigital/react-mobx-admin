@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
+import _ from 'lodash'
 
 const DatagridActions = ({actions, state}) => {
-  return (state.cv.selection.length > 0) ? actions(state) : null
+  let found = _.includes(state.cv.selection.map(i => {
+    return _.includes(_.map(state.cv.items, 'id'), i)
+  }), true)
+
+  return found ? actions(state) : null
 }
 
 DatagridActions.propTypes = {
