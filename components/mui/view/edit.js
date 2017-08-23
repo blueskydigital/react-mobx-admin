@@ -21,9 +21,8 @@ const GlobalErrors = observer(({errors}) => {
 const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
 
   const cv = store.cv
-  const loading = (! cv.entity) || cv.loading
 
-  if(loading) {
+  if (cv.loading) {
     return <CircularProgress />
   }
 
