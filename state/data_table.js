@@ -46,6 +46,7 @@ export default class DataTableState extends DataManipState {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_page': page
     })
+    this.cv.selection = []
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
@@ -64,6 +65,7 @@ export default class DataTableState extends DataManipState {
       '_sortField': sortField,
       '_sortDir': sortDir
     })
+    this.cv.selection = []
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
