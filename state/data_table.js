@@ -4,10 +4,8 @@ import DataManipState from './data_manip'
 export default class DataTableState extends DataManipState {
 
   initEntityListView(entityname, cfg) {
-    const qParams = this.router.queryParams
     return transaction(() => {
-      qParams._page = qParams._page || 1
-      qParams._perPage = qParams._perPage || cfg.perPage || 10
+      this.router.queryParams._page = this.router.queryParams._page || 1
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_list',
@@ -51,15 +49,6 @@ export default class DataTableState extends DataManipState {
   }
 
   @action
-  setPerPage(num) {
-    const newQPars = Object.assign({}, toJS(this.router.queryParams), {
-      '_page': 1,
-      '_perPage': num
-    })
-    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
-  }
-
-  @action
   updateSort(sortField, sortDir) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_sortField': sortField,
@@ -87,8 +76,9 @@ export default class DataTableState extends DataManipState {
   @action
   deleteSelected() {
     const promises = this.cv.selection.map((selected) => {
-      const id = this.cv.items[selected][this.cv.pkName]
-      return this.requester.deleteEntry(this.cv.entityname, id)
+      let item = this.cv.items.find(i => i.id === selected)
+      if(typeof item !== 'undefined')
+        return this.requester.deleteEntry(this.cv.entityname, item.id)
     })
     return Promise.all(promises).then(() => {   // wait for all delete reqests
       this.cv.selection = []
@@ -100,7 +90,9 @@ export default class DataTableState extends DataManipState {
 
   @computed get selected_ids() {
     return this.cv.selection.map((selected) => {
-      return this.cv.items[selected][this.cv.pkName]
+      let item = this.cv.items.find(i => i.id === selected)
+      if(typeof item !== 'undefined')
+        return item.id
     })
   }
 
@@ -117,7 +109,7 @@ export default class DataTableState extends DataManipState {
   }
 
   @action selectAll() {
-    this.cv.selection = this.cv.items.map((i, idx) => idx)
+    this.cv.selection = this.cv.items.map((i, idx) => i.id)
   }
 
   // ---------------------- filtration  ----------------------------
@@ -145,7 +137,6 @@ export default class DataTableState extends DataManipState {
   applyFilters() {
     const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': 1,  // need to go to 1st page due to limited results
-      '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
@@ -162,7 +153,6 @@ export default class DataTableState extends DataManipState {
     this.cv.filters.delete(filter)
     const newQPars = Object.assign({}, this.cv.filters.toJS(), {
       '_page': this.router.queryParams['_page'],
-      '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
@@ -174,6 +164,7 @@ export default class DataTableState extends DataManipState {
   _refreshList() {
     this.cv.loading = true
     const pars = Object.assign({}, this.router.queryParams, {
+      _perPage: this.cv.perPage,
       _extraparams: this.cv.extraparams
     })
     return this.requester.getEntries(this.cv.entityname, pars)
