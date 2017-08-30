@@ -61,10 +61,27 @@ export default class DataTableState extends DataManipState {
 
   @action
   updateSort(sortField, sortDir) {
+    const qp = this.router.queryParams
+    const sortFields = qp._sortField ? qp._sortField.split(',') : []
+    const sortDirs = qp._sortDir ? qp._sortDir.split(',') : []
+    const sortStateIdx = sortFields.indexOf(sortField)
+    if (sortStateIdx >= 0 && sortDir) {
+      sortDirs[sortStateIdx] = sortDir
+    } else if (sortStateIdx >= 0 && sortDir === null) {
+      sortFields.splice(sortStateIdx, 1)
+      sortDirs.splice(sortStateIdx, 1)
+    } else {
+      sortFields.push(sortField)
+      sortDirs.push(sortDir)
+    }
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
-      '_sortField': sortField,
-      '_sortDir': sortDir
+      '_sortField': sortFields.join(','),
+      '_sortDir': sortDirs.join(',')
     })
+    if (sortFields.length === 0) {
+      delete newQPars._sortField
+      delete newQPars._sortDir
+    }
     this.cv.selection = []
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }

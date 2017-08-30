@@ -11,7 +11,17 @@ import HeaderBase from '../../common/datagrid/header'
 
 class MUIHeader extends HeaderBase {
   renderIcon(sort) {
-    return <ContentSort style={sort === 'ASC' ? { transform: 'rotate(180deg)' } : {}} />
+    const {onSort, name} = this.props
+    const rem = <span onClick={(e) => {
+      e.stopPropagation()
+      onSort(name, null)
+    }}>del</span>
+    return (
+      <div>
+        <ContentSort style={sort === 'ASC' ? { transform: 'rotate(180deg)' } : {}} />
+        {rem}
+      </div>
+    )
   }
 }
 
