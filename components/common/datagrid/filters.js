@@ -14,7 +14,7 @@ class DropdownBase extends React.Component {
   createItems(state, filters) {
     const onShowFilter = this.props.showFilter
     return _.map(filters, (val, name) => {
-      if(state.cv.filters.has(name)) {
+      if(state.cv.filters.has(name) || !val.globalFilter) {
         return null // don't add to menu already visible filters
       } else {
         return this.renderItem(name, val.title, val.icon, () => {onShowFilter(name)})
@@ -24,7 +24,8 @@ class DropdownBase extends React.Component {
 
   render() {
     const { filters, state } = this.props
-    const show = state.cv.filters.size < Object.keys(filters).length
+    const dropdownFilters = Object.values(filters).filter((value) => value.globalFilter)
+    const show = dropdownFilters.length && (state.cv.filters.size < dropdownFilters.length)
     return (show) ? this.renderMenu(state, filters) : null
   }
 }
@@ -46,7 +47,7 @@ class ControlsBase extends React.Component {
       const showAttribFilter = showAttrFilters || _.find(state.cv.attrs, (i) => {
         return name.indexOf(i) >= 0
       }) !== null
-      const visible = state.cv.filters.has(name)
+      const visible = state.cv.filters.has(name) && filters[name].globalFilter
 
       if (visible && showAttribFilter) {
         const value = state.cv.filters.get(name)
