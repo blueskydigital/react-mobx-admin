@@ -7,7 +7,7 @@ export default class DataTableState extends DataManipState {
     const qParams = this.router.queryParams
     return transaction(() => {
       qParams._page = qParams._page || 1
-      qParams._perPage = qParams._perPage || cfg.perPage || 10
+      qParams._perPage = qParams._perPage || cfg.perPage || 15
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_list',
@@ -16,7 +16,8 @@ export default class DataTableState extends DataManipState {
         totalItems: 0,
         loading: true,
         selection: [],
-        filters: asMap(this.appliedFilters)
+        filters: asMap(this.appliedFilters),
+        state: 'loading'
       }))
       return this._refreshList()
     })
@@ -196,6 +197,7 @@ export default class DataTableState extends DataManipState {
     return this.requester.getEntries(this.cv.entityname, pars)
     .then((result) => {
       result && transaction(() => {
+        this.cv.state = 'ready'
         this.cv.loading = false
         this.cv.totalItems = result.totalItems
         this.cv.items && this.cv.items.replace(result.data)
