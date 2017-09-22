@@ -7,7 +7,7 @@ export default class DataTableState extends DataManipState {
     const qParams = this.router.queryParams
     return transaction(() => {
       qParams._page = qParams._page || 1
-      qParams._perPage = qParams._perPage || cfg.perPage || 15
+      qParams._perPage = localStorage.getItem('cargo_perPage') || qParams._perPage || cfg.perPage || 15
       cfg.init && cfg.init(this)
       this.cv = observable(Object.assign({}, cfg.view, {
         type: 'entity_list',
@@ -57,6 +57,7 @@ export default class DataTableState extends DataManipState {
       '_page': 1,
       '_perPage': num
     })
+    localStorage.setItem('cargo_perPage', num)
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
