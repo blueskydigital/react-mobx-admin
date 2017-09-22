@@ -195,6 +195,11 @@ export default class DataTableState extends DataManipState {
     const pars = Object.assign({}, this.router.queryParams, {
       _extraparams: this.cv.extraparams
     })
+
+    // set params from this.cv if missing _page || _perPage
+    pars['_page'] = parseInt(pars['_page']) > 0 ? parseInt(pars['_page']) : 1
+    pars['_perPage'] = parseInt(pars['_perPage']) > 0 ? parseInt(pars['_perPage']) : parseInt(this.cv.perPage)
+
     return this.requester.getEntries(this.cv.entityname, pars)
     .then((result) => {
       result && transaction(() => {
