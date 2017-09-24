@@ -1,6 +1,6 @@
 {
   "name": "react-mobx-admin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "unopinionated framework for React based admin applications",
   "main": "index.js",
   "keywords": [
@@ -9,6 +9,12 @@
     "rest"
   ],
   "author": "vencax <vencax77@gmail.com>",
+  "contributors": [
+    {
+      "name": "Adam Jun",
+      "email": "adam@bluesky.pro"
+    }
+  ],
   "repository": "https://github.com/blueskydigital/react-admin",
   "license": "ISC",
   "peerDependencies": {

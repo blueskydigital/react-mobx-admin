@@ -168,6 +168,7 @@ export default class DataTableState extends DataManipState {
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
+    this.router.entityname = this.cv.entityname
     this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
   }
 
@@ -192,6 +193,16 @@ export default class DataTableState extends DataManipState {
 
   _refreshList() {
     this.cv.loading = true
+
+    if (this.router.entityname && this.cv.entityname && this.router.entityname !== this.cv.entityname) {
+      for (let k in this.router.queryParams) {
+        if (k[0] !== '_') {
+          this.cv.filters.delete(k)
+          delete this.router.queryParams[k]
+        }
+      }
+    }
+
     const pars = Object.assign({}, this.router.queryParams, {
       _extraparams: this.cv.extraparams
     })
