@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
@@ -69,7 +70,7 @@ const MUIListView = ({
   return renderOuter ? renderOuter(result) : result
 }
 MUIListView.propTypes = {
-  store: React.PropTypes.object.isRequired,
-  renderOuter: React.PropTypes.func
+  store: PropTypes.object.isRequired,
+  renderOuter: PropTypes.func
 }
 export default observer(MUIListView)

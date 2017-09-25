@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import DatePicker from 'material-ui/DatePicker'
 
@@ -26,10 +27,10 @@ const MUIDateInput = ({ attr, record, label, errors, onChange }) => {
   )
 }
 MUIDateInput.propTypes = {
-  attr: React.PropTypes.string.isRequired,
-  record: React.PropTypes.object.isRequired,
-  label: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired,
-  errors: React.PropTypes.object
+  attr: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
+  label: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  errors: PropTypes.object
 }
 export default observer(MUIDateInput)

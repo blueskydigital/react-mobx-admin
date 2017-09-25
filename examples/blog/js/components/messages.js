@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Snackbar from 'material-ui/Snackbar'
 import { observer } from 'mobx-react'
 
@@ -6,7 +7,7 @@ import { observer } from 'mobx-react'
 class MessagesView extends React.Component {
 
   static propTypes = {
-    state: React.PropTypes.object.isRequired
+    state: PropTypes.object.isRequired
   }
 
   render() {

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import Checkbox from 'material-ui/Checkbox'
 
@@ -15,9 +16,9 @@ const MUIBoolInput = ({ attr, record, label, onChange }) => {
   )
 }
 MUIBoolInput.propTypes = {
-  attr: React.PropTypes.string.isRequired,
-  record: React.PropTypes.object.isRequired,
-  label: React.PropTypes.string,
-  onChange: React.PropTypes.func.isRequired
+  attr: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
+  label: PropTypes.string,
+  onChange: PropTypes.func.isRequired
 }
 export default observer(MUIBoolInput)

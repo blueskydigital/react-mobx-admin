@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import TextInput from 'react-mobx-admin/components/mui/input/text'
 import BoolInput from 'react-mobx-admin/components/mui/input/bool'
 import EditView from 'react-mobx-admin/components/mui/view/edit'
@@ -19,7 +20,7 @@ const TagEditForm = ({store}) => {
   )
 }
 TagEditForm.propTypes = {
-  store: React.PropTypes.object.isRequired
+  store: PropTypes.object.isRequired
 }
 
 const TagsEditView = ({store}) => (
