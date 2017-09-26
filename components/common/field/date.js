@@ -17,7 +17,7 @@ const DateField = ({ attr, val, Component }) => {
 
   const d = val instanceof Date ? d : new Date(val)
   const text = formateDate({date: d})
-  return Component ? <Component attr={attr} text={text} /> : <span>{text}</span>
+  return Component ? <Component attr={attr} text={text} /> : <span className='one-line-value'>{text}</span>
 }
 
 DateField.propTypes = {
