@@ -12,13 +12,13 @@ class ColumnHeader extends React.Component {
   }
 
   render () {
-    const { sort, label, onSort } = this.props
+    const { sort, label, onSort, showArrows } = this.props
     let element = <span>{label}</span>
 
-    if (onSort) {
+    if (onSort && !showArrows) {
       let sortIcon = null
       if (sort) {
-          sortIcon = this.renderIcon(sort)
+        sortIcon = this.renderIcon(sort)
       }
       const sortDir = (sort === 'ASC') ? 'DESC' : 'ASC'
 
