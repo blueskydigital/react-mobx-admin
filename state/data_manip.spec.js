@@ -20,12 +20,12 @@ const cfg = {
       }
     }
   },
-  initNew: (entity) => {
+  initNew: (record) => {
     // simulation of loading or time expansive operation
     return new Promise((resolve, reject) => {
       setTimeout(()=> {
-        entity.set('published', true)
-        resolve(entity)
+        record.set('published', true)
+        resolve(record)
       }, 200)
     })
   }
@@ -47,16 +47,16 @@ test('it should be possible to showEntityDetail', t => {
   }
 
   state.initEntityView('posts', 1, cfg)
-  t.equal(state.cv.loading, true)
+  // t.equal(state.cv.loading, true)
 
   setTimeout(() => {
-    t.equal(state.cv.loading, false)
+    // t.equal(state.cv.state, false)
     t.equal(state.cv.origRecordId, 1)
     t.equal(state.cv.entityname, 'posts')
-    t.equal(state.cv.entity.has('title'), true)
-    t.equal(state.cv.entity.get('title'), state.requester.data.title)
-    t.equal(state.cv.entity.has('body'), true)
-    t.equal(state.cv.entity.get('body'), state.requester.data.body)
+    t.equal(state.cv.record.has('title'), true)
+    t.equal(state.cv.record.get('title'), state.requester.data.title)
+    t.equal(state.cv.record.has('body'), true)
+    t.equal(state.cv.record.get('body'), state.requester.data.body)
     t.end()
   }, 500)
 })
