@@ -17,9 +17,9 @@ export default class DataManipState {
     })
     this.cv.onSave = cfg.onSave
     this.cv.onLoaded = cfg.onLoaded
-    let p = (id) ?
+    let p = (id && !cfg.data) ?
       this._loadEditData(entityname, id, cfg.onLoaded) :  // load for edit existing
-      this._loadCreateData(entityname, cfg.prepareNew)  // create
+      this._loadCreateData(cfg.data, cfg.prepareNew)  // create
     return p.then((record) => {
       try {
         this.cv.origRecord = JSON.parse(JSON.stringify(record))  // deep clone :)
@@ -39,9 +39,10 @@ export default class DataManipState {
     return onLoaded !== undefined ? p.then(onLoaded) : p
   }
 
-  _loadCreateData(entityname, prepareNew) {
+  _loadCreateData(data = {}, prepareNew) {
     const p = new Promise((resolve, reject) => {
       this.cv.record.clear()
+      data && this.cv.record.merge(data)
       resolve(this.cv.record)
     })
     return prepareNew !== undefined ? p.then(prepareNew) : p
