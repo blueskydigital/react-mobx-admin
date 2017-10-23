@@ -22,7 +22,7 @@ const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
 
   const cv = store.cv
 
-  if (cv.loading) {
+  if (cv.state === 'loading') {
     return <CircularProgress />
   }
 

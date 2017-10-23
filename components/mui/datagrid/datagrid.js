@@ -60,7 +60,7 @@ const MUIDatagrid = ({
     ) : null
   }
 
-  let tableChildren = state.loading ? (
+  let tableChildren = state.state === 'loading' ? (
     <TableRow><TableRowColumn><CircularProgress /></TableRowColumn></TableRow>
   ) : state.items.length === 0 ? (
     <TableRow><TableRowColumn>EMPTY</TableRowColumn></TableRow>

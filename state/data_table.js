@@ -14,7 +14,6 @@ export default class DataTableState extends DataManipState {
         entityname: entityname,
         items: [],
         totalItems: 0,
-        loading: true,
         selection: [],
         filters: asMap(this.appliedFilters),
         state: 'loading'
@@ -192,7 +191,7 @@ export default class DataTableState extends DataManipState {
   // ---------------------- privates, support ----------------------------
 
   _refreshList() {
-    this.cv.loading = true
+    this.cv.state = 'loading'
 
     if (this.router.entityname && this.cv.entityname && this.router.entityname !== this.cv.entityname) {
       for (let k in this.router.queryParams) {
@@ -215,7 +214,6 @@ export default class DataTableState extends DataManipState {
     .then((result) => {
       result && transaction(() => {
         this.cv.state = 'ready'
-        this.cv.loading = false
         this.cv.totalItems = result.totalItems
         this.cv.items && this.cv.items.replace(result.data)
       })
