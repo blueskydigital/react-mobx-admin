@@ -10,6 +10,7 @@ export default function(store, editconfs, listconfs) {
       sortDir: 'ASC',
       attrs: ['id', 'title', 'category', 'published_at', 'unpublished_at', 'tags'],
       headertitles: ['id', 'title', 'cat', 'published', 'unpublished', 'tags'],
+      noSort: ['id', 'tags'],
       title: 'posts'
     },
     init: (store) => {

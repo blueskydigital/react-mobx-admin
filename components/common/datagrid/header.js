@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 class ColumnHeader extends React.Component {
 
-  onSort(sortDir) {
+  onSort (sortDir) {
     const { name } = this.props
 
     return () => {
@@ -12,10 +12,10 @@ class ColumnHeader extends React.Component {
   }
 
   render () {
-    const { sort, label, onSort, showArrows } = this.props
+    const { sort, label, onSort } = this.props
     let element = <span>{label}</span>
 
-    if (onSort && !showArrows) {
+    if (onSort) {
       let sortIcon = null
       if (sort) {
         sortIcon = this.renderIcon(sort)
