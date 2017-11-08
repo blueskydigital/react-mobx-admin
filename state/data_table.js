@@ -110,6 +110,7 @@ export default class DataTableState extends DataManipState {
     })
     return Promise.all(promises).then(() => {   // wait for all delete reqests
       this.cv.selection = []
+      this.markDirty(this.cv.entityname)
       return this._refreshList()
     })
   }
