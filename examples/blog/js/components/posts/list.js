@@ -17,11 +17,11 @@ import ListView from 'react-mobx-admin/components/mui/view/list'
 const PostListView = ({store}) => {
 
   const _tagOptionComponent = ({attr, record}) => {
-    function onTouchTap() {
+    function onClick() {
       alert(JSON.stringify(record))
     }
     const _tagComponent = ({text}) => (
-      <Chip style={{float: 'left'}} onTouchTap={onTouchTap}>{text}</Chip>
+      <Chip style={{float: 'left'}} onClick={onClick}>{text}</Chip>
     )
     return <OptionsField attr={attr} record={record}
       optionsrecord={store.options} optionsattr={'tags'}
@@ -62,7 +62,7 @@ const PostListView = ({store}) => {
     (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
       const DetailLink = ({text}) => (
-        <a href='javascript:void(0)' onTouchTap={() => store.detailClicked(row)}>{text}</a>
+        <a href='javascript:void(0)' onClick={() => store.detailClicked(row)}>{text}</a>
       )
       return <TextField attr={attr} val={row[attr]} Component={DetailLink} />
     },

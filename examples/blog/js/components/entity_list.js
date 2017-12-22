@@ -1,5 +1,5 @@
 import React from 'react'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import PostListPage from './posts/list'
 import TagsListPage from './tags/list'
 
@@ -12,4 +12,4 @@ const EntityList = ({store}) => {
   }
 }
 
-export default observer(['store'], EntityList)
+export default inject('store')(observer(EntityList))

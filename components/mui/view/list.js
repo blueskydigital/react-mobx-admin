@@ -45,7 +45,7 @@ const MUIListView = ({
           showFilter={store.showFilter.bind(store)} />
       )}
       {onAddClicked && <FlatButton label={cv.addText} icon={<AddIcon />}
-        onTouchTap={() => onAddClicked(store)} />}
+        onClick={() => onAddClicked(store)} />}
     </CardActions>
   )
 

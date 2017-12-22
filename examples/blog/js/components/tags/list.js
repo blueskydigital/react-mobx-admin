@@ -28,7 +28,7 @@ const TagListView = ({store}) => {
     (attr, row) => (<TextField attr={attr} val={row[attr]} />),
     (attr, row) => {
       const DetailLink = ({text}) => (
-        <a href='javascript:void(0)' onTouchTap={() => store.detailClicked(row)}>{text}</a>
+        <a href='javascript:void(0)' onClick={() => store.detailClicked(row)}>{text}</a>
       )
       return <TextField attr={attr} val={row[attr]} Component={DetailLink} />
     },

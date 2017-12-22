@@ -5,11 +5,6 @@ import DevTools from 'mobx-react-devtools'
 import { startRouter } from 'mobx-router'
 import views from './routeconfig'
 
-// Needed for onTouchTap
-// http://stackoverflow.com/a/34015469/988941
-import injectTapEventPlugin from 'react-tap-event-plugin'
-injectTapEventPlugin()
-
 // use it to create the app state
 import StateStore from './state'
 const store = new StateStore(views)

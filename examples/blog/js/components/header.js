@@ -13,14 +13,14 @@ export default class Header extends React.Component {
         <div>
           <ToolbarTitle text={`${user.name} (${user.uname})`} />
           <RaisedButton label={this.props.state.__('logout')} secondary={true}
-            onTouchTap={()=>this.props.state.logout()} />
+            onClick={()=>this.props.state.logout()} />
         </div>
       )
     } else {
       return (
         <div>
           <ToolbarTitle text="anonymous" />
-          <RaisedButton onTouchTap={()=>this.props.state.showLogin()} label={'login'} />
+          <RaisedButton onClick={()=>this.props.state.showLogin()} label={'login'} />
         </div>
       )
     }

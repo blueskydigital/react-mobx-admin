@@ -8,7 +8,7 @@ import { Card, CardTitle, CardActions } from 'material-ui/Card'
 const SubmitButton = observer( ({errors, text, onSubmit, hasChanged}) => {
   return errors ? (
     <RaisedButton label={text} primary={true} icon={<SaveIcon />}
-      disabled={errors.size > 0 || ! hasChanged()} onTouchTap={onSubmit}/>
+      disabled={errors.size > 0 || ! hasChanged()} onClick={onSubmit}/>
   ) : null
 })
 
@@ -54,7 +54,7 @@ const MUIEditView = observer( ({store, onSave, onReturn2list, children}) => {
         <SubmitButton onSubmit={()=>onSave(onReturn2list)} errors={cv.errors}
           text={cv.saveAndReturnText || 'SAVE and return'}
           hasChanged={()=>(store.isEntityChanged)} />
-        <RaisedButton label={'cancel'} icon={<SaveIcon />} onTouchTap={()=>onReturn2list()}/>
+        <RaisedButton label={'cancel'} icon={<SaveIcon />} onClick={()=>onReturn2list()}/>
       </CardActions>
     </Card>
   )

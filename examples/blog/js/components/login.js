@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 
 const LoginView = ({store}) => {
@@ -22,11 +22,11 @@ const LoginView = ({store}) => {
       </form>
 
       <CardActions>
-        <RaisedButton onTouchTap={store.performLogin.bind(store)}
+        <RaisedButton onClick={store.performLogin.bind(store)}
           label={'login'} disabled={store.router.cv.submitted} />
       </CardActions>
     </Card>
   )
 }
 
-export default observer(['store'], LoginView)
+export default inject('store')(observer(LoginView))

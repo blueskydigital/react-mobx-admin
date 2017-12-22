@@ -13,17 +13,17 @@ export const App = observer( ({ store }) => {
     <div>
       <Toolbar>
         <ToolbarGroup firstChild={true}>
-          <FlatButton onTouchTap={() => store.router.goTo(views.login, {}, store, {})}>SampleAPp</FlatButton>
-          <FlatButton onTouchTap={() => {
+          <FlatButton onClick={() => store.router.goTo(views.login, {}, store, {})}>SampleAPp</FlatButton>
+          <FlatButton onClick={() => {
             store.router.goTo(views.entity_list, {entityname: 'posts'}, store, {_page: 1})
           }}>Posts</FlatButton>
-          <FlatButton onTouchTap={() => {
+          <FlatButton onClick={() => {
             store.router.goTo(views.entity_list, {entityname: 'posts'}, store, {_page: 1, category: 'tech'})
           }}>Tech Posts</FlatButton>
-          <FlatButton onTouchTap={() => {
+          <FlatButton onClick={() => {
             store.router.goTo(views.entity_list, {entityname: 'tags'}, store, {_page: 1})
           }}>Tags</FlatButton>
-          <FlatButton onTouchTap={() => store.changeLang()}>ChangeLang</FlatButton>
+          <FlatButton onClick={() => store.changeLang()}>ChangeLang</FlatButton>
         </ToolbarGroup>
         <ToolbarGroup>
           <UserInfo state={store}/>

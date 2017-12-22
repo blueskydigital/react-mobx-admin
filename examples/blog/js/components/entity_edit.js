@@ -1,5 +1,5 @@
 import React from 'react'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import PostEditPage from './posts/manip'
 import TagsEditPage from './tags/manip'
@@ -14,4 +14,4 @@ const EntityEdit = ({store}) => {
   }
 }
 
-export default  observer(['store'], EntityEdit)
+export default inject('store')(observer(EntityEdit))
