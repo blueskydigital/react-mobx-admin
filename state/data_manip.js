@@ -1,4 +1,4 @@
-import {observable, computed, action, transaction, asMap, toJS} from 'mobx'
+import {observable, computed, action, transaction, toJS} from 'mobx'
 import deepEqual from 'deep-equal'
 
 export default class DataManipState {
@@ -10,8 +10,8 @@ export default class DataManipState {
         type: 'entity_detail',
         entityname: entityname,
         origRecordId: id,
-        record: asMap({}),
-        errors: asMap({}),
+        record: observable.shallowMap({}),
+        errors: observable.shallowMap({}),
         state: 'loading'
       }))
     })

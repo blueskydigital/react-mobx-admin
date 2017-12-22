@@ -1,4 +1,4 @@
-import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import { observable, computed, toJS, action, transaction } from 'mobx'
 import BlogRequester from '../services'
 import DataTableState from 'react-mobx-admin/state/data_table'
 

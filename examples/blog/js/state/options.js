@@ -1,10 +1,10 @@
-import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import { observable, computed, toJS, action, transaction } from 'mobx'
 import TranslatStore from './transl'
 
 export default class OptionsStore extends TranslatStore {
 
   // one of possible options loading ...
-  @observable options = asMap({
+  @observable options = observable.map({
     'categories': [
       {value: 'tech', label: 'Technology'},
       {value: 'art', label: 'Art'},

@@ -1,4 +1,4 @@
-import {observable, computed, action, transaction, asMap, toJS} from 'mobx'
+import {observable, computed, action, transaction, toJS} from 'mobx'
 import DataManipState from './data_manip'
 
 export default class DataTableState extends DataManipState {
@@ -15,7 +15,7 @@ export default class DataTableState extends DataManipState {
         items: [],
         totalItems: 0,
         selection: [],
-        filters: asMap(this.appliedFilters),
+        filters: observable.shallowMap(this.appliedFilters),
         state: 'loading'
       }))
       return this._refreshList()

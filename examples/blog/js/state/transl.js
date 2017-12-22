@@ -1,4 +1,4 @@
-import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import { observable, computed, toJS, action, transaction } from 'mobx'
 import AuthStore from './auth'
 import enTtransl from '../i18n/en'
 import csTtransl from '../i18n/cs'

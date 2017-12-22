@@ -1,4 +1,4 @@
-import { observable, computed, toJS, action, transaction, asMap } from 'mobx'
+import { observable, computed, toJS, action, transaction } from 'mobx'
 import { RouterStore } from 'mobx-router'
 import OptionsStore from './options'
 
@@ -60,7 +60,7 @@ export default class StateStore extends OptionsStore {
     // TODO: dodelat
   }
 
-  @observable messages = asMap({})
+  @observable messages = observable.shallowMap({})
 
   @action addMessage(text, type, timeout = 0) {
     const message = {text, type, timeout}
