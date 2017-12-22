@@ -1,15 +1,10 @@
 {
   "name": "react-mobx-admin-blog",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "blog example made with react-mobx-admin",
   "dependencies": {
-    "react-dom": "^15.3.0",
     "react-tap-event-plugin": "^1.0.0",
-    "axios": "^0.14.0",
-    "material-ui": "^0.16.0",
-    "mobx": "^2.3.7",
-    "mobx-react": "^3.5.1",
-    "react": "^15.2.1"
+    "material-ui": "^0.16.0"
   },
   "devDependencies": {
     "mobx-react-devtools": "^4.2.6"
