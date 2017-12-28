@@ -1,11 +1,9 @@
 import { observable, computed, toJS, action, transaction } from 'mobx'
 import BlogRequester from '../services'
-import DataTableState from 'react-mobx-admin/state/data_table'
 
-export default class AuthStore extends DataTableState {
+export default class AuthStore {
 
   constructor(requester, initializers) {
-    super(requester, initializers)
     const stored = localStorage.getItem('gandalf_admin_user')
     try {
       this.loggedUser = stored ? JSON.parse(stored) : null

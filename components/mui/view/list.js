@@ -12,25 +12,23 @@ import DatagridActions from '../../common/datagrid/actions'
 const MUIListView = ({
   store, onAddClicked, fields, filters, listActions, batchActions, renderOuter
 }) => {
-
-  const cv = store.cv
-
-  function onSelectionChange(selection) {
-    if(selection === 'all') {
+  //
+  function onSelectionChange (selection) {
+    if (selection === 'all') {
       store.selectAll()
-    } else if(selection === 'none') {
+    } else if (selection === 'none') {
       store.updateSelection([])
     } else {
       store.updateSelection(selection)
     }
   }
 
-  function isSelected(idx) {
-    return cv.selection && cv.selection.indexOf(idx) >= 0
+  function isSelected (idx) {
+    return store.selection && store.selection.indexOf(idx) >= 0
   }
 
-  const filtersRender = (filters) ? (
-    <Filters.Controls state={store} filters={filters} showAttrFilters={true}
+  const filtersRender = filters ? (
+    <Filters.Controls state={store} filters={filters} showAttrFilters
       hideFilter={store.hideFilter.bind(store)} />
   ) : null
   const pagination = (
@@ -41,10 +39,10 @@ const MUIListView = ({
       <Filters.Apply state={store} label={'apply filters'} apply={store.applyFilters.bind(store)} />
       {batchActions && (<DatagridActions state={store} actions={batchActions} />)}
       {filters && (
-        <Filters.Dropdown state={store} title="addfilter" filters={filters}
+        <Filters.Dropdown state={store} title='addfilter' filters={filters}
           showFilter={store.showFilter.bind(store)} />
       )}
-      {onAddClicked && <FlatButton label={cv.addText} icon={<AddIcon />}
+      {onAddClicked && <FlatButton label={store.addText} icon={<AddIcon />}
         onClick={() => onAddClicked(store)} />}
     </CardActions>
   )
@@ -52,12 +50,12 @@ const MUIListView = ({
   const result = (
     <Card>
       { actions }
-      { cv.title ? <CardTitle title={cv.title} /> : null }
+      { store.title ? <CardTitle title={store.title} /> : null }
       { filtersRender }
-      <div style={{clear: "both"}}>
-        <Datagrid state={cv} attrs={cv.attrs}
-          titles={cv.headertitles} fields={fields}
-          rowId={(row)=>row[cv.pkName]}
+      <div style={{clear: 'both'}}>
+        <Datagrid state={store} attrs={store.attrs}
+          titles={store.headertitles} fields={fields}
+          rowId={(row) => row[store.pkName]}
           listActions={listActions}
           onSort={store.updateSort.bind(store)}
           sortstate={store.router.queryParams}

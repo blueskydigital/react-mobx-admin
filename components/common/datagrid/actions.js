@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 
 const DatagridActions = ({actions, state}) => {
-  return (state.cv.selection.length > 0) ? actions(state) : null
+  return (state.selection.length > 0) ? actions(state) : null
 }
 
 DatagridActions.propTypes = {

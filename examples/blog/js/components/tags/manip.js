@@ -5,16 +5,16 @@ import BoolInput from 'react-mobx-admin/components/mui/input/bool'
 import EditView from 'react-mobx-admin/components/mui/view/edit'
 
 const TagEditForm = ({store}) => {
-
-  const entity = store.cv.entity
-  const updateField = store.updateData.bind(store, store.cv)
+  //
+  const updateField = store.updateData.bind(store)
 
   return (
-    <div className="row">
-      <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-        <TextInput label={store.__('name')} attr={'name'} record={entity} onChange={updateField}
-          errors={store.cv.errors} /><br/>
-        <BoolInput label={store.__('Published')} attr={'published'} record={entity} onChange={updateField} />
+    <div className='row'>
+      <div className='col-xs-12 col-sm-12 col-md-6 col-lg-6'>
+        <TextInput label={store.__('name')} attr={'name'} record={store.record}
+          onChange={updateField} errors={store.errors} />
+        <BoolInput label={store.__('Published')} attr={'published'} record={store.record}
+          onChange={updateField} errors={store.errors} />
       </div>
     </div>
   )
@@ -24,8 +24,8 @@ TagEditForm.propTypes = {
 }
 
 const TagsEditView = ({store}) => (
-  <EditView store={store} onReturn2list={store.onReturn2list.bind(store)} onSave={store.saveEntity.bind(store)}>
-    <TagEditForm store={store} />
+  <EditView store={store.cv} onReturn2list={() => store.goto()} onSave={store.save.bind(store)}>
+    <TagEditForm store={store.cv} />
   </EditView>
 )
 export default TagsEditView

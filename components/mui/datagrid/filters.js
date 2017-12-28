@@ -68,13 +68,9 @@ class Controls extends FilterBases.ControlsBase {
 
 }
 
-@observer
-class Apply extends React.Component {
-  render() {
-    const { apply, label, state } = this.props
-    const show = state.cv.filters.size > 0 && ! state.filtersApplied
-    return show && (<RaisedButton label={label} icon={<ContentFilter />} onClick={apply}/>)
-  }
-}
+const Apply = observer(({apply, label, state}) => {
+  const show = state.filters.size > 0 && ! state.filtersApplied
+  return show && (<RaisedButton label={label} icon={<ContentFilter />} onClick={apply}/>)
+})
 
 export default { Dropdown, Controls, Apply }

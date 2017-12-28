@@ -1,74 +1,82 @@
-import { transaction, action } from 'mobx'
+import DataManipState from 'react-mobx-admin/state/data_manip'
+import DataTableState from 'react-mobx-admin/state/data_table'
 
-export default function(store, editconfs, listconfs) {
+export default (store) => {
 
-  listconfs.posts = {
-    view: {
-      perPage: 6,
-      pkName: 'id',
-      sortField: 'title',
-      sortDir: 'ASC',
-      attrs: ['id', 'title', 'category', 'published_at', 'unpublished_at', 'tags'],
-      headertitles: ['id', 'title', 'cat', 'published', 'unpublished', 'tags'],
-      noSort: ['id', 'tags'],
-      title: 'posts'
-    },
-    init: (store) => {
+  class ManipState extends DataManipState {
+    //
+    init() {
+      super.init()
       store.loadOptions('tags', '/tags')
     }
-  }
 
-  editconfs.posts = {
-    view: {
-      edittitle: 'edit a nice post',
-      createtitle: 'add very interresting post ..',
-      validators: {
-        'title': [
-          (val) => {
-            if (!val || val.length === 0) {
-              return store.__('title must be provided')
-            }
-          },
-          (val) => {
-            if (val.length > 10) {
-              return store.__('title too long')
-            }
-          }
-        ],
-        'content': (val) => {
+    prepareNew() {
+    }
+
+    edittitle = 'edit a nice post'
+    createtitle = 'add very interresting post ..'
+    validators = {
+      'title': [
+        (val) => {
           if (!val || val.length === 0) {
-            return store.__('content must be provided')
+            return store.__('title must be provided')
           }
         },
-        'category': (val) => {
-          if (! val) {
-            return store.__('category must be provided')
-          }
-        },
-        'published_at': (val) => {
-          if (! val) {
-            return store.__('published at must be provided')
-          }
-        },
-        '_global': (entity) => { // global validator
-          const published_at = entity.get('published_at')
-          const unpublished_at = entity.get('unpublished_at')
-          if (published_at && unpublished_at && published_at > unpublished_at) {
-            return [store.__('published must be less than unpublished')]
+        (val) => {
+          if (val && val.length > 10) {
+            return store.__('title too long')
           }
         }
+      ],
+      'content': (val) => {
+        if (!val || val.length === 0) {
+          return store.__('content must be provided')
+        }
+      },
+      'category': (val) => {
+        if (! val) {
+          return store.__('category must be provided')
+        }
+      },
+      'published_at': (val) => {
+        if (! val) {
+          return store.__('published at must be provided')
+        }
+      },
+      '_global': (entity) => { // global validator
+        const published_at = entity.get('published_at')
+        const unpublished_at = entity.get('unpublished_at')
+        if (published_at && unpublished_at && published_at > unpublished_at) {
+          return [store.__('published must be less than unpublished')]
+        }
       }
-    },
-    init: (store, id, entityname) => {
-      store.loadOptions('tags', '/tags')
-    },
-    onSave: (saved) => {
+    }
+
+    onSaved(saved) {
       store.addMessage('post successfully saved', 'info', 2000)
-    },
-    onLoaded: (entity) => {
+      super.onSaved(saved)
+    }
+
+    onLoaded (entity) {
+      super.onLoaded(entity)
       alert('post onLoaded')
-      return entity
     }
   }
 
+  class TableState extends DataTableState {
+    perPage = 6
+    sortField = 'title'
+    sortDir = 'ASC'
+    attrs = ['id', 'title', 'category', 'published_at', 'unpublished_at', 'tags']
+    headertitles = ['id', 'title', 'cat', 'published', 'unpublished', 'tags']
+    noSort = ['id', 'tags']
+    title = 'posts'
+
+    init() {
+      super.init()
+      store.loadOptions('tags', '/tags')
+    }
+  }
+
+  return {ManipState, TableState}
 }

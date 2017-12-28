@@ -1,40 +1,39 @@
-import { action, transaction } from 'mobx'
+import DataManipState from 'react-mobx-admin/state/data_manip'
+import DataTableState from 'react-mobx-admin/state/data_table'
 
-export default function(store, editconfs, listconfs) {
+export default (store) => {
 
-  listconfs.tags = {
-    view: {
-      perPage: 3,
-      pkName: 'id',
-      attrs: ['id', 'name', 'published'],
-      headertitles: ['ID', store.__('Name'), 'Published']
-    }
-  }
+  class ManipState extends DataManipState {
 
-  editconfs.tags = {
-    view: {
-      validators: {
-        'name': (val) => {
-          if (!val || val.length === 0) {
-            return store.__('value must be provided')
-          }
-          if(val.length > 10) {
-            return store.__('value too long')
-          }
-        }
-      }
-    },
-    prepareNew: (entity) => {
+    prepareNew() {
       // simulation of loading or time expansive operation
-      const p = entity.has('id') ? entity : new Promise((resolve, reject) => {
-        setTimeout(()=> {
-          entity.set('published', true)
-          entity.set('name', 'default name')
-          resolve(entity)
+      const p = this.record.has('id') ? this.record : new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.record.set('published', true)
+          this.record.set('name', 'default name')
+          resolve(this.record)
         }, 2000)
       })
       return p
     }
+
+    validators = {
+      'name': (val) => {
+        if (!val || val.length === 0) {
+          return store.__('value must be provided')
+        }
+        if (val.length > 10) {
+          return store.__('value too long')
+        }
+      }
+    }
   }
 
+  class TableState extends DataTableState {
+    perPage = 3
+    attrs = ['id', 'name', 'published']
+    headertitles = ['ID', store.__('Name'), 'Published']
+  }
+
+  return {ManipState, TableState}
 }

@@ -1,3 +1,4 @@
+/* global alert, confirm */
 import React from 'react'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
@@ -13,11 +14,10 @@ import TextInput from 'react-mobx-admin/components/mui/input/text'
 import SelectInput from 'react-mobx-admin/components/mui/input/select'
 import ListView from 'react-mobx-admin/components/mui/view/list'
 
-
 const PostListView = ({store}) => {
-
+  //
   const _tagOptionComponent = ({attr, record}) => {
-    function onClick() {
+    function onClick () {
       alert(JSON.stringify(record))
     }
     const _tagComponent = ({text}) => (
@@ -29,22 +29,22 @@ const PostListView = ({store}) => {
   }
 
   const batchActions = (store) => {
-    function _batchDelete() {
-      if(confirm(`Are you sure you want to delete selected items?`)) {
-        store.deleteSelected()
+    function _batchDelete () {
+      if (confirm(`Are you sure you want to delete selected items?`)) {
+        store.cv.deleteSelected()
       }
     }
     return (
       <IconMenu iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}>
-        <MenuItem primaryText="delete" leftIcon={<DeleteIcon />} onClick={() => _batchDelete()}/>
+        <MenuItem primaryText='delete' leftIcon={<DeleteIcon />} onClick={() => _batchDelete()} />
       </IconMenu>
     )
   }
 
   const listActions = (row) => {
-    function _deleteRow(row) {
-      if(confirm(`Are you sure you want to delete ${row.title}?`)) {
-        store.deleteData([row])
+    function _deleteRow (row) {
+      if (confirm(`Are you sure you want to delete ${row.title}?`)) {
+        store.cv.deleteData([row])
       }
     }
     return row ? (
@@ -77,17 +77,24 @@ const PostListView = ({store}) => {
   ]
 
   const filters = {
-    'category': {title: 'Category', icon: <DeleteIcon />, component: (props) => (<SelectInput {...props}
-      optionsrecord={store.options}
-      optionsattr={'categories'} />)},
-    'title_like': {title: 'Title', icon: <DeleteIcon />, component: (props) => (<TextInput {...props} />)}
+    'category': {
+      title: 'Category',
+      icon: <DeleteIcon />,
+      component: (props) => (
+        <SelectInput {...props} optionsrecord={store.options} optionsattr={'categories'} />
+      )
+    },
+    'title_like': {
+      title: 'Title',
+      icon: <DeleteIcon />,
+      component: (props) => (<TextInput {...props} />)
+    }
   }
 
   return (
-    <ListView store={store} fields={fields} listActions={listActions} filters={filters}
+    <ListView store={store.cv} fields={fields} listActions={listActions} filters={filters}
       batchActions={batchActions} onAddClicked={store.addClicked.bind(store)} />
   )
-
 }
 
 export default PostListView

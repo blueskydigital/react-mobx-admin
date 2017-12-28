@@ -2,9 +2,8 @@ import { observable, computed, toJS, action, transaction } from 'mobx'
 import { RouterStore } from 'mobx-router'
 import OptionsStore from './options'
 
-import PostsInfoInit from './posts'
-import TagsInfoInit from './tags'
-
+import Posts from './posts'
+import Tags from './tags'
 
 export default class StateStore extends OptionsStore {
 
@@ -12,43 +11,70 @@ export default class StateStore extends OptionsStore {
     super()
     this.router = new RouterStore()
     this.views = views
-    this.router.cv = {}
-    this.listconfs = {}
-    this.editconfs = {}
-    PostsInfoInit(this, this.editconfs, this.listconfs)
-    TagsInfoInit(this, this.editconfs, this.listconfs)
-  }
 
-  get cv() {
-    return this.router.cv
-  }
-
-  set cv(val) {
-    this.router.cv = val
+    const tags = Tags(this)
+    const posts = Posts(this)
+    this.manipStores = {
+      'tags': tags.ManipState,
+      'posts': posts.ManipState
+    }
+    this.listStores = {
+      'tags': tags.TableState,
+      'posts': posts.TableState
+    }
   }
 
   showEntityUpdateView(entityname, id) {
-    const cfg = this.editconfs[entityname]
-    if (! cfg) {
+    const StoreClass = this.manipStores[entityname]
+    if (StoreClass === undefined) {
       return this.on404('unknown entity ' + entityname)
     }
     id = (id && id !== '_new') ? id : null
-    this.initEntityView(entityname, id, cfg).catch(this.onError.bind(this))
+    this.cv = new StoreClass(entityname, id, this.requester.saveEntry.bind(this.requester))
+    this.cv.init()
+    id && this.requester.getEntry(entityname, id).then(this.cv.onLoaded.bind(this.cv))
   }
 
-  showEntityListView(entityname) {
-    const cfg = this.listconfs[entityname]
-    if (! cfg) {
+  showEntityListView() {
+    const entityname = this.router.params.entityname
+    const StoreClass = this.listStores[entityname]
+    if (StoreClass === undefined) {
       return this.on404('unknown entity ' + entityname)
     }
-    this.initEntityListView(entityname, cfg).catch(this.onError.bind(this))
+    this.cv = new StoreClass(entityname, this.requester, this.router, (newQPars) => {
+      this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
+    })
+    this.cv.init()
   }
 
-  onListParamsChange(params, queryParams) {
-    if (this.cv.type !== 'entity_list' || params.entityname !== this.cv.entityname) {
-      return this.showEntityListView(params.entityname)
+  beforeListViewExit() {
+    const queryParamsBackup = Object.assign({}, this.router.queryParams)
+    this.listQParamsBackup = queryParamsBackup
+  }
+
+  onListParamsChange(origParams, origQueryParams) {
+    if (origParams.entityname !== this.router.params.entityname) {
+      return this.showEntityListView()
     }
-    return this.refresh().catch(this.onError.bind(this))
+    return this.cv.refresh().catch(this.onError.bind(this))
+  }
+
+  detailClicked(row) {
+    this.router.goTo(this.views.entity_detail, {
+      entityname: this.router.params.entityname,
+      id: row[this.cv.pkName || 'id']
+    }, this)
+  }
+
+  goTo(view, params, queryParams={}) {
+    this.router.goTo(this.views[view], params, this, queryParams)
+  }
+
+  addClicked() {
+    this.router.goTo(this.views.entity_detail, {
+      entityname: this.router.params.entityname,
+      id: '_new'
+    }, this)
   }
 
   // overrided method adding catch handler
