@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const OptionsField = ({val, attr, options, valueattr, labelattr, Component}) => {
-  const found = options && options.filter((i) => {
+  const found = options ? options.filter((i) => {
     return i[valueattr || 'value'] === val
-  })
+  }) : null
   if (found && found.length > 0) {
     const text = (typeof labelattr === 'function')
       ? labelattr(found[0]) : found[0][labelattr || 'label']
