@@ -86,6 +86,12 @@ export default class StateStore extends OptionsStore {
     // TODO: dodelat
   }
 
+  onReturn2list() {
+    this.router.goTo(this.views.entity_list, {
+      entityname: this.router.params.entityname
+    }, this, this.cv.listQParamsBackup || {_page: 1})
+  }
+
   @observable messages = observable.shallowMap({})
 
   @action addMessage(text, type, timeout = 0) {
