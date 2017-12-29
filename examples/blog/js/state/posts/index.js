@@ -65,8 +65,8 @@ export default (store) => {
 
   class TableState extends DataTableState {
     perPage = 6
-    sortField = 'title'
-    sortDir = 'ASC'
+    defaultSortField = 'title'
+    defaultSortDir = 'ASC'
     attrs = ['id', 'title', 'category', 'published_at', 'unpublished_at', 'tags']
     headertitles = ['id', 'title', 'cat', 'published', 'unpublished', 'tags']
     noSort = ['id', 'tags']

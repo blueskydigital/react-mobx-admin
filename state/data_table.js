@@ -1,4 +1,4 @@
-import {observable, computed, action, transaction, toJS} from 'mobx'
+import {observable, computed, action, toJS} from 'mobx'
 
 export default class DataTableState {
 
@@ -17,29 +17,8 @@ export default class DataTableState {
     this.updateQPars = updateQPars
   }
 
-  initEntityListView(entityname, cfg) {
-    const qParams = this.router.queryParams
-    return transaction(() => {
-      qParams._page = qParams._page || 1
-      qParams._perPage = localStorage.getItem('cargo_perPage') || qParams._perPage || cfg.perPage || 15
-      cfg.init && cfg.init(this)
-      this.cv = observable(Object.assign({}, cfg.view, {
-        entityname: entityname,
-        items: [],
-        totalItems: 0,
-        selection: [],
-        filters: observable.shallowMap(this.appliedFilters),
-        state: 'loading'
-      }))
-      return this._refreshList()
-    })
-  }
-
   init() {
-    // set params from this.cv if missing _page || _perPage
-    const qp = this.router.queryParams
-    qp._page = qp._page ? qp._page : 1
-    qp._perPage = qp._perPage ? qp._perPage : this.perPage
+    this.setDefaults()
     return this._refreshList()
   }
 
@@ -58,7 +37,6 @@ export default class DataTableState {
       '_page': 1,
       '_perPage': num
     })
-    // localStorage.setItem('cargo_perPage', num)
     this.updateQPars(newQPars)
   }
 
@@ -169,8 +147,7 @@ export default class DataTableState {
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
-    this.router.entityname = this.entityname
-    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
+    this.updateQPars(newQPars)
   }
 
   @action
@@ -187,26 +164,29 @@ export default class DataTableState {
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
     })
-    this.router.goTo(this.router.currentView, this.router.params, this, newQPars)
+    this.updateQPars(newQPars)
   }
 
   // ---------------------- privates, support ----------------------------
 
+  getRequestParams(params) {
+    return params
+  }
+
+  setDefaults() {
+    const qp = this.router.queryParams
+    // set params if missing _page || _perPage
+    qp._page = qp._page ? qp._page : 1
+    qp._perPage = qp._perPage ? qp._perPage : this.perPage
+    if (this.defaultSortField && !qp._sortField) {
+      qp._sortField = this.defaultSortField
+      qp._sortDir = this.defaultSortDir
+    }
+  }
+
   _refreshList() {
     this.state = 'loading'
-
-    // if (this.router.entityname && this.entityname && this.router.entityname !== this.entityname) {
-    //   for (let k in this.router.queryParams) {
-    //     if (k[0] !== '_') {
-    //       this.filters.delete(k)
-    //       delete this.router.queryParams[k]
-    //     }
-    //   }
-    // }
-
-    const pars = Object.assign({}, this.router.queryParams)//, {
-    //   _extraparams: this.extraparams
-    // })
+    const pars = this.getRequestParams(toJS(this.router.queryParams))
 
     return this.requester.getEntries(this.entityname, pars)
     .then(this.onDataLoaded.bind(this))

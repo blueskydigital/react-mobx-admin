@@ -33,6 +33,8 @@ export default (store) => {
     perPage = 3
     attrs = ['id', 'name', 'published']
     headertitles = ['ID', store.__('Name'), 'Published']
+    defaultSortField = 'name'
+    defaultSortDir = 'ASC'
   }
 
   return {ManipState, TableState}
