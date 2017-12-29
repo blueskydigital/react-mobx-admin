@@ -1,4 +1,4 @@
-import {observable, computed, action, transaction, toJS} from 'mobx'
+import {observable, computed, action, toJS} from 'mobx'
 import deepEqual from 'deep-equal'
 
 export default class DataManipState {
