@@ -2,7 +2,6 @@ import {observable, computed, action, toJS} from 'mobx'
 
 export default class DataTableState {
 
-  @observable filters = new Map()
   @observable state = 'loading'
   @observable items = []
   @observable totalItems = 0
@@ -15,6 +14,9 @@ export default class DataTableState {
     this.entityname = entityname
     this.router = router
     this.updateQPars = updateQPars
+    for (let attr in router.queryParams) {  // init filters
+      attr[0] !== '_' && this.filters.set(attr, router.queryParams[attr])
+    }
   }
 
   init() {
@@ -120,6 +122,8 @@ export default class DataTableState {
 
   // ---------------------- filtration  ----------------------------
 
+  @observable filters = new Map()
+
   @computed get appliedFilters() {
     const applied = {}
     for (let k in this.router.queryParams) {
@@ -170,7 +174,7 @@ export default class DataTableState {
   // ---------------------- privates, support ----------------------------
 
   getRequestParams(params) {
-    return params
+    return new Promise((resolve, _) => resolve(params))
   }
 
   setDefaults() {
@@ -186,9 +190,10 @@ export default class DataTableState {
 
   _refreshList() {
     this.state = 'loading'
-    const pars = this.getRequestParams(toJS(this.router.queryParams))
-
-    return this.requester.getEntries(this.entityname, pars)
+    return this.getRequestParams(toJS(this.router.queryParams))
+    .then(pars => {
+      return this.requester.getEntries(this.entityname, pars)
+    })
     .then(this.onDataLoaded.bind(this))
   }
 
