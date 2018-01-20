@@ -104,6 +104,10 @@ export default class DataTableState {
     })
   }
 
+  @computed get selectedItems() {
+    return this.selection.map(i => this.items[i])
+  }
+
   @action
   updateSelection(data) {
     this.selection = data
