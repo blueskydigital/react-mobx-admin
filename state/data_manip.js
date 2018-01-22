@@ -108,6 +108,7 @@ export default class DataManipState {
   // called on each update of edit form. Validation performed if got some validators
   @action
   updateData(fieldName, value) {
+    value = value === '' ? null : value
     this.record.set(fieldName, value)
     this._validateField(fieldName, value)
     this._validateField('_global', this.record)
