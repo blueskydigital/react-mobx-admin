@@ -9,11 +9,12 @@ export default class DataTableState {
   perPage = 15
   pkName = 'id'
 
-  constructor(entityname, requester, router, updateQPars) {
+  constructor(entityname, requester, router, updateQPars, dirty) {
     this.requester = requester
     this.entityname = entityname
     this.router = router
     this.updateQPars = updateQPars
+    this.dirty = dirty
     for (let attr in router.queryParams) {  // init filters
       attr[0] !== '_' && this.filters.set(attr, router.queryParams[attr])
     }
@@ -90,8 +91,10 @@ export default class DataTableState {
       const id = this.items[selected][this.pkName]
       return this.requester.deleteEntry(this.entityname, id)
     })
-    return Promise.all(promises).then(() => {   // wait for all delete reqests
+    // wait for all delete reqests
+    return Promise.all(promises).then(() => {
       this.selection = []
+      this.dirty[this.entityname] = null
       return this._refreshList()
     })
   }
