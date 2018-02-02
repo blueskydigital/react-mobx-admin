@@ -7,6 +7,7 @@ export default class DataManipState {
   @observable origRecordId = null
   @observable record = new Map()
   @observable errors = new Map()
+  @observable saveErrors = []
   @observable state = 'loading'
 
   pkName = 'id'
@@ -58,7 +59,7 @@ export default class DataManipState {
       function runValidatorsArray (validatorArray) {
         const errors = []
         validatorArray.map(validatorFn => {
-          const error = validatorFn(value, this.errors, opts)
+          const error = validatorFn.bind(this)(value, this.errors, opts)
           if (error !== undefined) {
             errors.push(error)
           }
@@ -67,7 +68,7 @@ export default class DataManipState {
       }
       const error = validatorFn.call === undefined
         ? runValidatorsArray.bind(this)(validatorFn)
-        : validatorFn(value, this.errors, opts)
+        : validatorFn.bind(this)(value, this.errors, opts)
       if(error === undefined && this.errors.has(fieldName)) {
         this.errors.delete(fieldName)
       } else if (error !== undefined) {
@@ -89,6 +90,7 @@ export default class DataManipState {
     this.state = 'saving'
     return this.saveEntry(this.entityname, this.record, this.origRecordId)
     .then(this.onSaved.bind(this))
+    .catch(this.onError.bind(this))
   }
 
   @action onSaved(saved) {
@@ -103,6 +105,11 @@ export default class DataManipState {
       this.onLoaded(saved) //  run onLoaded
     }
     return this.record
+  }
+
+  @action onError(err) {
+    this.state = 'ready'
+    this.saveErrors = [err]
   }
 
   // called on each update of edit form. Validation performed if got some validators
