@@ -1,7 +1,11 @@
-
-export function buildHeaders (attrs, titles, renderHeader, listActionsRender, onSort, sortstate, noSort = []) {
+export function buildHeaders (attrs, titles, renderHeader, listActionsRender, listActionDeleteRender,
+  onSort, sortstate, noSort = []) {
   let headers = []
   let i
+
+  // add another th for List actions
+  headers.push(listActionsRender)
+
   const sortFields = sortstate._sortField ? sortstate._sortField.split(',') : []
   const sortDirs = sortstate._sortDir ? sortstate._sortDir.split(',') : []
   for (i = 0; i < attrs.length; i++) {
@@ -14,15 +18,20 @@ export function buildHeaders (attrs, titles, renderHeader, listActionsRender, on
     headers.push(header)
   }
 
-  // add another th for List actions
-  headers.push(listActionsRender)
+  // add another th for Delete action
+  headers.push(listActionDeleteRender)
 
   return headers
 }
 
-export function buildCells (attrs, fields, row, rowId, renderCell, renderRowActions) {
+export function buildCells (attrs, fields, row, rowId, renderCell, renderRowActions, renderRowActionDelete) {
   let cells = []
   let i
+
+  // add another td for Row actions
+  const rowActions = renderRowActions && renderRowActions(row)
+  rowActions && cells.push(rowActions)
+
   for (i = 0; i < attrs.length; i++) {
     const attr = attrs[i]
     const field = fields[i]
@@ -30,8 +39,9 @@ export function buildCells (attrs, fields, row, rowId, renderCell, renderRowActi
     cells.push(cell)
   }
 
-  const rowActions = renderRowActions && renderRowActions(row)
-  rowActions && cells.push(rowActions)
+  // add another td for Delete action
+  const rowActionDelete = renderRowActionDelete && renderRowActionDelete(row)
+  rowActionDelete && cells.push(rowActionDelete)
 
   return cells
 }
