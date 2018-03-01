@@ -1,5 +1,8 @@
-export function buildHeaders (attrs, titles, renderHeader, listActionsRender, listActionDeleteRender,
-  onSort, sortstate, noSort = []) {
+
+export function buildHeaders (
+  attrs, titles, renderHeader, listActionsRender,
+  onSort, sortstate, noSort = [], listActionDeleteRender
+) {
   let headers = []
   let i
 
@@ -24,7 +27,10 @@ export function buildHeaders (attrs, titles, renderHeader, listActionsRender, li
   return headers
 }
 
-export function buildCells (attrs, fields, row, rowId, renderCell, renderRowActions, renderRowActionDelete) {
+export function buildCells (
+  attrs, fields, row, rowId, renderCell,
+  renderRowActions, renderRowActionDelete
+) {
   let cells = []
   let i
 
