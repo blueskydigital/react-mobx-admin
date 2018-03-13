@@ -152,7 +152,14 @@ export default class DataTableState {
 
   @action
   applyFilters() {
-    const newQPars = Object.assign({}, this.filters.toJS(), {
+    let convertedFilters = {}
+    if (Object.prototype.toString.call(this.filters) === '[object Map]') {
+      this.filters.forEach((v, k) => { convertedFilters[k] = v })
+    } else {
+      convertedFilters = this.filters.toJS()
+    }
+
+    const newQPars = Object.assign({}, convertedFilters, {
       '_page': 1,  // need to go to 1st page due to limited results
       '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
