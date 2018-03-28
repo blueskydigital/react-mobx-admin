@@ -10,14 +10,15 @@ export default class DataTableStore {
   pkName = 'id'
   perPageOptions = [10, 15, 20, 50, 100]
 
-  constructor(router, getEntries, updateQPars) {
+  constructor(router, updateQPars) {
     this.router = router
-    this.getEntries = getEntries
     this.updateQPars = updateQPars
     for (let attr in router.queryParams) {  // init filters
       attr[0] !== '_' && this.filters.set(attr, router.queryParams[attr])
     }
   }
+
+  getEntries (params) { throw new Error('implement getEntries!!') }
 
   init() {
     this.setDefaults()
