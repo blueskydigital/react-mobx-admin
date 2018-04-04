@@ -100,8 +100,8 @@ export default class DataManipStore {
   @action updateData (fieldName, value) {
     value = value === '' ? null : value
     this.record.set(fieldName, value)
-    this.runValidators()
     this.onFieldChange && this.onFieldChange(fieldName, value)
+    this.runValidators()
   }
 
 }
