@@ -1,4 +1,4 @@
-import {observable, computed, action} from 'mobx'
+import {observable, computed, action, toJS} from 'mobx'
 import deepEqual from 'deep-equal'
 
 export default class DataManipStore {
@@ -54,7 +54,7 @@ export default class DataManipStore {
   }
 
   @computed get isEntityChanged() {
-    const record = this.record.toJS()
+    const record = toJS(this.record)
     return ! deepEqual(this.origRecord, record, {strict: true})
   }
 
@@ -77,12 +77,6 @@ export default class DataManipStore {
     this.record.clear()
     this.record.merge(saved)
     this.state = 'ready'
-    // if (!this.origRecordId) {
-    //   const id = saved[this.pkName]
-    //   this.origRecordId = id
-    //   // if new is saved, we need to:
-    //   this.onLoaded(saved) //  run onLoaded
-    // }
     return this.record
   }
 
