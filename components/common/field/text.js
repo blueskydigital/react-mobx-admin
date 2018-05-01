@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const TextField = ({ attr, val, Component }) => {
-  if (!val) {
+  if (!val && String(val) !== '0') {
     return null
   }
 
