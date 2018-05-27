@@ -61,8 +61,9 @@ export default class DataManipStore {
   isSaveEnabled () {
     return this.errors.size === 0 && this.isEntityChanged
   }
+
   isBeingCreated () {
-    return this.record.has(this.pkName)
+    return !(this.record.has(this.pkName) && this.record.get(this.pkName))
   }
 
   @action save () {
