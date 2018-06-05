@@ -162,6 +162,7 @@ export default class DataTableState {
 
   @action
   applyFilters() {
+    this.updateSelection([])
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
       '_page': 1,  // need to go to 1st page due to limited results
       '_perPage': this.router.queryParams['_perPage'],
@@ -178,6 +179,7 @@ export default class DataTableState {
 
   @action
   hideFilter(filter) {
+    this.updateSelection([])
     this.filters.delete(filter)
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
       '_page': this.router.queryParams['_page'],
