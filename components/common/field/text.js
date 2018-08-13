@@ -7,12 +7,12 @@ const TextField = ({ attr, val, Component, toFixed }) => {
     return null
   }
 
-  if(val || val && toFixed) {
+  if(val && toFixed) {
     let parsed = parseFloat(val)
 
     if(parsed || parsed === 0)
       if(parsed === 0) val = 0
-      else val = parsed.toFixed(toFixed || 2)
+      else val = isNaN(parseInt(toFixed)) ? parsed.toFixed(2) : parsed.toFixed(toFixed)
   }
 
   return Component
