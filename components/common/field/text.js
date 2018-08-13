@@ -1,9 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TextField = ({ attr, val, Component }) => {
+const TextField = ({ attr, val, Component, toFixed }) => {
+
   if (!val && String(val) !== '0') {
     return null
+  }
+
+  if(val && toFixed) {
+    let parsed = parseFloat(val)
+
+    if(parsed || parsed === 0)
+      if(parsed === 0) val = 0
+      else val = isNaN(parseInt(toFixed)) ? parsed.toFixed(2) : parsed.toFixed(toFixed)
   }
 
   return Component
