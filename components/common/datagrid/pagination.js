@@ -9,7 +9,11 @@ export default class PaginationBase extends React.Component {
   }
 
   onChange(page) {
-    return () => { this.props.onChange(page); };
+    return () => { 
+        this.props.onChange(page); 
+        store && store.store && store.store.setEntityLastState &&
+        store.store.setEntityLastState(store.store.cv.entityname, store.router.queryParams);
+    };
   }
 
   range(page, perPage, total) {
