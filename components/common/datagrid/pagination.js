@@ -8,7 +8,7 @@ export default class PaginationBase extends React.Component {
       onChange: PropTypes.func.isRequired
   }
 
-  onChange(page) {
+  onChange(store, page) {
     return () => { 
         this.props.onChange(page); 
         store && store.store && store.store.setEntityLastState &&
