@@ -181,6 +181,9 @@ export default class DataTableState {
   hideFilter(filter) {
     this.updateSelection([])
     this.filters.delete(filter)
+    if (this.filters.has(filter + '__between')) {
+      this.filters.delete(filter + '__between')
+    }
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
       '_page': this.router.queryParams['_page'],
       '_perPage': this.router.queryParams['_perPage'],
