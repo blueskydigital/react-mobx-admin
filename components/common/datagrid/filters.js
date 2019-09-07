@@ -14,10 +14,10 @@ class DropdownBase extends React.Component {
   createItems(state, filters) {
     const onShowFilter = this.props.showFilter
     return _.map(filters, (val, name) => {
-      if(state.filters.has(name) || !val.globalFilter) {
+      if (state.filters.has(name) || !val.globalFilter) {
         return null // don't add to menu already visible filters
       } else {
-        return this.renderItem(name, val.title, val.icon, () => {onShowFilter(name)})
+        return this.renderItem(name, val.title, val.icon, () => { onShowFilter(name) })
       }
     })
   }
@@ -25,7 +25,7 @@ class DropdownBase extends React.Component {
   render() {
     const { filters, state } = this.props
     const dropdownFilters = Object.values(filters).filter((value) => value.globalFilter)
-    const show = dropdownFilters.length && (state.filters.size < dropdownFilters.length)
+    const show = dropdownFilters.length && dropdownFilters.length > 0
     return (show) ? this.renderMenu(state, filters) : null
   }
 }
@@ -42,7 +42,7 @@ class ControlsBase extends React.Component {
 
   buildRows(filters, state, showAttrFilters) {
     let rows = []
-    for(let name in filters) {
+    for (let name in filters) {
 
       const showAttribFilter = showAttrFilters || _.find(state.attrs, (i) => {
         return name.indexOf(i) >= 0
@@ -52,7 +52,7 @@ class ControlsBase extends React.Component {
       if (visible && showAttribFilter) {
         const value = state.filters.get(name)
         const filter = filters[name]
-        const onHide = () => {this.props.hideFilter(name)}
+        const onHide = () => { this.props.hideFilter(name) }
         const onUpdate = state.updateFilterValue.bind(state)
         const ctrl = this.renderControl(filter, name, state, onHide, onUpdate)
         rows.push(ctrl)
