@@ -42,7 +42,7 @@ export default class DataTableStore {
   }
 
   @action updateSort(sortField, sortDir) {
-    const qp = this.router.queryParams
+    const qp = this.router.queryParams || {}
     const sortFields = qp._sortField ? qp._sortField.split(',') : []
     const sortDirs = qp._sortDir ? qp._sortDir.split(',') : []
     const sortStateIdx = sortFields.indexOf(sortField)
@@ -161,7 +161,7 @@ export default class DataTableStore {
   }
 
   setDefaults() {
-    const qp = this.router.queryParams
+    const qp = this.router.queryParams || {}
     // set params if missing _page || _perPage
     qp._page = qp._page ? qp._page : 1
     qp._perPage = qp._perPage ? qp._perPage : this.perPage
