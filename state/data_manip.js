@@ -87,18 +87,18 @@ export default class DataManipState {
   }
 
   @action beforeSave(record) {
-    return new Promise(res => {
-      this.origRecord = JSON.parse(JSON.stringify(record))
-      this.record.merge(this.origRecord)
-      this._runValidators()
-      this.state = 'ready'
-      return res()
-    })
+    this.origRecord = JSON.parse(JSON.stringify(record))
+    this.record.merge(this.origRecord)
+    this._runValidators()
   }
 
   @action save() {
     this.state = 'saving'
     return Promise.resolve(this.beforeSave.bind(this)).then(() => {
+      if(this.errors.size) {
+        this.state = 'ready'
+        return this.onError('Validation errors') // show validation error message
+      }
       return this.saveEntry(this.entityname, this.record, this.origRecordId)
       .then(this.onSaved.bind(this))
       .catch(this.onError.bind(this))
