@@ -86,11 +86,23 @@ export default class DataManipState {
     return ! deepEqual(this.origRecord, record, {strict: true})
   }
 
+  @action beforeSave(record) {
+    return new Promise(res => {
+      this.origRecord = JSON.parse(JSON.stringify(record))
+      this.record.merge(this.origRecord)
+      this._runValidators()
+      this.state = 'ready'
+      return res()
+    })
+  }
+
   @action save() {
     this.state = 'saving'
-    return this.saveEntry(this.entityname, this.record, this.origRecordId)
-    .then(this.onSaved.bind(this))
-    .catch(this.onError.bind(this))
+    return Promise.resolve(this.beforeSave.bind(this)).then(() => {
+      return this.saveEntry(this.entityname, this.record, this.origRecordId)
+      .then(this.onSaved.bind(this))
+      .catch(this.onError.bind(this))
+    })
   }
 
   @action onSaved(saved) {
