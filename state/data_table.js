@@ -1,7 +1,6 @@
-import {observable, computed, action, toJS} from 'mobx'
+import { observable, computed, action, toJS } from 'mobx'
 
 export default class DataTableState {
-
   @observable state = 'loading'
   @observable items = []
   @observable totalItems = 0
@@ -9,24 +8,24 @@ export default class DataTableState {
   perPage = 15
   pkName = 'id'
 
-  constructor(entityname, requester, router, updateQPars, dirty) {
+  constructor (entityname, requester, router, updateQPars, dirty) {
     this.requester = requester
     this.entityname = entityname
     this.router = router
     this.updateQPars = updateQPars
     this.dirty = dirty
-    for (let attr in router.queryParams) {  // init filters
+    for (let attr in router.queryParams) { // init filters
       attr[0] !== '_' && this.filters.set(attr, router.queryParams[attr])
     }
   }
 
-  init() {
+  init () {
     this.setDefaults()
     return this._refreshList()
   }
 
   @action
-  updatePage(page) {
+  updatePage (page) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_page': page
     })
@@ -35,7 +34,7 @@ export default class DataTableState {
   }
 
   @action
-  setPerPage(num) {
+  setPerPage (num) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
       '_page': 1,
       '_perPage': num
@@ -44,8 +43,8 @@ export default class DataTableState {
   }
 
   @action
-  updateSort(sortField, sortDir) {
-    const qp = this.router.queryParams
+  updateSort (sortField, sortDir) {
+    const qp = this.router.queryParams || {}
     const sortFields = qp._sortField ? qp._sortField.split(',') : []
     const sortDirs = qp._sortDir ? qp._sortDir.split(',') : []
     const sortStateIdx = sortFields.indexOf(sortField)
@@ -71,14 +70,14 @@ export default class DataTableState {
   }
 
   @action
-  refresh() {
+  refresh () {
     return this._refreshList()
   }
 
   // ---------------------- delete  ----------------------------
 
   @action
-  deleteData(data) {
+  deleteData (data) {
     const id = data[0][this.pkName]
     return this.requester.deleteEntry(this.entityname, id).then(() => {
       return this._refreshList()
@@ -86,7 +85,7 @@ export default class DataTableState {
   }
 
   @action
-  deleteSelected() {
+  deleteSelected () {
     const promises = this.selection.map((selected) => {
       const id = this.items[selected][this.pkName]
       return this.requester.deleteEntry(this.entityname, id)
@@ -101,29 +100,29 @@ export default class DataTableState {
 
   // ---------------------- selection  ----------------------------
 
-  @computed get selected_ids() {
+  @computed get selected_ids () {
     return this.selection.map((selected) => {
       return this.items[selected][this.pkName]
     })
   }
 
-  @computed get selectedItems() {
+  @computed get selectedItems () {
     return this.selection.map(i => this.items[i])
   }
 
   @action
-  updateSelection(data) {
+  updateSelection (data) {
     this.selection = data
   }
 
-  @action toggleIndex(idx) {
+  @action toggleIndex (idx) {
     const removed = this.selection.remove(idx)
-    if(! removed) {
+    if (!removed) {
       this.selection.push(idx)
     }
   }
 
-  @action selectAll() {
+  @action selectAll () {
     this.selection = this.items.map((i, idx) => idx)
   }
 
@@ -131,7 +130,7 @@ export default class DataTableState {
 
   @observable filters = new Map()
 
-  @computed get appliedFilters() {
+  @computed get appliedFilters () {
     const applied = {}
     for (let k in this.router.queryParams) {
       if (k[0] !== '_') {
@@ -141,30 +140,35 @@ export default class DataTableState {
     return applied
   }
 
-  @computed get areFiltersApplied() {
+  @computed get areFiltersApplied () {
     return JSON.stringify(this.filters) === JSON.stringify(this.appliedFilters)
   }
 
   @action
-  updateFilterValue(name, value) {
+  updateFilterValue (name, value) {
     this.filters.set(name, value)
   }
 
-  _convertFilters(filters) {
-    let convertedFilters = {}
+  _convertFilters (filters) {
+    const convertedFilters = {}
     if (Object.prototype.toString.call(filters) === '[object Map]') {
-      this.filters.forEach((v, k) => { convertedFilters[k] = v })
+      this.filters.forEach((v, k) => {
+        if (v && v.length > 0) { convertedFilters[k] = v }
+      })
     } else {
-      convertedFilters = filters.toJS()
+      const t = filters.toJS()
+      t && Object.keys(t).forEach(k => {
+        if (t[k] && t[k].length > 0) { convertedFilters[k] = t[k] }
+      })
     }
     return convertedFilters
   }
 
   @action
-  applyFilters() {
+  applyFilters () {
     this.updateSelection([])
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
-      '_page': 1,  // need to go to 1st page due to limited results
+      '_page': 1, // need to go to 1st page due to limited results
       '_perPage': this.router.queryParams['_perPage'],
       '_sortField': this.router.queryParams['_sortField'],
       '_sortDir': this.router.queryParams['_sortDir']
@@ -173,14 +177,17 @@ export default class DataTableState {
   }
 
   @action
-  showFilter(filter) {
+  showFilter (filter) {
     this.filters.set(filter, undefined)
   }
 
   @action
-  hideFilter(filter) {
+  hideFilter (filter) {
     this.updateSelection([])
     this.filters.delete(filter)
+    if (this.filters.has(filter + '__to')) {
+      this.filters.delete(filter + '__to')
+    }
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
       '_page': this.router.queryParams['_page'],
       '_perPage': this.router.queryParams['_perPage'],
@@ -192,12 +199,12 @@ export default class DataTableState {
 
   // ---------------------- privates, support ----------------------------
 
-  getRequestParams(params) {
+  getRequestParams (params) {
     return new Promise((resolve, _) => resolve(params))
   }
 
-  setDefaults() {
-    const qp = this.router.queryParams
+  setDefaults () {
+    const qp = this.router.queryParams || {}
     // set params if missing _page || _perPage
     qp._page = qp._page ? qp._page : 1
     qp._perPage = qp._perPage ? qp._perPage : this.perPage
@@ -207,20 +214,19 @@ export default class DataTableState {
     }
   }
 
-  _refreshList() {
+  _refreshList () {
     this.state = 'loading'
     return this.getRequestParams(toJS(this.router.queryParams))
-    .then(pars => {
-      return this.requester.getEntries(this.entityname, pars)
-    })
-    .then(this.onDataLoaded.bind(this))
+      .then(pars => {
+        return this.requester.getEntries(this.entityname, pars)
+      })
+      .then(this.onDataLoaded.bind(this))
   }
 
   @action
-  onDataLoaded(result) {
+  onDataLoaded (result) {
     this.state = 'ready'
     this.totalItems = result.totalItems
     this.items.replace(result.data)
   }
-
 }

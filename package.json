@@ -1,6 +1,6 @@
 {
   "name": "react-mobx-admin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "unopinionated framework for React based admin applications",
   "main": "index.js",
   "keywords": [
@@ -17,12 +17,14 @@
   ],
   "repository": "https://github.com/blueskydigital/react-admin",
   "license": "ISC",
-  "peerDependencies": {
-    "axios": "^0.14.0",
-    "material-ui": "^0.16.0",
-    "mobx": "^2.3.7",
-    "mobx-react": "^3.5.1",
-    "react": "^15.2.1"
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "deep-equal": "^1.0.1",
+    "material-ui": "^0.20.0",
+    "prop-types": "^15.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -43,16 +45,15 @@
     "mobx-router": "github:vencax77/mobx-router",
     "react-addons-test-utils": "^15.3.0",
     "tape": "^4.6.2",
-    "webpack": "^3.3.0",
-    "webpack-config-utils": "^2.1.0",
-    "webpack-dev-server": "^2.5.1"
+    "webpack": "^4.41.2",
+    "webpack-config-utils": "^2.3.1",
+    "webpack-dev-server": "^3.9.0"
   },
-  "scripts": {
-    "test": "make test"
-  },
-  "dependencies": {
-    "deep-equal": "^1.0.1",
+  "peerDependencies": {
+    "axios": "^0.19.0",
     "material-ui": "^0.20.0",
-    "prop-types": "^15.6.0"
+    "mobx": "^2.3.7",
+    "mobx-react": "^3.5.1",
+    "react": "^15.2.1"
   }
 }
