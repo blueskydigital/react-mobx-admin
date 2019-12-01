@@ -101,7 +101,9 @@ export default class DataManipState {
       }
       return this.saveEntry(this.entityname, this.record, this.origRecordId)
       .then(this.onSaved.bind(this))
-      .catch(this.onError.bind(this))
+      .catch(() => this.state = 'ready') // this.onError.bind(this) did not work properly
+      // error is handled from saveEntry error handler
+      // in catch we just need to edit state so that page does not hang on "loading" state
     })
   }
 
