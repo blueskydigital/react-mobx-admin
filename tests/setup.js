@@ -1,4 +1,4 @@
-require('babel-register')({
+require('@babel/register')({
   ignore: /node_modules(?!\/react-mobx-admin)/ // they aren't compiled.
 })
 
