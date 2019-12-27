@@ -2,11 +2,12 @@ var debug = process.env.NODE_ENV !== 'production'
 var path = require('path')
 
 var babelOptions = {
-  'presets': ['react', 'stage-0', ['es2015', {'modules': false}]],
+  'presets': ['@babel/preset-react', ['@babel/preset-env', {'modules': false}]],
   'plugins': [
-    'transform-object-rest-spread',
-    'transform-decorators-legacy',
-    'transform-class-properties'
+    '@babel/plugin-proposal-object-rest-spread',
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-proposal-function-bind'
   ]
 }
 
