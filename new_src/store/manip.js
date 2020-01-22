@@ -68,7 +68,7 @@ export default class DataManipStore {
 
   @action save () {
     this.state = 'saving'
-    return this.saveEntry(this.record.toJS())
+    return this.saveEntry(Object.fromEntries(this.record))
     .then(this.onSaved.bind(this))
     .catch(this.onError.bind(this))
   }
