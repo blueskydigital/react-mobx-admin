@@ -7,6 +7,7 @@ const DatagridActions = ({ actions, state, overlay }) => {
     ? actions(state)
     : React.cloneElement(actions(state), {
       open: false, // closed dropdown if items not selected
+      onClick: () => {},
       style: { opacity: .65, cursor: 'not-allowed' }
     })
   return overlay && typeof overlay === 'function' ? overlay(actionsElement) : actionsElement
