@@ -5,6 +5,7 @@ export default class DataTableState {
   @observable items = []
   @observable totalItems = 0
   @observable selection = []
+  @observable selectionAll = false
   perPage = 15
   pkName = 'id'
 
@@ -14,7 +15,7 @@ export default class DataTableState {
     this.router = router
     this.updateQPars = updateQPars
     this.dirty = dirty
-    for (let attr in router.queryParams) { // init filters
+    for (const attr in router.queryParams) { // init filters
       attr[0] !== '_' && this.filters.set(attr, router.queryParams[attr])
     }
   }
@@ -27,17 +28,18 @@ export default class DataTableState {
   @action
   updatePage (page) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
-      '_page': page
+      _page: page
     })
     this.selection = []
+    this.selectionAll = false
     this.updateQPars(newQPars)
   }
 
   @action
   setPerPage (num) {
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
-      '_page': 1,
-      '_perPage': num
+      _page: 1,
+      _perPage: num
     })
     this.updateQPars(newQPars)
   }
@@ -58,14 +60,15 @@ export default class DataTableState {
       sortDirs.push(sortDir)
     }
     const newQPars = Object.assign({}, toJS(this.router.queryParams), {
-      '_sortField': sortFields.join(','),
-      '_sortDir': sortDirs.join(',')
+      _sortField: sortFields.join(','),
+      _sortDir: sortDirs.join(',')
     })
     if (sortFields.length === 0) {
       delete newQPars._sortField
       delete newQPars._sortDir
     }
     this.selection = []
+    this.selectionAll = false
     this.updateQPars(newQPars)
   }
 
@@ -93,6 +96,7 @@ export default class DataTableState {
     // wait for all delete reqests
     return Promise.all(promises).then(() => {
       this.selection = []
+      this.selectionAll = false
       this.dirty[this.entityname] = null
       return this._refreshList()
     })
@@ -110,9 +114,11 @@ export default class DataTableState {
     return this.selection.map(i => this.items[i])
   }
 
-  @action
-  updateSelection (data) {
+  @action updateSelection (data) {
     this.selection = data
+    if (!data || data.length <= 0) {
+      this.selectionAll = false
+    }
   }
 
   @action toggleIndex (idx) {
@@ -123,7 +129,20 @@ export default class DataTableState {
   }
 
   @action selectAll () {
-    this.selection = this.items.map((i, idx) => idx)
+    const fixedSelection = []
+
+    this.selection = this.items.map((r, idx) => {
+      const timeRestricted = (
+        this.store && this.store.timeRestriction &&
+        this.store.timeRestriction.checkRow(this.store, r, this)
+      ) || undefined
+
+      if (!(timeRestricted && timeRestricted > 0)) {
+        fixedSelection.push(idx)
+      }
+    })
+    this.selection = fixedSelection
+    this.selectionAll = !this.selectionAll
   }
 
   // ---------------------- filtration  ----------------------------
@@ -132,7 +151,7 @@ export default class DataTableState {
 
   @computed get appliedFilters () {
     const applied = {}
-    for (let k in this.router.queryParams) {
+    for (const k in this.router.queryParams) {
       if (k[0] !== '_') {
         applied[k] = this.router.queryParams[k]
       }
@@ -169,10 +188,10 @@ export default class DataTableState {
   applyFilters () {
     this.updateSelection([])
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
-      '_page': 1, // need to go to 1st page due to limited results
-      '_perPage': this.router.queryParams['_perPage'],
-      '_sortField': this.router.queryParams['_sortField'],
-      '_sortDir': this.router.queryParams['_sortDir']
+      _page: 1, // need to go to 1st page due to limited results
+      _perPage: this.router.queryParams._perPage,
+      _sortField: this.router.queryParams._sortField,
+      _sortDir: this.router.queryParams._sortDir
     })
     this.updateQPars(newQPars)
   }
@@ -190,10 +209,10 @@ export default class DataTableState {
       this.filters.delete(filter + '__to')
     }
     const newQPars = Object.assign({}, this._convertFilters(this.filters), {
-      '_page': this.router.queryParams['_page'],
-      '_perPage': this.router.queryParams['_perPage'],
-      '_sortField': this.router.queryParams['_sortField'],
-      '_sortDir': this.router.queryParams['_sortDir']
+      _page: this.router.queryParams._page,
+      _perPage: this.router.queryParams._perPage,
+      _sortField: this.router.queryParams._sortField,
+      _sortDir: this.router.queryParams._sortDir
     })
     this.updateQPars(newQPars)
   }
