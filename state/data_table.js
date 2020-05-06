@@ -172,13 +172,17 @@ export default class DataTableState {
     const convertedFilters = {}
     if (Object.prototype.toString.call(filters) === '[object Map]') {
       this.filters.forEach((v, k) => {
-        const fVal = '' + v
-        if (fVal && fVal.length > 0) { convertedFilters[k] = fVal }
+        const fVal = (v !== undefined) && v.toString()
+        if (fVal && fVal.length > 0) {
+          convertedFilters[k] = fVal
+        }
       })
     } else {
       const t = filters.toJS()
       t && Object.keys(t).forEach(k => {
-        if (t[k] && t[k].length > 0) { convertedFilters[k] = t[k] }
+        if (t[k] && t[k].length > 0) {
+          convertedFilters[k] = t[k]
+        }
       })
     }
     return convertedFilters
