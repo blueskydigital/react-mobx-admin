@@ -3,15 +3,15 @@ export function buildHeaders (
   attrs, titles, renderHeader, listActionsRender,
   onSort, sortstate, noSort = [], listActionDeleteRender
 ) {
-  let headers = []
-  let i
+  const headers = []
+  const attrsLength = attrs.length
 
   // add another th for List actions
   headers.push(listActionsRender)
 
   const sortFields = sortstate._sortField ? sortstate._sortField.split(',') : []
   const sortDirs = sortstate._sortDir ? sortstate._sortDir.split(',') : []
-  for (i = 0; i < attrs.length; i++) {
+  for (let i = 0; i < attrsLength; i++) {
     const attr = attrs[i]
     const title = titles[i]
     const sortStateIdx = sortFields.indexOf(attr)
@@ -29,16 +29,22 @@ export function buildHeaders (
 
 export function buildCells (
   attrs, fields, row, rowId, renderCell,
-  renderRowActions, renderRowActionDelete
+  renderRowActions, renderRowActionDelete, disableAttrs
 ) {
-  let cells = []
-  let i
+  const cells = []
+  const attrsLength = attrs.length
 
   // add another td for Row actions
   const rowActions = renderRowActions && renderRowActions(row)
   rowActions && cells.push(rowActions)
 
-  for (i = 0; i < attrs.length; i++) {
+  if (disableAttrs !== null) {
+    disableAttrs.map(a => {
+      row[a] = null
+    })
+  }
+
+  for (let i = 0; i < attrsLength; i++) {
     const attr = attrs[i]
     const field = fields[i]
     const cell = renderCell(row, attr, field, rowId)
