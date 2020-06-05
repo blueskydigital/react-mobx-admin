@@ -33,21 +33,28 @@ export function buildCells (
 ) {
   const cells = []
   const attrsLength = attrs.length
+  let disableValue
 
   // add another td for Row actions
   const rowActions = renderRowActions && renderRowActions(row)
   rowActions && cells.push(rowActions)
 
-  if (disableAttrs !== null) {
-    disableAttrs.map(a => {
-      row[a] = null
-    })
-  }
-
   for (let i = 0; i < attrsLength; i++) {
     const attr = attrs[i]
     const field = fields[i]
-    const cell = renderCell(row, attr, field, rowId)
+
+    if (disableAttrs && disableAttrs instanceof Object) {
+      // disable value only
+      if (disableAttrs.disable && disableAttrs.disable.includes(attr)) {
+        disableValue = true
+      }
+      // do not show value
+      if (disableAttrs.hide && disableAttrs.hide.includes(attr)) {
+        row[attr] = null
+      }
+    }
+
+    const cell = renderCell(row, attr, field, rowId, disableValue)
     cells.push(cell)
   }
 
