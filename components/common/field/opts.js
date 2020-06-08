@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const OptionsField = ({val, attr, options, valueattr, labelattr, Component}) => {
+const OptionsField = ({ val, attr, options, valueattr, labelattr, Component }) => {
   const found = options ? options.filter((i) => {
     return i[valueattr || 'value'] === val
   }) : null
@@ -9,7 +9,11 @@ const OptionsField = ({val, attr, options, valueattr, labelattr, Component}) => 
     const text = (typeof labelattr === 'function')
       ? labelattr(found[0]) : found[0][labelattr || 'label']
 
-    return Component ? <Component text={text} /> : <span>{text}</span>
+    return Component
+      ? <Component text={text} />
+      : (<span className={val && val.length && (val.length > 20 || val.indexOf(' ') || val.indexOf('-'))
+        ? 'one-line-value'
+        : ''}>{text}</span>)
   }
   return null
 }
