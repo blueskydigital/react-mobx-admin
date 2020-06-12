@@ -25,12 +25,25 @@ const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueatt
     : popoverText || null
 
   const addDisableValue = disableValue ? ' text-muted' : ''
+  const collapseClass = val.length > 20 ? ' regions-collapse' : ''
+
+  const handleClick = e => {
+    e.preventDefault()
+    if (e.target.style.maxWidth === '100%') {
+      e.target.style.maxWidth = '200px'
+      e.target.style.cursor = 'zoom-in'
+    } else {
+      e.target.style.maxWidth = '100%'
+      e.target.style.cursor = 'zoom-out'
+    }
+  }
 
   const finalVal = Component
     ? val
     : (<span className={val && val.length && (val.length > 20 || val.indexOf(' ') || val.indexOf('-'))
-      ? 'one-line-value' + addDisableValue
-      : addDisableValue} title={!text ? val : ''}>{val}
+      ? 'one-line-value' + addDisableValue + collapseClass
+      : addDisableValue} onClick={collapseClass ? handleClick : null} title={!text ? val : ''}>
+      {val}
     </span>)
 
   return Component
