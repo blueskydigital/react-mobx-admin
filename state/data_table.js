@@ -128,7 +128,7 @@ export default class DataTableState {
     }
   }
 
-  @action selectAll () {
+  @action selectAll (batchMenuControl = false) {
     const fixedSelection = []
 
     this.selection = this.items.map((r, idx) => {
@@ -137,7 +137,7 @@ export default class DataTableState {
         this.store.timeRestriction.checkRow(this.store, r, this)
       ) || undefined
 
-      if (!(timeRestricted && timeRestricted > 0)) {
+      if (batchMenuControl || !(timeRestricted && timeRestricted > 0)) {
         fixedSelection.push(idx)
       }
     })
