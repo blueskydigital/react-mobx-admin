@@ -24,17 +24,27 @@ const DateField = ({ attr, val, valN, Component }) => {
 
   switch (attr) {
   case 'valid_from':
+  case 'items_valid_from':
+  case 'contract_date':
+  case 'due_date':
+  case 'publish_date':
+  case 'start_license_period':
     addClass = validDateN
       ? (moment().isSameOrAfter(validDate, 'day') && moment().isSameOrBefore(validDateN, 'day')
         ? 'text-success'
-        : 'text-danger')
+        : (moment().isBefore(validDate, 'day') ? 'text-info' : 'text-danger'))
       : ''
     break
   case 'valid_to':
+  case 'items_valid_to':
+  case 'contract_end_date':
+  case 'expire_date':
+  case 'cancel_date':
+  case 'end_license_period':
     addClass = validDateN
       ? (moment().isSameOrBefore(validDate, 'day') && moment().isSameOrAfter(validDateN, 'day')
         ? 'text-success'
-        : 'text-danger')
+        : (moment().isBefore(validDateN, 'day') ? 'text-info' : 'text-danger'))
       : ''
     break
   }
