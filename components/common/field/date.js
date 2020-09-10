@@ -23,6 +23,7 @@ const DateField = ({ attr, val, valN, Component }) => {
   let addClass = ''
 
   switch (attr) {
+  case 'from':
   case 'valid_from':
   case 'items_valid_from':
   case 'contract_date':
@@ -35,6 +36,7 @@ const DateField = ({ attr, val, valN, Component }) => {
         : (moment().isBefore(validDate, 'day') ? 'text-info' : 'text-danger'))
       : ''
     break
+  case 'to':
   case 'valid_to':
   case 'items_valid_to':
   case 'contract_end_date':
