@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 
-const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueattr, popoverText, disableValue, maxWidth }) => {
+const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueattr, popoverText, disableValue, textWidth }) => {
   if (!val && String(val) !== '0') {
     return null
   }
@@ -29,22 +29,23 @@ const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueatt
 
   const handleClick = e => {
     e.preventDefault()
-    if (e.target.style.maxWidth === '100%') {
-      e.target.style.maxWidth = '200px'
+    if (e.target.style.whiteSpace === 'normal') {
+      e.target.style.whiteSpace = 'nowrap'
       e.target.style.cursor = 'zoom-in'
+      e.target.style.fontWeight = 'normal'
     } else {
-      e.target.style.maxWidth = '100%'
+      e.target.style.whiteSpace = 'normal'
       e.target.style.cursor = 'zoom-out'
     }
   }
 
-  const maxWidthStyle = maxWidth && ({ maxWidth: maxWidth })
+  const textWidthStyle = textWidth && ({ maxWidth: textWidth })
   const finalVal = Component
     ? val
     : (<span className={val && val.length && (val.length > 20 || val.indexOf(' ') || val.indexOf('-'))
       ? 'one-line-value' + addDisableValue + collapseClass
       : addDisableValue} onClick={collapseClass ? handleClick : null}
-    style={maxWidthStyle}
+    style={textWidthStyle}
     title={!text ? val : ''}>
       {val}
     </span>)
