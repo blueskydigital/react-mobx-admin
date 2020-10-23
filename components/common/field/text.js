@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { OverlayTrigger, Popover } from 'react-bootstrap'
 
-const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueattr, popoverText, disableValue }) => {
+const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueattr, popoverText, disableValue, maxWidth }) => {
   if (!val && String(val) !== '0') {
     return null
   }
@@ -38,11 +38,14 @@ const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueatt
     }
   }
 
+  const maxWidthStyle = maxWidth && ({ maxWidth: maxWidth })
   const finalVal = Component
     ? val
     : (<span className={val && val.length && (val.length > 20 || val.indexOf(' ') || val.indexOf('-'))
       ? 'one-line-value' + addDisableValue + collapseClass
-      : addDisableValue} onClick={collapseClass ? handleClick : null} title={!text ? val : ''}>
+      : addDisableValue} onClick={collapseClass ? handleClick : null}
+    style={maxWidthStyle}
+    title={!text ? val : ''}>
       {val}
     </span>)
 
