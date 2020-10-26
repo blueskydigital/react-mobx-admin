@@ -1,6 +1,6 @@
 {
   "name": "react-mobx-admin",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "unopinionated framework for React based admin applications",
   "main": "index.js",
   "keywords": [
@@ -21,7 +21,6 @@
     "test": "make test"
   },
   "dependencies": {
-    "axios": "^0.19.0",
     "deep-equal": "^1.0.1",
     "material-ui": "^0.20.0",
     "prop-types": "^15.6.0"
@@ -41,7 +40,6 @@
     "jsdom": "^9.8.3",
     "json-server": "^0.8.22",
     "mobx-react-devtools": "^4.2.15",
-    "mobx-router": "github:vencax77/mobx-router",
     "react-addons-test-utils": "^15.3.0",
     "tape": "^4.6.2",
     "webpack": "^4.41.2",
@@ -49,10 +47,10 @@
     "webpack-dev-server": "^3.9.0"
   },
   "peerDependencies": {
-    "axios": "^0.19.0",
-    "material-ui": "^0.20.0",
-    "mobx": "^5.15.0",
-    "mobx-react": "^5.4.4",
-    "react": "^16.11"
+    "axios": "^0.21",
+    "mobx": "^5",
+    "mobx-react": "^5",
+    "mobx-router": "git+https://github.com/vencax/mobx-router.git",
+    "react": "^16"
   }
 }
