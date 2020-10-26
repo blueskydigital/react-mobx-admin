@@ -48,6 +48,7 @@
   },
   "peerDependencies": {
     "axios": "^0.21",
+    "lodash": "^4",
     "mobx": "^5",
     "mobx-react": "^5",
     "mobx-router": "git+https://github.com/vencax/mobx-router.git",

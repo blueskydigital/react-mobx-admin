@@ -1,19 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import lodash from 'lodash'
 
 // dropdown with available filters
 class DropdownBase extends React.Component {
-
   static propTypes = {
     filters: PropTypes.object.isRequired,
     state: PropTypes.object.isRequired,
     showFilter: PropTypes.func.isRequired
   }
 
-  createItems(state, filters) {
+  createItems (state, filters) {
     const onShowFilter = this.props.showFilter
-    return _.map(filters, (val, name) => {
+    return lodash.map(filters, (val, name) => {
       if (state.filters.has(name) || !val.globalFilter) {
         return null // don't add to menu already visible filters
       } else {
@@ -22,7 +21,7 @@ class DropdownBase extends React.Component {
     })
   }
 
-  render() {
+  render () {
     const { filters, state } = this.props
     const dropdownFilters = Object.values(filters).filter((value) => value.globalFilter)
     const show = dropdownFilters.length && dropdownFilters.length > 0
@@ -32,7 +31,6 @@ class DropdownBase extends React.Component {
 
 // controls to set filter values
 class ControlsBase extends React.Component {
-
   static propTypes = {
     filters: PropTypes.object.isRequired,
     state: PropTypes.object.isRequired,
@@ -40,11 +38,10 @@ class ControlsBase extends React.Component {
     showAttrFilters: PropTypes.bool
   }
 
-  buildRows(filters, state, showAttrFilters) {
-    let rows = []
-    for (let name in filters) {
-
-      const showAttribFilter = showAttrFilters || _.find(state.attrs, (i) => {
+  buildRows (filters, state, showAttrFilters) {
+    const rows = []
+    for (const name in filters) {
+      const showAttribFilter = showAttrFilters || lodash.find(state.attrs, (i) => {
         return name.indexOf(i) >= 0
       }) !== null
       const visible = state.filters.has(name) && filters[name].globalFilter
@@ -61,7 +58,7 @@ class ControlsBase extends React.Component {
     return rows
   }
 
-  render() {
+  render () {
     const { filters, apply, state, showAttrFilters } = this.props
     const controls = this.buildRows(filters, state, showAttrFilters)
     const show = controls.length > 0 && state.filters.size > 0
