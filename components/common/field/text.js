@@ -33,9 +33,11 @@ const TextField = ({ attr, val, Component, toFixed, options, labelattr, valueatt
       e.target.style.whiteSpace = 'nowrap'
       e.target.style.cursor = 'zoom-in'
       e.target.style.fontWeight = 'normal'
+      e.target.style.maxWidth = '200px'
     } else {
       e.target.style.whiteSpace = 'normal'
       e.target.style.cursor = 'zoom-out'
+      e.target.style.maxWidth = '100%'
     }
   }
 
