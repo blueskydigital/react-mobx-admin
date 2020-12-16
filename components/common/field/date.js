@@ -2,22 +2,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-const DateField = ({ attr, val, valN, Component }) => {
-  function formateDate ({ date = new Date(), separator = '-', order = ['year', 'month', 'day'] }) {
+const DateField = ({ attr, val, valN, Component, showTime }) => {
+  function formateDate ({ date = new Date(), separator = '-', separator2 = ':', order = ['year', 'month', 'day'], order2 = ['hours', 'minutes'] }) {
     const obj = {
       year: date.getUTCFullYear(),
       month: (date.getUTCMonth() + 1 < 10) ? ('0' + (date.getUTCMonth() + 1)) : (date.getUTCMonth() + 1),
-      day: (date.getUTCDate() < 10) ? ('0' + date.getUTCDate()) : date.getUTCDate()
+      day: (date.getUTCDate() < 10) ? ('0' + date.getUTCDate()) : date.getUTCDate(),
+      hours: (date.getUTCHours() < 10) ? ('0' + date.getUTCHours()) : date.getUTCHours(),
+      minutes: (date.getUTCMinutes() < 10) ? ('0' + date.getUTCMinutes()) : date.getUTCMinutes()
+
     }
-    return `${obj[order[0]]}${separator}${obj[order[1]]}${separator}${obj[order[2]]}`
+    return !showTime
+      ? `${obj[order[0]]}${separator}${obj[order[1]]}${separator}${obj[order[2]]}`
+      : `${obj[order[0]]}${separator}${obj[order[1]]}${separator}${obj[order[2]]} ${obj[order2[0]]}${separator2}${obj[order2[1]]}`
   }
 
   if (!val) {
     return null
   }
 
-  const d = val instanceof Date ? d : new Date(val)
-  const text = formateDate({ date: d })
+  const dateVal = val instanceof Date ? val : new Date(val)
+  const text = formateDate({ date: dateVal })
   const validDate = moment(text).isValid() && moment(text)
   const validDateN = valN && moment(valN).isValid() && moment(valN)
   let addClass = ''
