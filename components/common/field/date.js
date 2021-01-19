@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-const DateField = ({ attr, val, valN, Component, showTime }) => {
+const DateField = ({ attr, val, valN, valT, Component, showTime }) => {
   if (!val) {
     return null
   }
@@ -14,8 +14,8 @@ const DateField = ({ attr, val, valN, Component, showTime }) => {
 
   const validDate = moment(text).isValid() && moment(text)
   const validDateN = valN && moment(valN).isValid() && moment(valN)
+  const validDateT = valT && moment(valT).isValid() && moment(valT)
   let addClass = ''
-
   switch (attr) {
   case 'from':
   case 'valid_from':
@@ -24,8 +24,8 @@ const DateField = ({ attr, val, valN, Component, showTime }) => {
   case 'due_date':
   case 'publish_date':
   case 'start_license_period':
-    addClass = validDateN
-      ? (moment().isSameOrAfter(validDate, 'day') && moment().isSameOrBefore(validDateN, 'day')
+    addClass = (validDateT || validDateN)
+      ? (moment().isSameOrAfter(validDate, 'day') && moment().isSameOrBefore((validDateT || validDateN), 'day')
         ? 'text-success'
         : (moment().isBefore(validDate, 'day') ? 'text-info' : 'text-danger'))
       : ''
@@ -36,9 +36,10 @@ const DateField = ({ attr, val, valN, Component, showTime }) => {
   case 'contract_end_date':
   case 'expire_date':
   case 'cancel_date':
+  case 'canceled_date':
   case 'end_license_period':
     addClass = validDateN
-      ? (moment().isSameOrBefore(validDate, 'day') && moment().isSameOrAfter(validDateN, 'day')
+      ? (moment().isSameOrBefore((validDateT || validDate), 'day') && moment().isSameOrAfter(validDateN, 'day')
         ? 'text-success'
         : (moment().isBefore(validDateN, 'day') ? 'text-info' : 'text-danger'))
       : ''
