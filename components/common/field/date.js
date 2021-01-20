@@ -6,10 +6,14 @@ const DateField = ({ attr, val, valN, valT, Component, showTime }) => {
   if (!val) {
     return null
   }
+
   const text = val && (moment(val).isValid()
-    ? (moment(val + (val.indexOf('T') < 0 ? 'T00:00:00.000Z' : '')).utc().format(showTime
-      ? 'YYYY-MM-DD HH:mm'
-      : 'YYYY-MM-DD'))
+    ? (val && moment(typeof val === 'string' && val.indexOf('T') < 0
+      ? (val + 'T00:00:00.000Z')
+      : val).utc()
+      .format(showTime
+        ? 'YYYY-MM-DD HH:mm'
+        : 'YYYY-MM-DD'))
     : '')
 
   const validDate = moment(text).isValid() && moment(text)
