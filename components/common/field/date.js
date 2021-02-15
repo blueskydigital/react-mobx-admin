@@ -7,19 +7,18 @@ const DateField = ({ attr, val, valN, valT, Component, showTime }) => {
     return null
   }
 
-  const text = val && (moment(val).isValid()
+  let addClass = ''
+  let text = val && (moment(val).isValid()
     ? (val && moment(typeof val === 'string' && val.indexOf('T') < 0
       ? (val + 'T00:00:00.000Z')
-      : val).utc()
-      .format(showTime
-        ? 'YYYY-MM-DD HH:mm'
-        : 'YYYY-MM-DD'))
+      : val).utc())
     : '')
-
+  const compare = showTime ? 'second' : 'day'
+  const now = moment(moment().format(moment.defaultFormatUtc)).utc()
   const validDate = moment(text).isValid() && moment(text)
   const validDateN = valN && moment(valN).isValid() && moment(valN)
   const validDateT = valT && moment(valT).isValid() && moment(valT)
-  let addClass = ''
+
   switch (attr) {
   case 'from':
   case 'valid_from':
@@ -28,10 +27,10 @@ const DateField = ({ attr, val, valN, valT, Component, showTime }) => {
   case 'due_date':
   case 'publish_date':
   case 'start_license_period':
-    addClass = (validDateT || validDateN)
-      ? (moment().isSameOrAfter(validDate, 'day') && moment().isSameOrBefore((validDateT || validDateN), 'day')
+    addClass = (validDateT || validDateN) && validDate
+      ? (now.isSameOrAfter(validDate, compare) && now.isSameOrBefore((validDateT || validDateN), compare)
         ? 'text-success'
-        : (moment().isBefore(validDate, 'day') ? 'text-info' : 'text-danger'))
+        : (now.isBefore(validDate, compare) ? 'text-info' : 'text-danger'))
       : ''
     break
   case 'to':
@@ -42,14 +41,17 @@ const DateField = ({ attr, val, valN, valT, Component, showTime }) => {
   case 'cancel_date':
   case 'canceled_date':
   case 'end_license_period':
-    addClass = validDateN
-      ? (moment().isSameOrBefore((validDateT || validDate), 'day') && moment().isSameOrAfter(validDateN, 'day')
+    addClass = (validDateT || validDateN) && validDate
+      ? (now.isSameOrAfter(validDateN, compare) && now.isSameOrBefore((validDateT || validDate), compare)
         ? 'text-success'
-        : (moment().isBefore(validDateN, 'day') ? 'text-info' : 'text-danger'))
+        : (now.isBefore(validDateN, compare) ? 'text-info' : 'text-danger'))
       : ''
     break
   }
 
+  text = text && text.format(showTime
+    ? 'YYYY-MM-DD HH:mm'
+    : 'YYYY-MM-DD')
   return Component
     ? <Component attr={attr} text={text} />
     : <span className={'one-line-value ' + addClass}>{text}</span>
