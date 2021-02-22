@@ -18,11 +18,13 @@ export default class DataTableStore {
     }
   }
 
-  getEntries (params) { throw new Error('implement getEntries!!') }
-
   init () {
     this.setDefaults()
     return this._refreshList()
+  }
+
+  getEntries (params) {
+    throw new Error('implement getEntries!!')
   }
 
   @action updatePage (page) {
@@ -32,6 +34,8 @@ export default class DataTableStore {
     this.selection = []
     this.selectionAll = false
     this.updateQPars(newQPars)
+
+    this.store.setEntityLastState(this.store.cv.entityname, this.router.queryParams)
   }
 
   @action setPerPage (num) {
