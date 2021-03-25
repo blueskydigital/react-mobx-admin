@@ -1,7 +1,7 @@
 
 export function buildHeaders (
-  attrs, titles, renderHeader, listActionsRender,
-  onSort, sortstate, noSort = [], listActionDeleteRender
+  attrs, titles, renderHeader, listActionsRender, onSort,
+  sortstate, noSort = [], listActionDeleteRender, fakeID = null
 ) {
   const headers = []
   const attrsLength = attrs.length
@@ -17,7 +17,7 @@ export function buildHeaders (
     const sortStateIdx = sortFields.indexOf(attr)
     const sortable = onSort && noSort.indexOf(attr) === -1
     const sort = sortStateIdx >= 0 ? sortDirs[sortStateIdx] : null
-    const header = renderHeader(attr, title, sort, sortable ? onSort : null)
+    const header = renderHeader(attr, title, sort, sortable ? onSort : null, fakeID)
     headers.push(header)
   }
 
@@ -29,7 +29,7 @@ export function buildHeaders (
 
 export function buildCells (
   attrs, fields, row, rowId, renderCell,
-  renderRowActions, renderRowActionDelete, disableAttrs
+  renderRowActions, renderRowActionDelete, disableAttrs = null, fakeID = null
 ) {
   const cells = []
   const attrsLength = attrs.length
@@ -54,7 +54,7 @@ export function buildCells (
       }
     }
 
-    const cell = renderCell(row, attr, field, rowId, disableValue)
+    const cell = renderCell(row, attr, field, rowId, disableValue, fakeID)
     cells.push(cell)
   }
 
